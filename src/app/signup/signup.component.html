@@ -1,0 +1,43 @@
+<div id="signup">
+  <form (submit)="signupScout($event)">
+    <h1>Sign Up</h1>
+    <div class="{{alerttype}}" role="alert">
+      <strong>Hello!</strong> {{error}}
+      <button type="button" class="close" data-dismiss="alet" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="input-group-prepend">
+      <label class="input-group-text" for="inputGroupSelect01">I am a</label>
+    </div>
+    <select class="custom-select" id="role">
+      <option selected>Choose...</option>
+      <option value="scout">Scout</option>
+      <option value="manager">Manager</option>
+    </select>
+    
+    <div class="form-group">
+      <label for="exampleInputEmail1">Your Name</label>
+      <input type="text" class="form-control" id="name" aria-describedby="emailHelp" placeholder="Enter name">
+      <small id="emailHelp" class="form-text text-muted">We'll never share your information with anyone else.</small>
+    </div>
+    <div class="form-group">
+      <label for="exampleInputPassword1">Your Team#</label>
+      <input type="text" class="form-control" id="teamnumber" placeholder="Enter Number">
+    </div>
+    <div class="form-group">
+      <label for="exampleInputPassword1">Password</label>
+      <input type="password" class="form-control" id="password" placeholder="Password">
+    </div>
+    <div class="form-group">
+      <label for="exampleInputPassword1">Password Confirm</label>
+      <input type="password" class="form-control" id="passwordc" placeholder="Password Again">
+    </div>
+    <div class="form-group form-check">
+      <input type="checkbox" class="form-check-input" id="check">
+      <label class="form-check-label" for="exampleCheck1">Agree To Terms and Condition</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+    
+  </form>
+</div>

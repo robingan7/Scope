@@ -1,0 +1,767 @@
+<div id="scoutlogin" *ngIf="loginb">
+<form (submit)="loginUser($event)"> 
+  <h1>Login</h1>
+  <div class="{{alerttype}}" role="alert">
+    <strong>Hello!</strong> {{error}}
+    <button type="button" class="close" data-dismiss="alet" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="input-group-prepend">
+    <label class="input-group-text" for="inputGroupSelect01">I am a</label>
+  </div>
+  <select class="custom-select" id="role">
+    <option selected>Choose...</option>
+    <option value="scout">Scout</option>
+    <option value="manager">Manager</option>
+  </select>
+  <div class="form-group">
+    <label for="exampleInputEmail1">Your Name</label>
+    <input type="text" class="form-control" id="name" aria-describedby="emailHelp" placeholder="Enter name">
+    <small id="emailHelp" class="form-text text-muted">We'll never share your information with anyone else.</small>
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1">Your Team#</label>
+    <input type="text" class="form-control" id="teamnumber" placeholder="Enter Number">
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1">Password</label>
+    <input type="password" class="form-control" id="password" placeholder="Password">
+  </div>
+
+  <button type="submit" class="btn btn-primary">Login</button>
+</form>
+</div>
+
+<!--start of ad-->
+
+  <div *ngIf="loginb" id="ad" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active" data-interval="2000">
+        <img src="http://frcscouting.ga/yoda.png" class="d-block w-100" alt="...">
+      </div>
+      <div class="carousel-item" data-interval="2000">
+        <img src="http://frcscouting.ga/yoshi.png" class="d-block w-100" alt="...">
+      </div>
+      <div class="carousel-item" data-interval="2000">
+        <img src="http://frcscouting.ga/yoda.png" class="d-block w-100" alt="...">
+      </div>
+    </div>
+  </div>
+<!--end of ad-->
+
+<!------start of manager page-->
+<div id="managerpage" *ngIf="scoutb">
+  <h3>{{name}}
+    <span class="badge badge-secondary">'ve scouted {{match_scouted}} matches&pits</span>
+    <span class="badge badge-pill badge-primary">{{teamnumber}}</span>
+    <span class="badge badge-success">{{role}}</span>
+  </h3>
+
+  <div class="row">
+    <div class="col-4">
+      <div class="list-group" id="list-tab" role="tablist">
+        <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home"
+          role="tab" aria-controls="home">Task</a>
+        <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab"
+          aria-controls="profile">Manage</a>
+        <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile"
+          role="tab" aria-controls="profile">History</a>
+        <a class="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="#list-messages"
+          role="tab" aria-controls="messages">Data</a>
+        <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings"
+          role="tab" aria-controls="settings">Team List</a>
+        <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings"
+          role="tab" aria-controls="settings">Account</a>
+      </div>
+    </div>
+    <div class="col-8">
+      <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
+          <div class="card">
+            <div class="card-header" id="headingOne">
+              <h2 class="mb-0">
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
+                  aria-controls="collapseOne">
+                  Current Task
+                </button>
+              </h2>
+            </div>
+          
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+              <div class="card-body">
+                ...
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header" id="headingTwo">
+              <h2 class="mb-0">
+                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo"
+                  aria-expanded="false" aria-controls="collapseTwo">
+                  Forms
+                </button>
+              </h2>
+            </div>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+              <div class="card-body">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addteam">
+                  Add A Pit Scout
+                </button>
+                
+                <div class="modal fade" id="addteam" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle"
+                  aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-scrollable" role="document">
+                    
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalScrollableTitle">Pit Scouting 2019</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <div *ngIf="bs[0].b">
+                        <span class="badge badge-info">Weight</span>
+                        <div class="input-group">
+                          <input id="weight" type="tel" class="form-control" placeholder="Weight" aria-label="Recipient's username with two button addons"
+                            aria-describedby="button-addon4">
+                          <select class="custom-select mr-sm-2" id="weightunit">
+                            <option selected>Unit</option>
+                            <option value="lb">lb</option>
+                            <option value="kg">kg</option>
+                            <option value="k">k</option>
+                          </select>
+                        </div>
+                        
+                        <span class="badge badge-info">Height</span>
+                        <div class="input-group">
+                          <input id="height" type="tel" class="form-control" placeholder="Height" aria-label="Recipient's username with two button addons"
+                            aria-describedby="button-addon4">
+                          <select class="custom-select mr-sm-2" id="heightunit">
+                            <option selected>Unit</option>
+                            <option value="m">m</option>
+                            <option value="inch">inch</option>
+                            <option value="cm">cm</option>
+                          </select>
+                      </div>
+                      <hr>
+                      </div>
+                      
+                      <div *ngIf="bs[1].b">
+                      <span class="badge badge-info">Sensor on robot</span>
+                      <select multiple class="form-control" id="exampleFormControlSelect2">
+                        <option value="">Ctrl+Click for multi-selection</option>
+                        <option value="Vision Track Camera">Vision Track Camera</option>
+                        <option value="NAVX">NAVX</option>
+                        <option value="Gyroscope">Gyroscope</option>
+                        <option value="Magnetometer">Magnetometer</option>
+                        <option value="Accelerometer">Accelerometer</option>
+                        <option value="Ulrasonic Sensor">Ulrasonic Sensor</option>
+                      </select>
+                      <hr>
+                      </div>
+
+                      <div *ngIf="bs[2].b">
+                      <span class="badge badge-info">Image</span>
+                      <input type="text" class="form-control" id="Title" placeholder="Title">
+                      <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="image1" aria-describedby="inputGroupFileAddon01">
+                        <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                      </div>
+                      <hr>
+                      </div>
+
+                      <div *ngIf="bs[3].b">
+                      <span class="badge badge-info">Autonomous Type</span>
+                      <select class="custom-select mr-sm-2" id="autotype">
+                        <option value="">Choose...</option>
+                        <option value="Code">Code</option>
+                        <option value="No">No Autonomous</option>
+                        <option value="Vision_System">Vision_System</option>
+                      </select>
+                      <hr>
+                      </div>
+
+                      <div *ngIf="bs[4].b">
+                      <span class="badge badge-info">Autonomous Ability</span>
+                      <br>
+                      <label for="autocargo">Auto Cargo</label>
+                      <select id="autocargo" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value=1>1</option>
+                        <option value=2>2</option>
+                        <option value=3>3</option>
+                      </select>
+                      <label for="autohatch">Auto Hatch</label>
+                      <select id="autohatch" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value=1>1</option>
+                        <option value=2>2</option>
+                        <option value=3>3</option>
+                      </select>
+                      <hr>
+                      </div>
+
+                      <div *ngIf="bs[5].b">
+                      <span class="badge badge-info">Teleop Ability</span>
+                      <br>
+                      <label for="cargolvl">Cargo Level</label>
+                      <select id="cargolvl" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value=0>0</option>
+                        <option value=1>1</option>
+                        <option value=2>2</option>
+                        <option value=3>3</option>
+                      </select>
+                      <label for="hatchlvl">Hatch Level</label>
+                      <select id="hatchlvl" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value=0>0</option>
+                        <option value=1>1</option>
+                        <option value=2>2</option>
+                        <option value=3>3</option>
+                      </select>
+                      <hr>
+                      </div>
+
+                      <div *ngIf="bs[6].b">
+                      <span class="badge badge-info">Speed</span>
+                      <br>
+                      <label for="robotspeed">Robot Speed</label>
+                      <select id="robotspeed" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value="Slow">Slow</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Fast">Fast</option>
+                      </select>
+                      <label for="hatchpickup">Hatch Pickup Speed</label>
+                      <select id="hatchpickup" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value="Slow">Slow</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Fast">Fast</option>
+                      </select>
+                      <label for="cargopickup">Cargo Pickup Speed</label>
+                      <select id="cargopickup" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value="Slow">Slow</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Fast">Fast</option>
+                      </select>
+                      <hr>
+                      </div>
+
+                      <div *ngIf="bs[7].b">
+                      <span class="badge badge-info">End Game</span>
+                      <br>
+                      <label for="platform">Platform Climb</label>
+                      <select id="platform" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value="Level1">Level0</option>
+                        <option value="Level1">Level1</option>
+                        <option value="Only_Level2">Only_Level2</option>
+                        <option value="Only_Level3">Only_Level3</option>
+                        <option value="Level3_And_2">Level3_And_2</option>
+                        <option value="Level3_Buddy_1">Level3_Buddy_1</option>
+                        <option value="Level3_Buddy_2">Level3_Buddy_2</option>
+                        <option value="Level2_Buddy">Level2_Buddy</option>
+                        <option value="Level3_And_2_Buddy">Level3_And_2_Buddy</option>
+                      </select>
+                      <hr>
+                      </div>
+
+                      <div *ngIf="bs[8].b">
+                      <span class="badge badge-info">Strategy</span>
+                      <br>
+                      <label for="preference">Preference</label>
+                      <select id="preference" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value="Defense">Defense</option>
+                        <option value="CargoShip">CargoShip</option>
+                        <option value="Rocket">Rocket</option>
+                        <option value="They can do everything">They can do everything</option>
+                      </select>
+                      <hr>
+                      </div>
+
+                      <div *ngIf="bs[9].b">
+                      <span class="badge badge-info">Driver Experience</span>
+                      <br>
+                      <label for="years">Years of Driving</label>
+                      <select id="years" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value="First Year">First Year</option>
+                        <option value="Second Year">Second Year</option>
+                        <option value="Third Year">Third Year</option>
+                        <option value="Fourth Year">Fourth Year</option>
+                      </select>
+                      <hr>
+                      </div>
+
+                      <div *ngIf="bs[10].b">
+                      <span class="badge badge-info">Questions to ask</span>
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Question</span>
+                      </div>
+                      <textarea class="form-control" aria-label="With textarea" placeholder="Like Q1:....Q2:...."></textarea>
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Answer</span>
+                      </div>
+                      <textarea class="form-control" aria-label="With textarea" placeholder="Like A1:....A2:...."></textarea>
+                      <hr>
+                      </div>
+                      
+                      <div *ngIf="bs[11].b">
+                      <span class="badge badge-info">Write your note here</span>
+                      <textarea class="form-control" aria-label="With textarea" placeholder="Notes Here"></textarea>
+                      </div>
+                      </div>
+                      
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addmatch">
+                  Add A Match Scout
+                </button>
+                
+                <div class="modal fade" id="addmatch" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle"
+                  aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-scrollable" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalScrollableTitle">Match Scouting 2019</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        ...
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+               <div *ngIf="managerb">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editteam">
+                  Edit Pit Scout Form
+                </button>
+               </div>
+                <form (submit)="editPit($event)">
+                <div class="modal fade" id="editteam" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle"
+                  aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-scrollable" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalScrollableTitle">Edit Pit Form 2019</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <!--edit pit -->
+                       
+                        <div class="accordion" id="accordionExample">
+                          <div class="card">
+                            <div class="card-header" id="headingOne">
+                              <h2 class="mb-0">
+                                <input type="checkbox" id="isWH" aria-label="Checkbox for following text input">
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne"
+                                  aria-expanded="false" aria-controls="collapseOne">
+                                  Height & Weight
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                              <div class="card-body">
+                                <span class="badge badge-info">Weight</span>
+                                <div class="input-group">
+                                  <input id="weight" type="tel" class="form-control" placeholder="Weight" aria-label="Recipient's username with two button addons"
+                                    aria-describedby="button-addon4">
+                                  <select class="custom-select mr-sm-2" id="weightunit">
+                                    <option selected>Unit</option>
+                                    <option value="lb">lb</option>
+                                    <option value="kg">kg</option>
+                                    <option value="k">k</option>
+                                  </select>
+                                </div>
+                                <span class="badge badge-info">Height</span>
+                                <div class="input-group">
+                                  <input id="height" type="tel" class="form-control" placeholder="Height" aria-label="Recipient's username with two button addons"
+                                    aria-describedby="button-addon4">
+                                  <select class="custom-select mr-sm-2" id="heightunit">
+                                    <option selected>Unit</option>
+                                    <option value="m">m</option>
+                                    <option value="inch">inch</option>
+                                    <option value="cm">cm</option>
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                
+                          <div class="card">
+                            <div class="card-header" id="headingTwo">
+                              <h2 class="mb-0">
+                                <input id="isSensor" type="checkbox" aria-label="Checkbox for following text input">
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#sensor"
+                                  aria-expanded="false" aria-controls="collapseTwo">
+                                  Sensor
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="sensor" class="collapse" aria-labelledby="headingTwo" data-parent="#sensor">
+                              <div class="card-body">
+                                <span class="badge badge-info">Sensor on robot</span>
+                                <select multiple class="form-control" id="exampleFormControlSelect2">
+                                  <option value="">Ctrl+Click for multi-selection</option>
+                                  <option value="Vision Track Camera">Vision Track Camera</option>
+                                  <option value="NAVX">NAVX</option>
+                                  <option value="Gyroscope">Gyroscope</option>
+                                  <option value="Magnetometer">Magnetometer</option>
+                                  <option value="Accelerometer">Accelerometer</option>
+                                  <option value="Ulrasonic Sensor">Ulrasonic Sensor</option>
+                                </select>
+                          </div>
+                          </div>
+                          </div>
+
+                          <div class="card">
+                            <div class="card-header" id="headingTwo">
+                              <h2 class="mb-0">
+                                <input id="isImage" type="checkbox" aria-label="Checkbox for following text input">
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#image"
+                                  aria-expanded="false" aria-controls="collapseTwo">
+                                  Image
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="image" class="collapse" aria-labelledby="headingTwo" data-parent="#image">
+                              <div class="card-body">
+                                <span class="badge badge-info">Image</span>
+                                <input type="text" class="form-control" id="Title" placeholder="Title">
+                                <div class="custom-file">
+                                  <input type="file" class="custom-file-input" id="image1" aria-describedby="inputGroupFileAddon01">
+                                  <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                
+                          <div class="card">
+                            <div class="card-header" id="headingTwo">
+                              <h2 class="mb-0">
+                                <input id="isAT" type="checkbox" aria-label="Checkbox for following text input">
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#autoType"
+                                  aria-expanded="false" aria-controls="autoType">
+                                  Autonomous Type
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="autoType" class="collapse" aria-labelledby="headingTwo" data-parent="#autoType">
+                              <div class="card-body">
+                                <span class="badge badge-info">Autonomous Type</span>
+                                <select class="custom-select mr-sm-2" id="autotype">
+                                  <option value="">Choose...</option>
+                                  <option value="Code">Code</option>
+                                  <option value="No">No Autonomous</option>
+                                  <option value="Vision_System">Vision_System</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                
+                          <div class="card">
+                            <div class="card-header" id="headingThree">
+                              <h2 class="mb-0">
+                                <input id="isAA" type="checkbox" aria-label="Checkbox for following text input">
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree"
+                                  aria-expanded="false" aria-controls="collapseThree">
+                                  Autonomous Ability
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                              <div class="card-body">
+                                <span class="badge badge-info">Autonomous Ability</span>
+                                <br>
+                                <label for="autocargo">Auto Cargo</label>
+                                <select id="autocargo" class="form-control form-control-lg">
+                                  <option>Choose...</option>
+                                  <option value=1>1</option>
+                                  <option value=2>2</option>
+                                  <option value=3>3</option>
+                                </select>
+                                <label for="autohatch">Auto Hatch</label>
+                                <select id="autohatch" class="form-control form-control-lg">
+                                  <option>Choose...</option>
+                                  <option value=1>1</option>
+                                  <option value=2>2</option>
+                                  <option value=3>3</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                
+                          <div class="card">
+                            <div class="card-header" id="headingThree">
+                              <h2 class="mb-0">
+                                <input id="isTA" type="checkbox" aria-label="Checkbox for following text input">
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#tele"
+                                  aria-expanded="false" aria-controls="collapseThree">
+                                  Teleop Ability
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="tele" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                              <div class="card-body">
+                                <span class="badge badge-info">Teleop Ability</span>
+                                <br>
+                                <label for="cargolvl">Cargo Level</label>
+                                <select id="cargolvl" class="form-control form-control-lg">
+                                  <option>Choose...</option>
+                                  <option value=0>0</option>
+                                  <option value=1>1</option>
+                                  <option value=2>2</option>
+                                  <option value=3>3</option>
+                                </select>
+                                <label for="hatchlvl">Hatch Level</label>
+                                <select id="hatchlvl" class="form-control form-control-lg">
+                                  <option>Choose...</option>
+                                  <option value=0>0</option>
+                                  <option value=1>1</option>
+                                  <option value=2>2</option>
+                                  <option value=3>3</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                
+                          <div class="card">
+                            <div class="card-header" id="headingThree">
+                              <h2 class="mb-0">
+                                <input id="isSpeed" type="checkbox" aria-label="Checkbox for following text input">
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#speed"
+                                  aria-expanded="false" aria-controls="collapseThree">
+                                  Speed
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="speed" class="collapse" aria-labelledby="headingThree" data-parent="#speed">
+                              <div class="card-body">
+                                <span class="badge badge-info">Speed</span>
+                                <br>
+                                <label for="robotspeed">Robot Speed</label>
+                                <select id="robotspeed" class="form-control form-control-lg">
+                                  <option>Choose...</option>
+                                  <option value="Slow">Slow</option>
+                                  <option value="Medium">Medium</option>
+                                  <option value="Fast">Fast</option>
+                                </select>
+                                <label for="hatchpickup">Hatch Pickup Speed</label>
+                                <select id="hatchpickup" class="form-control form-control-lg">
+                                  <option>Choose...</option>
+                                  <option value="Slow">Slow</option>
+                                  <option value="Medium">Medium</option>
+                                  <option value="Fast">Fast</option>
+                                </select>
+                                <label for="cargopickup">Cargo Pickup Speed</label>
+                                <select id="cargopickup" class="form-control form-control-lg">
+                                  <option>Choose...</option>
+                                  <option value="Slow">Slow</option>
+                                  <option value="Medium">Medium</option>
+                                  <option value="Fast">Fast</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                
+                          <div class="card">
+                            <div class="card-header" id="headingThree">
+                              <h2 class="mb-0">
+                                <input id="isEndgame" type="checkbox" aria-label="Checkbox for following text input">
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#endgame"
+                                  aria-expanded="false" aria-controls="collapseThree">
+                                  End Game
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="endgame" class="collapse" aria-labelledby="headingThree" data-parent="#endgame">
+                              <div class="card-body">
+                                <span class="badge badge-info">End Game</span>
+                                <br>
+                                <label for="platform">Platform Climb</label>
+                                <select id="platform" class="form-control form-control-lg">
+                                  <option>Choose...</option>
+                                  <option value="Level1">Level0</option>
+                                  <option value="Level1">Level1</option>
+                                  <option value="Only_Level2">Only_Level2</option>
+                                  <option value="Only_Level3">Only_Level3</option>
+                                  <option value="Level3_And_2">Level3_And_2</option>
+                                  <option value="Level3_Buddy_1">Level3_Buddy_1</option>
+                                  <option value="Level3_Buddy_2">Level3_Buddy_2</option>
+                                  <option value="Level2_Buddy">Level2_Buddy</option>
+                                  <option value="Level3_And_2_Buddy">Level3_And_2_Buddy</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                
+                          <div class="card">
+                            <div class="card-header" id="headingThree">
+                              <h2 class="mb-0">
+                                <input id="isStr" type="checkbox" aria-label="Checkbox for following text input">
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#stra"
+                                  aria-expanded="false" aria-controls="collapseThree">
+                                  Strategy
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="stra" class="collapse" aria-labelledby="headingThree" data-parent="#stra">
+                              <div class="card-body">
+                                <span class="badge badge-info">Strategy</span>
+                                <br>
+                                <label for="preference">Preference</label>
+                                <select id="preference" class="form-control form-control-lg">
+                                  <option>Choose...</option>
+                                  <option value="Defense">Defense</option>
+                                  <option value="CargoShip">CargoShip</option>
+                                  <option value="Rocket">Rocket</option>
+                                  <option value="They can do everything">They can do everything</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                
+                          <div class="card">
+                            <div class="card-header" id="headingThree">
+                              <h2 class="mb-0">
+                                <input id="isDri" type="checkbox" aria-label="Checkbox for following text input">
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#driver"
+                                  aria-expanded="false" aria-controls="collapseThree">
+                                  Driver
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="driver" class="collapse" aria-labelledby="headingThree" data-parent="#driver">
+                              <div class="card-body">
+                                <span class="badge badge-info">Driver Experience</span>
+                                <br>
+                                <label for="years">Years of Driving</label>
+                                <select id="years" class="form-control form-control-lg">
+                                  <option>Choose...</option>
+                                  <option value="First Year">First Year</option>
+                                  <option value="Second Year">Second Year</option>
+                                  <option value="Third Year">Third Year</option>
+                                  <option value="Fourth Year">Fourth Year</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                
+                          <div class="card">
+                            <div class="card-header" id="headingThree">
+                              <h2 class="mb-0">
+                                <input id="isQ" type="checkbox" aria-label="Checkbox for following text input">
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#question"
+                                  aria-expanded="false" aria-controls="collapseThree">
+                                  Costumized Question
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="question" class="collapse" aria-labelledby="headingThree" data-parent="#question">
+                              <div class="card-body">
+                                <span class="badge badge-info">Questions to ask</span>
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">Question</span>
+                                </div>
+                                <textarea class="form-control" aria-label="With textarea" placeholder="Like Q1:....Q2:...."></textarea>
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">Answer</span>
+                                </div>
+                                <textarea class="form-control" aria-label="With textarea" placeholder="Like A1:....A2:...."></textarea>
+                              </div>
+                            </div>
+                          </div>
+                
+                          <div class="card">
+                            <div class="card-header" id="headingThree">
+                              <h2 class="mb-0">
+                                <input id="isN" type="checkbox" aria-label="Checkbox for following text input">
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#notes"
+                                  aria-expanded="false" aria-controls="collapseThree">
+                                  Additional Notes
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="notes" class="collapse" aria-labelledby="headingThree" data-parent="#notes">
+                              <div class="card-body">
+                                <span class="badge badge-info">Write your note here</span>
+                                <textarea class="form-control" aria-label="With textarea" placeholder="Notes Here"></textarea>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!--edit pit -->
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <!--<button (click)="loginUser($event)" type="button" class="btn btn-primary">Save changes</button>-->
+                        <button class="btn btn-primary">Save changes</button>
+                      </div> 
+                    
+                    </div>
+                  </div>
+                </div>
+              </form>
+               
+                <div *ngIf="managerb">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editmatch">
+                  Edit Match Scout Form
+                </button>
+                </div>
+                <div class="modal fade" id="editmatch" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle"
+                  aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-scrollable" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalScrollableTitle">Edit Match Form 2019</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        ...
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+         
+        </div>
+        <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+          2</div>
+        <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">
+          3</div>
+        <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
+          4</div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--end of manager page-->
