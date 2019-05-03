@@ -2,7 +2,9 @@
     height: 20%;
     width: 50%;
     position: relative;
-    text-align: center;
+    text-align: center; /* has to be scroll, not auto */
+  -webkit-overflow-scrolling: touch;
+  
 }
 
 button{
@@ -14,4 +16,65 @@ button{
     position: absolute;
     width: 40%;
     top:30%;
+}
+#editteam{
+/* has to be scroll, not auto */
+  -webkit-overflow-scrolling: touch;
+}
+*{
+    -webkit-overflow-scrolling: touch;
+}
+#teleS input[type="checkbox"]{
+    margin-left: 8px;
+}
+#hc{
+    margin-left:30%;
+}
+
+#hc #cargospan{
+    margin-left:120%;
+}
+#rlvlspan{
+    height: 20px;
+}
+
+p{
+    color: rgb(185, 58, 58);
+}
+#robinfont{
+    color: #007bff;
+}
+.progress{
+    width: 100%;
+}
+#telecounter{
+    margin-top:5px;
+}
+#personal{
+    font-size:10px;
+    width: 100%;
+}
+
+table tr th{
+    width:10px;
+}
+
+#tableid{
+    overflow: scroll;
+    color:red;
+}
+#yourdata{
+    width:100%;
+}
+#filter-box{
+    width: 100px;
+    border-color: black;  
+}
+#filter-boxA{
+    width: 100px;
+    border-color: black;  
+}
+#filter-boxS{
+    width: 100px;
+    border-color: black;  
 }

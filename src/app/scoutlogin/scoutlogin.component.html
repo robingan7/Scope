@@ -50,8 +50,9 @@
   </div>
 <!--end of ad-->
 
-<!------start of manager page-->
+<!------start of manager&scout page-->
 <div id="managerpage" *ngIf="scoutb">
+  
   <h3>{{name}}
     <span class="badge badge-secondary">'ve scouted {{match_scouted}} matches&pits</span>
     <span class="badge badge-pill badge-primary">{{teamnumber}}</span>
@@ -63,15 +64,15 @@
       <div class="list-group" id="list-tab" role="tablist">
         <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home"
           role="tab" aria-controls="home">Task</a>
-        <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab"
+        <a *ngIf="managerb" class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-manage" role="tab"
           aria-controls="profile">Manage</a>
-        <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile"
+        <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#history"
           role="tab" aria-controls="profile">History</a>
-        <a class="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="#list-messages"
+        <a class="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="#data"
           role="tab" aria-controls="messages">Data</a>
         <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings"
           role="tab" aria-controls="settings">Team List</a>
-        <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings"
+        <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-account"
           role="tab" aria-controls="settings">Account</a>
       </div>
     </div>
@@ -90,7 +91,57 @@
           
             <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
               <div class="card-body">
-                ...
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalScrollable">
+                  Set Current Event(Do this first)
+                </button>
+                
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle"
+                  aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-scrollable" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalScrollableTitle">Set Current Event</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <form (submit)="setcurrentRegionMain($event)" >
+                      <div class="modal-body">
+                        
+                        <span class="badge badge-info">Region/Event Name</span>
+                        <br>
+                        <span class="badge badge-info">Week</span>
+                        <div class="input-group">
+                          <select (change)="getEventVP3($event)" class="custom-select mr-sm-2" id="week">
+                            <option value="" selected>Choose...</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="Houston">Houston Champ</option>
+                            <option value="Detroit">Detroit Champ</option>
+                          </select>
+                        </div>
+                        <span class="badge badge-info">Name</span>
+                        <div class="input-group">
+                        
+                          <select  class="custom-select mr-sm-2" id="currentevent">
+                            <option>Choose...</option>
+                        
+                            <option *ngFor="let event of editMatchEvent">{{event}}</option>
+                          </select>
+                        </div>
+                        
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button class="btn btn-primary">Save changes</button>
+                      </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
@@ -109,6 +160,7 @@
                   Add A Pit Scout
                 </button>
                 
+                <form>
                 <div class="modal fade" id="addteam" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle"
                   aria-hidden="true">
                   <div class="modal-dialog modal-dialog-scrollable" role="document">
@@ -116,17 +168,34 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalScrollableTitle">Pit Scouting 2019</h5>
+                        <h5 *ngIf="editPitError">|<span class="badge badge-danger">Put a team number</span></h5>
+                        <div *ngIf="pitspinnerb" class="spinner-border text-success" role="status">
+                          <span class="sr-only">Loading...</span>
+                        </div>
+                        
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
                         </button>
+
                       </div>
                       <div class="modal-body">
                         <div *ngIf="bs[0].b">
+                        <span class="badge badge-info">Team Number</span>
+                        <div class="input-group mb-3">
+                          <input (input)="sendcurrentPit($event)" type="tel" class="form-control" id="teamnumber_sender" aria-describedby="emailHelp"
+                            placeholder="Enter number">
+                          <div class="input-group-append">
+                            <button (click)="updatePit($event)" value="{{currentPitReceiver}}" class="btn btn-outline-danger" type="button" id="teamnumber">Set Team Number First!!</button>
+                          </div>
+                        </div>
+                        <hr>
+                        </div>
+                        <div *ngIf="bs[1].b">
                         <span class="badge badge-info">Weight</span>
                         <div class="input-group">
-                          <input id="weight" type="tel" class="form-control" placeholder="Weight" aria-label="Recipient's username with two button addons"
+                          <input (input)="updatePit($event)" id="weight2" type="tel" class="form-control" placeholder="Weight" aria-label="Recipient's username with two button addons"
                             aria-describedby="button-addon4">
-                          <select class="custom-select mr-sm-2" id="weightunit">
+                          <select (change)="updatePit($event)" class="custom-select mr-sm-2" id="weightunit">
                             <option selected>Unit</option>
                             <option value="lb">lb</option>
                             <option value="kg">kg</option>
@@ -136,9 +205,9 @@
                         
                         <span class="badge badge-info">Height</span>
                         <div class="input-group">
-                          <input id="height" type="tel" class="form-control" placeholder="Height" aria-label="Recipient's username with two button addons"
+                          <input (input)="updatePit($event)" id="height2" type="tel" class="form-control" placeholder="Height" aria-label="Recipient's username with two button addons"
                             aria-describedby="button-addon4">
-                          <select class="custom-select mr-sm-2" id="heightunit">
+                          <select (change)="updatePit($event)" class="custom-select mr-sm-2" id="heightunit">
                             <option selected>Unit</option>
                             <option value="m">m</option>
                             <option value="inch">inch</option>
@@ -148,9 +217,9 @@
                       <hr>
                       </div>
                       
-                      <div *ngIf="bs[1].b">
+                      <div *ngIf="bs[2].b">
                       <span class="badge badge-info">Sensor on robot</span>
-                      <select multiple class="form-control" id="exampleFormControlSelect2">
+                      <select (change)="updatePit($event)" multiple class="form-control" id="sensor">
                         <option value="">Ctrl+Click for multi-selection</option>
                         <option value="Vision Track Camera">Vision Track Camera</option>
                         <option value="NAVX">NAVX</option>
@@ -162,52 +231,65 @@
                       <hr>
                       </div>
 
-                      <div *ngIf="bs[2].b">
-                      <span class="badge badge-info">Image</span>
-                      <input type="text" class="form-control" id="Title" placeholder="Title">
-                      <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="image1" aria-describedby="inputGroupFileAddon01">
-                        <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
-                      </div>
-                      <hr>
-                      </div>
-
                       <div *ngIf="bs[3].b">
-                      <span class="badge badge-info">Autonomous Type</span>
-                      <select class="custom-select mr-sm-2" id="autotype">
-                        <option value="">Choose...</option>
-                        <option value="Code">Code</option>
-                        <option value="No">No Autonomous</option>
-                        <option value="Vision_System">Vision_System</option>
-                      </select>
+                      <span class="badge badge-info">Image</span>
+                      <input (input)="setCurrentImageTitle($event)" type="text" class="form-control" id="imagetitle" placeholder="Title">
+                      
+                      <div class="input-group mb-3">
+                        <div class="custom-file">
+                          <input (input)="setCurrentImage($event)" type="file" class="custom-file-input" id="image2" aria-describedby="inputGroupFileAddon01">
+                          <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                        </div>
+                        <div class="input-group-append">
+                          <button (click)="updatePitImage()" class="btn btn-outline-secondary" id="" placement="left" ngbPopover="You can add a new one" popoverTitle="Image Uploaded!!">Upload</button>
+                        </div>
+                      </div>
+                      <img src="{{currentImage}}" style="height: 60px;width:60px;">
                       <hr>
                       </div>
 
                       <div *ngIf="bs[4].b">
-                      <span class="badge badge-info">Autonomous Ability</span>
-                      <br>
-                      <label for="autocargo">Auto Cargo</label>
-                      <select id="autocargo" class="form-control form-control-lg">
-                        <option>Choose...</option>
-                        <option value=1>1</option>
-                        <option value=2>2</option>
-                        <option value=3>3</option>
-                      </select>
-                      <label for="autohatch">Auto Hatch</label>
-                      <select id="autohatch" class="form-control form-control-lg">
-                        <option>Choose...</option>
-                        <option value=1>1</option>
-                        <option value=2>2</option>
-                        <option value=3>3</option>
+                      <span class="badge badge-info">Autonomous Type</span>
+                      <select (input)="updatePit($event)" class="custom-select mr-sm-2" id="autotype">
+                        <option value="">Choose...</option>
+                        <option value="Code">Code</option>
+                        <option value="No">No Autonomous</option>
+                        <option value="Vision_System">Vision_System</option>
+                        <option value="Code & Vision_System">Code & Vision_System</option>
                       </select>
                       <hr>
                       </div>
 
                       <div *ngIf="bs[5].b">
+                      <span class="badge badge-info">Autonomous Ability</span>
+                      <br>
+                      <label for="autolvl">Start Platform Level</label>
+                      <select (change)="updatePit($event)" id="autolvl" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value=0>0</option>
+                        <option value=1>1</option>
+                        <option value=2>2</option>
+                      </select>
+                      <label for="autocargo">Autonomous Choice</label>
+                        <select (change)="updatePit($event)" multiple class="form-control" id="autochoice">
+                          <option value="">Ctrl+Click for multi-selection</option>
+                          <option value="1 Cargo in cargoship">1 Cargo in cargoship</option>
+                          <option value="1 Hatch in cargoship">1 Hatch in cargoship</option>
+                          <option value="1 Cargo and Hatch in cargoship">1 Cargo and Hatch in cargoship</option>
+                          <option value="2 Cargos in cargoship">2 Cargos in cargoship</option>
+                          <option value="2 Hatches on cargoship">2 Hatches on cargoship</option>
+                          <option value="3 Cargos in cargoship">3 Cargos in cargoship</option>
+                          <option value="1 Hatch on rocket">1 Hatch on rocket</option>
+                          <option value="2 Hatches on rocket">2 Hatches on rocket</option>
+                        </select>
+                      <hr>
+                      </div>
+
+                      <div *ngIf="bs[6].b">
                       <span class="badge badge-info">Teleop Ability</span>
                       <br>
                       <label for="cargolvl">Cargo Level</label>
-                      <select id="cargolvl" class="form-control form-control-lg">
+                      <select (change)="updatePit($event)" id="cargolevel" class="form-control form-control-lg">
                         <option>Choose...</option>
                         <option value=0>0</option>
                         <option value=1>1</option>
@@ -215,7 +297,7 @@
                         <option value=3>3</option>
                       </select>
                       <label for="hatchlvl">Hatch Level</label>
-                      <select id="hatchlvl" class="form-control form-control-lg">
+                      <select (change)="updatePit($event)" id="hatchlevel" class="form-control form-control-lg">
                         <option>Choose...</option>
                         <option value=0>0</option>
                         <option value=1>1</option>
@@ -225,25 +307,25 @@
                       <hr>
                       </div>
 
-                      <div *ngIf="bs[6].b">
+                      <div *ngIf="bs[7].b">
                       <span class="badge badge-info">Speed</span>
                       <br>
                       <label for="robotspeed">Robot Speed</label>
-                      <select id="robotspeed" class="form-control form-control-lg">
+                      <select (change)="updatePit($event)" id="speed" class="form-control form-control-lg">
                         <option>Choose...</option>
                         <option value="Slow">Slow</option>
                         <option value="Medium">Medium</option>
                         <option value="Fast">Fast</option>
                       </select>
                       <label for="hatchpickup">Hatch Pickup Speed</label>
-                      <select id="hatchpickup" class="form-control form-control-lg">
+                      <select (change)="updatePit($event)" id="hatchpickupspeed" class="form-control form-control-lg">
                         <option>Choose...</option>
                         <option value="Slow">Slow</option>
                         <option value="Medium">Medium</option>
                         <option value="Fast">Fast</option>
                       </select>
                       <label for="cargopickup">Cargo Pickup Speed</label>
-                      <select id="cargopickup" class="form-control form-control-lg">
+                      <select (change)="updatePit($event)" id="cargopickupspeed" class="form-control form-control-lg">
                         <option>Choose...</option>
                         <option value="Slow">Slow</option>
                         <option value="Medium">Medium</option>
@@ -252,11 +334,11 @@
                       <hr>
                       </div>
 
-                      <div *ngIf="bs[7].b">
+                      <div *ngIf="bs[8].b">
                       <span class="badge badge-info">End Game</span>
                       <br>
                       <label for="platform">Platform Climb</label>
-                      <select id="platform" class="form-control form-control-lg">
+                      <select (change)="updatePit($event)" id="climbability" class="form-control form-control-lg">
                         <option>Choose...</option>
                         <option value="Level1">Level0</option>
                         <option value="Level1">Level1</option>
@@ -271,11 +353,11 @@
                       <hr>
                       </div>
 
-                      <div *ngIf="bs[8].b">
+                      <div *ngIf="bs[9].b">
                       <span class="badge badge-info">Strategy</span>
                       <br>
                       <label for="preference">Preference</label>
-                      <select id="preference" class="form-control form-control-lg">
+                      <select (change)="updatePit($event)" id="stra" class="form-control form-control-lg">
                         <option>Choose...</option>
                         <option value="Defense">Defense</option>
                         <option value="CargoShip">CargoShip</option>
@@ -285,11 +367,11 @@
                       <hr>
                       </div>
 
-                      <div *ngIf="bs[9].b">
+                      <div *ngIf="bs[10].b">
                       <span class="badge badge-info">Driver Experience</span>
                       <br>
                       <label for="years">Years of Driving</label>
-                      <select id="years" class="form-control form-control-lg">
+                      <select (change)="updatePit($event)" id="driver" class="form-control form-control-lg">
                         <option>Choose...</option>
                         <option value="First Year">First Year</option>
                         <option value="Second Year">Second Year</option>
@@ -299,57 +381,367 @@
                       <hr>
                       </div>
 
-                      <div *ngIf="bs[10].b">
+                      <div *ngIf="bs[11].b">
                       <span class="badge badge-info">Questions to ask</span>
                       <div class="input-group-prepend">
                         <span class="input-group-text">Question</span>
                       </div>
-                      <textarea class="form-control" aria-label="With textarea" placeholder="Like Q1:....Q2:...."></textarea>
+                      <textarea (input)="updatePit($event)" id="question" class="form-control" aria-label="With textarea" placeholder="Like Q1:....Q2:...."></textarea>
                       <div class="input-group-prepend">
                         <span class="input-group-text">Answer</span>
                       </div>
-                      <textarea class="form-control" aria-label="With textarea" placeholder="Like A1:....A2:...."></textarea>
+                      <textarea (input)="updatePit($event)" id="answer" class="form-control" aria-label="With textarea" placeholder="Like A1:....A2:...."></textarea>
                       <hr>
                       </div>
                       
-                      <div *ngIf="bs[11].b">
+                      <div *ngIf="bs[12].b">
                       <span class="badge badge-info">Write your note here</span>
-                      <textarea class="form-control" aria-label="With textarea" placeholder="Notes Here"></textarea>
+                      <textarea (input)="updatePit($event)" id="notes" class="form-control" aria-label="With textarea" placeholder="Notes Here"></textarea>
                       </div>
                       </div>
                       
                       <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <div class="progress">
+                          <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75"
+                            aria-valuemin="0" aria-valuemax="100" style="width: 75%; height: 20px;">Data flying</div>
+                        </div>
+                        <br>
+                        
+                        <button  class="btn btn-primary" data-dismiss="modal">Close</button>
+                        <button (click)="resetPitForm()" class="btn btn-outline-success mr-2" placement="top" ngbPopover="Data uploaded" popoverTitle="Nice!!">
+                          Upload
+                        </button>
                       </div>
                     </div>
                   </div>
                 </div>
+                </form>
                 
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addmatch">
                   Add A Match Scout
                 </button>
                 
+                <form>
                 <div class="modal fade" id="addmatch" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle"
                   aria-hidden="true">
                   <div class="modal-dialog modal-dialog-scrollable" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalScrollableTitle">Match Scouting 2019</h5>
+                        <div *ngIf="matchspinnerb" class="spinner-border text-success" role="status">
+                          <span class="sr-only">Loading...</span>
+                        </div>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
                         </button>
                       </div>
                       <div class="modal-body">
-                        ...
+                        
+                        <div *ngIf="bs2[0].b">
+                        <span class="badge badge-info">Region/Event Name</span>
+                        <br>
+                        <span class="badge badge-info">Week</span>
+                        <div class="input-group">
+                          <select (change)="getEventVP3($event)" class="custom-select mr-sm-2" id="week">
+                            <option value="" selected>Choose...</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="Houston">Houston Champ</option>
+                            <option value="Detroit">Detroit Champ</option>
+                          </select>
+                        </div>
+                        <span class="badge badge-info">Name</span>
+                        <div class="input-group">
+                        
+                          <select (change)="sendcurrentRegion($event)" class="custom-select mr-sm-2" id="event">
+                            <option>Choose...</option>
+                            
+                            <option *ngFor="let event of editMatchEvent">{{event}}</option>
+                          </select>
+                        </div>
+                        <hr>
+                        </div>
+
+                        <div *ngIf="bs2[1].b">
+                          <span class="badge badge-info">Match Number</span>
+                          <input (input)="sendcurrentMatchNumber($event)" type="tel" class="form-control" id="matchnumber" aria-describedby="emailHelp" placeholder="Enter number">
+                          <hr>
+                        </div>
+
+                      <div *ngIf="bs2[2].b">
+                        <span class="badge badge-info">Team Number</span>
+                        <input (input)="sendcurrentMatchTeam($event)" type="tel" class="form-control" id="teamnumber" aria-describedby="emailHelp" placeholder="Enter number">
+                        <div class="input-group-append">
+                          <button (click)="updateMatch($event)" value="{{currentMatch}}" class="btn btn-outline-danger" id="thethree">Set
+                            these data first!!</button>
+                        </div>
+                        <div class="alert alert-danger" role="alert">
+                          {{thethreereply}}
+                        </div>
+                        <hr>
+                      </div>
+                       
+                        <div *ngIf="bs2[3].b">
+                          <span class="badge badge-info">Image</span>
+                          <input (input)="setCurrentImageTitle($event)" type="text" class="form-control" id="imagetitle" placeholder="Title">
+                        
+                          <div class="input-group mb-3">
+                            <div class="custom-file">
+                              <input (input)="setCurrentImage($event)" type="file" class="custom-file-input" id="image2" aria-describedby="inputGroupFileAddon01">
+                              <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                            </div>
+                            <div class="input-group-append">
+                              <button (click)="updatePitImage()" class="btn btn-outline-secondary" id="" placement="left" ngbPopover="You can add a new one"
+                                popoverTitle="Image Uploaded!!">Upload</button>
+                            </div>
+                          </div>
+                          <img src="{{currentImage}}" style="height: 60px;width:60px;">
+                          <hr>
+                        </div>
+
+                        <div *ngIf="bs2[4].b">
+                        <span class="badge badge-info">Alliance</span>
+                        <br>
+                        <select (input)="updateMatch($event)" id="alliance" class="form-control form-control-lg">
+                          <option>Choose...</option>
+                          <option value="blue">blue</option>
+                          <option value="red">red</option>
+                        </select>
+                        <hr>
+                        </div>
+                        
+                        <div *ngIf="bs2[5].b">
+                        <span class="badge badge-info">Autonomous Period</span>
+                        <br>
+                        <label for="autolvl">Successfully Exit Platform Level</label>
+                        <select (change)="updateMatch($event)" id="exitplatform" class="form-control form-control-lg">
+                          <option>Choose...</option>
+                          <option value=0>0</option>
+                          <option value=3>1</option>
+                          <option value=6>2</option>
+                        </select>
+                        <label for="autocargo">Auto Cargo</label>
+                        <select (change)="updateMatch($event)" id="autocargo" class="form-control form-control-lg">
+                          <option>Choose...</option>
+                          <option value=1>1</option>
+                          <option value=2>2</option>
+                          <option value=3>3</option>
+                        </select>
+                        <label for="autohatch">Auto Hatch</label>
+                        <select (change)="updateMatch($event)" id="autohatch" class="form-control form-control-lg">
+                          <option>Choose...</option>
+                          <option value=1>1</option>
+                          <option value=2>2</option>
+                          <option value=3>3</option>
+                        </select>
+                        <hr>
+                        </div>
+
+                        <div id="teleS" *ngIf="bs2[6].b">
+                        <span class="badge badge-info">Teleop Period</span>
+                        <br>
+                        <br>
+                        <span class="badge badge-pill badge-info">Hatch <---> Cargo</span>
+                        <br>
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span id="rlvlspan" class="badge badge-warning">Rocket Lvl3</span>
+                          </div>
+                        <div class="input-group">
+                          <input type="text" value="{{hatchlvl3}}" class="form-control" placeholder="Hatch" aria-label="Recipient's username with two button addons"
+                            aria-describedby="button-addon4">
+                          <div class="input-group-append" id="button-addon4">
+                            <button (click)="addhatchlvl3(true)" class="btn btn-outline-warning" type="button">+</button>
+                            <button (click)="addhatchlvl3(false)" class="btn btn-outline-warning" type="button">-</button>
+                          </div>
+
+                          <input type="text" value="{{cargolvl3}}" class="form-control" placeholder="Cargo" aria-label="Recipient's username with two button addons"
+                            aria-describedby="button-addon4">
+                          <div class="input-group-append" id="button-addon4">
+                            <button (click)="addcargolvl3(true)" class="btn btn-outline-warning" type="button">+</button>
+                            <button (click)="addcargolvl3(false)" class="btn btn-outline-warning" type="button">-</button>
+                          </div>
+                        </div>
+                        </div>
+
+                        <div id="telecounter">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span id="rlvlspan" class="badge badge-warning">Rocket Lvl2</span>
+                          </div>
+                          <div class="input-group">
+                            <input type="text" value="{{hatchlvl2}}" class="form-control" placeholder="Hatch" aria-label="Recipient's username with two button addons"
+                              aria-describedby="button-addon4">
+                            <div class="input-group-append" id="button-addon4">
+                              <button (click)="addhatchlvl2(true)" class="btn btn-outline-warning" type="button">+</button>
+                              <button (click)="addhatchlvl2(false)" class="btn btn-outline-warning" type="button">-</button>
+                            </div>
+                          
+                            <input type="text" value="{{cargolvl2}}" class="form-control" placeholder="Cargo" aria-label="Recipient's username with two button addons"
+                              aria-describedby="button-addon4">
+                            <div class="input-group-append" id="button-addon4">
+                              <button (click)="addcargolvl2(true)" class="btn btn-outline-warning" type="button">+</button>
+                              <button (click)="addcargolvl2(false)" class="btn btn-outline-warning" type="button">-</button>
+                            </div>
+                          </div>
+                        </div>
+                        </div>
+
+                        <div id="telecounter">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span id="rlvlspan" class="badge badge-warning">Rocket Lvl1</span>
+                          </div>
+                          <div class="input-group">
+                            <input type="text" value="{{hatchlvl1}}" class="form-control" placeholder="Hatch" aria-label="Recipient's username with two button addons"
+                              aria-describedby="button-addon4">
+                            <div class="input-group-append" id="button-addon4">
+                              <button (click)="addhatchlvl1(true)" class="btn btn-outline-warning" type="button">+</button>
+                              <button (click)="addhatchlvl1(false)" class="btn btn-outline-warning" type="button">-</button>
+                            </div>
+                          
+                            <input type="text" value="{{cargolvl1}}" class="form-control" placeholder="Cargo" aria-label="Recipient's username with two button addons"
+                              aria-describedby="button-addon4">
+                            <div class="input-group-append" id="button-addon4">
+                              <button (click)="addcargolvl1(true)" class="btn btn-outline-warning" type="button">+</button>
+                              <button (click)="addcargolvl1(false)" class="btn btn-outline-warning" type="button">-</button>
+                            </div>
+                          </div>
+                        </div>
+                        </div>
+                        
+                        <div id="telecounter">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span id="rlvlspan" class="badge badge-warning">Cargo Ship</span>
+                          </div>
+
+                          <div class="input-group">
+                            <input type="text" value="{{hatchship}}" class="form-control" placeholder="Hatch" aria-label="Recipient's username with two button addons"
+                              aria-describedby="button-addon4">
+                            <div class="input-group-append" id="button-addon4">
+                              <button (click)="addhatchship(true)" class="btn btn-outline-warning" type="button">+</button>
+                              <button (click)="addhatchship(false)" class="btn btn-outline-warning" type="button">-</button>
+                            </div>
+                          
+                            <input type="text" value="{{cargoship}}" class="form-control" placeholder="Cargo" aria-label="Recipient's username with two button addons"
+                              aria-describedby="button-addon4">
+                            <div class="input-group-append" id="button-addon4">
+                              <button (click)="addcargoship(true)" class="btn btn-outline-warning" type="button">+</button>
+                              <button (click)="addcargoship(false)" class="btn btn-outline-warning" type="button">-</button>
+                            </div>
+                          </div>
+                        </div>
+                        </div>
+                      
+                      <hr>
+                        </div>
+
+                        <div *ngIf="bs2[7].b">
+                      <span class="badge badge-info">Defense</span>
+                      <br>
+                      <span class="badge badge-primary">Add 1 when the opponent drops a game piece</span>
+                      <div class="input-group">
+                        <input  id="defensedrop" type="tel" class="form-control" value={{editdroppiece}} aria-describedby="button-addon4">
+                        <div class="input-group-append" id="button-addon4">
+                          <button (click)="addeditdroppiece(true)" class="btn btn-outline-secondary" type="button">+</button>
+                          <button (click)="addeditdroppiece(false)" class="btn btn-outline-secondary" type="button">-</button>
+                        </div>
+                      </div>
+                      <span class="badge badge-primary">Add 1 when robot blocks or pushes the opponent</span>
+                      <div class="input-group">
+                        <input id="defenseblock" type="tel" class="form-control" value={{editblock}} aria-describedby="button-addon4">
+                        <div class="input-group-append" id="button-addon4">
+                          <button (click)="addeditblock(true)" class="btn btn-outline-secondary" type="button">+</button>
+                          <button (click)="addeditblock(false)" class="btn btn-outline-secondary" type="button">-</button>
+                        </div>
+                      </div>
+                      <hr>
+                        </div>
+
+                        <div *ngIf="bs2[8].b">
+                      <span class="badge badge-info">Efficient</span>
+                      <br>
+                      <span class="badge badge-primary">Add 1 when the robot drops a hatch</span>
+                      <div class="input-group">
+                        <input id="hatchdrop" type="tel" class="form-control" value={{editdrophatch}} aria-describedby="button-addon4">
+                        <div class="input-group-append" id="button-addon4">
+                          <button (click)="addeditdrophatch(true);" class="btn btn-outline-secondary" type="button">+</button>
+                          <button (click)="addeditdrophatch(false);" class="btn btn-outline-secondary" type="button">-</button>
+                        </div>
+                      </div>
+                      <span class="badge badge-primary">Add 1 when the robot drops a cargo</span>
+                      <div class="input-group">
+                        <input id="cargodrop" type="tel" class="form-control" value={{editdropcargo}} aria-describedby="button-addon4">
+                        <div class="input-group-append" id="button-addon4">
+                          <button (click)="addeditdropcargo(true);" class="btn btn-outline-secondary" type="button">+</button>
+                          <button (click)="addeditdropcargo(false);" class="btn btn-outline-secondary" type="button">-</button>
+                        </div>
+                      
+                      </div>
+                      <hr>
+                        </div>
+
+                        <div *ngIf="bs2[9].b">
+                      <span class="badge badge-info">End Game</span>
+                      <br>
+                      <label for="platformS">Platform Climb</label>
+                      <select (change)="updateMatch($event)" id="climbpoint" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value=0>Level0</option>
+                        <option value=3>Level1</option>
+                        <option value=6>Only_Level2</option>
+                        <option value=12>Only_Level3</option>
+                        <option value=18>Level3_And_2</option>
+                        <option value=24>Level3_Buddy_1</option>
+                        <option value=36>Level3_Buddy_2</option>
+                        <option value=12>Level2_Buddy</option>
+                      </select>
+                        </div>
+
+                        <div *ngIf="bs2[10].b">
+                        <span class="badge badge-info">Robot Fitness</span>
+                        <br>
+                        <label for="fit">Does the robot fit our robot?</label>
+                        <select (change)="updateMatch($event)" id="fitness" class="form-control form-control-lg">
+                          <option>Choose...</option>
+                          <option value=5>Completely fit our robot(first pick!!!) | 5 stars</option>
+                          <option value=4>Fit our robot very well | 4 stars</option>
+                          <option value=3>Fit our robot OK | 3 stars</option>
+                          <option value=2>Kinds of fit.... | 2 stars</option>
+                          <option value=1>Same type of robot as us | 1 star</option>
+                          <option value=0>Useless for us | 0 star</option>
+                        </select>
+                        </div>
+
+                        <div *ngIf="bs2[11].b">
+                        <span class="badge badge-info">Questions to ask</span>
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Question</span>
+                        </div>
+                        <textarea (input)="updateMatch($event)" id="question" class="form-control" aria-label="With textarea" placeholder="Like Q1:....Q2:...."></textarea>
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Answer</span>
+                        </div>
+                        
+                        <textarea (input)="updateMatch($event)" id="answer" class="form-control" aria-label="With textarea" placeholder="Like A1:....A2:...."></textarea>
+                        </div>
+                        <div *ngIf="bs2[12].b">
+                        <span class="badge badge-info">Write your note here</span>
+                        <textarea (input)="updateMatch($event)" id="notes" class="form-control" aria-label="With textarea" placeholder="Notes Here"></textarea>
+                        </div>
+
                       </div>
                       <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button class="btn btn-primary" data-dismiss="modal">Close</button>
+                        <button (click)="resetMatchForm()" class="btn btn-outline-success mr-2" placement="top" ngbPopover="Data uploaded" popoverTitle="Nice!!">
+                          Upload
+                        </button>
                       </div>
                     </div>
                   </div>
                 </div>
+                </form>
                 
                <div *ngIf="managerb">
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editteam">
@@ -372,16 +764,36 @@
                        
                         <div class="accordion" id="accordionExample">
                           <div class="card">
+                            <div class="card-header" id="headingTwo">
+                              <h2 class="mb-0">
+                                <input *ngIf="!bs[0].b" id="isTeam" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[0].b" id="isTeam" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#teamnumber"
+                                  aria-expanded="false" aria-controls="collapseTwo">
+                                  Team Number
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="teamnumber" class="collapse" aria-labelledby="headingTwo" data-parent="#sensor">
+                              <div class="card-body">
+                                <span class="badge badge-info">Team Number</span>
+                                <input type="tel" class="form-control" id="" aria-describedby="emailHelp" placeholder="Enter number">
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="card">
                             <div class="card-header" id="headingOne">
                               <h2 class="mb-0">
-                                <input type="checkbox" id="isWH" aria-label="Checkbox for following text input">
-                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne"
+                                <input *ngIf="!bs[1].b" type="checkbox" id="isWH" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[1].b" type="checkbox" id="isWH" aria-label="Checkbox for following text input"checked>
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#wh"
                                   aria-expanded="false" aria-controls="collapseOne">
                                   Height & Weight
                                 </button>
                               </h2>
                             </div>
-                            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                            <div id="wh" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
                               <div class="card-body">
                                 <span class="badge badge-info">Weight</span>
                                 <div class="input-group">
@@ -412,7 +824,8 @@
                           <div class="card">
                             <div class="card-header" id="headingTwo">
                               <h2 class="mb-0">
-                                <input id="isSensor" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="!bs[2].b" id="isSensor" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[2].b" id="isSensor" type="checkbox" aria-label="Checkbox for following text input"checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#sensor"
                                   aria-expanded="false" aria-controls="collapseTwo">
                                   Sensor
@@ -438,7 +851,8 @@
                           <div class="card">
                             <div class="card-header" id="headingTwo">
                               <h2 class="mb-0">
-                                <input id="isImage" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="!bs[3].b" id="isImage" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[3].b" id="isImage" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#image"
                                   aria-expanded="false" aria-controls="collapseTwo">
                                   Image
@@ -460,7 +874,8 @@
                           <div class="card">
                             <div class="card-header" id="headingTwo">
                               <h2 class="mb-0">
-                                <input id="isAT" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="!bs[4].b" id="isAT" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[4].b" id="isAT" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#autoType"
                                   aria-expanded="false" aria-controls="autoType">
                                   Autonomous Type
@@ -475,6 +890,7 @@
                                   <option value="Code">Code</option>
                                   <option value="No">No Autonomous</option>
                                   <option value="Vision_System">Vision_System</option>
+                                  <option value="Code & Vision_System">Code & Vision_System</option>
                                 </select>
                               </div>
                             </div>
@@ -483,7 +899,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input id="isAA" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="!bs[5].b" id="isAA" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[5].b" id="isAA" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree"
                                   aria-expanded="false" aria-controls="collapseThree">
                                   Autonomous Ability
@@ -494,19 +911,24 @@
                               <div class="card-body">
                                 <span class="badge badge-info">Autonomous Ability</span>
                                 <br>
-                                <label for="autocargo">Auto Cargo</label>
-                                <select id="autocargo" class="form-control form-control-lg">
+                                <label for="autolvl">Start Platform Level</label>
+                                <select id="autolvl" class="form-control form-control-lg">
                                   <option>Choose...</option>
+                                  <option value=0>0</option>
                                   <option value=1>1</option>
                                   <option value=2>2</option>
-                                  <option value=3>3</option>
                                 </select>
-                                <label for="autohatch">Auto Hatch</label>
-                                <select id="autohatch" class="form-control form-control-lg">
-                                  <option>Choose...</option>
-                                  <option value=1>1</option>
-                                  <option value=2>2</option>
-                                  <option value=3>3</option>
+                                <label for="autocargo">Autonomous Choice</label>
+                                <select (change)="editPit($event)" multiple class="form-control" id="autoability">
+                                  <option value="">Ctrl+Click for multi-selection</option>
+                                  <option value="1 Cargo in cargoship">1 Cargo in cargoship</option>
+                                  <option value="1 Hatch in cargoship">1 Hatch in cargoship</option>
+                                  <option value="1 Cargo and Hatch in cargoship">1 Cargo and Hatch in cargoship</option>
+                                  <option value="2 Cargos in cargoship">2 Cargos in cargoship</option>
+                                  <option value="2 Hatches on cargoship">2 Hatches on cargoship</option>
+                                  <option value="3 Cargos in cargoship">3 Cargos in cargoship</option>
+                                  <option value="1 Hatch on rocket">1 Hatch on rocket</option>
+                                  <option value="2 Hatches on rocket">2 Hatches on rocket</option>
                                 </select>
                               </div>
                             </div>
@@ -515,7 +937,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input id="isTA" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="!bs[6].b" id="isTA" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[6].b" id="isTA" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#tele"
                                   aria-expanded="false" aria-controls="collapseThree">
                                   Teleop Ability
@@ -549,7 +972,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input id="isSpeed" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="!bs[7].b" id="isSpeed" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[7].b" id="isSpeed" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#speed"
                                   aria-expanded="false" aria-controls="collapseThree">
                                   Speed
@@ -588,7 +1012,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input id="isEndgame" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="!bs[8].b" id="isEndgame" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[8].b" id="isEndgame" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#endgame"
                                   aria-expanded="false" aria-controls="collapseThree">
                                   End Game
@@ -619,7 +1044,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input id="isStr" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="!bs[9].b" id="isStr" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[9].b" id="isStr" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#stra"
                                   aria-expanded="false" aria-controls="collapseThree">
                                   Strategy
@@ -645,7 +1071,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input id="isDri" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="!bs[10].b" id="isDri" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[10].b" id="isDri" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#driver"
                                   aria-expanded="false" aria-controls="collapseThree">
                                   Driver
@@ -671,10 +1098,11 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input id="isQ" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="!bs[11].b" id="isQ" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[11].b" id="isQ" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#question"
                                   aria-expanded="false" aria-controls="collapseThree">
-                                  Costumized Question
+                                  Customized Question
                                 </button>
                               </h2>
                             </div>
@@ -696,7 +1124,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input id="isN" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="!bs[12].b" id="isN" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[12].b" id="isN" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#notes"
                                   aria-expanded="false" aria-controls="collapseThree">
                                   Additional Notes
@@ -710,15 +1139,19 @@
                               </div>
                             </div>
                           </div>
+                          
                         </div>
                         <!--edit pit -->
                       </div>
                       <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                         <!--<button (click)="loginUser($event)" type="button" class="btn btn-primary">Save changes</button>-->
-                        <button class="btn btn-primary">Save changes</button>
+                        <button class="btn btn-outline-success mr-2" placement="top" ngbPopover="Your pitform updated"
+                          popoverTitle="Nice!!">
+                          Save changes
+                        </button>
+                        
                       </div> 
-                    
                     </div>
                   </div>
                 </div>
@@ -729,6 +1162,7 @@
                   Edit Match Scout Form
                 </button>
                 </div>
+                <form (submit)="editMatch($event)">
                 <div class="modal fade" id="editmatch" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle"
                   aria-hidden="true">
                   <div class="modal-dialog modal-dialog-scrollable" role="document">
@@ -740,28 +1174,1144 @@
                         </button>
                       </div>
                       <div class="modal-body">
-                        ...
+                        <div class="accordion" id="accordionExample">
+                          <div class="card">
+                            <div class="card-header" id="headingOne">
+                              <h2 class="mb-0">
+                                <input *ngIf="!bs[0].b" type="checkbox" id="isEvent" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[0].b" type="checkbox" id="isEvent" aria-label="Checkbox for following text input" checked>
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#region"
+                                  aria-expanded="false" aria-controls="collapseOne">
+                                  <p><span id="robinfont">Region/Event Name</span> (You can uncheck this if you assign your scouts matches in "Manage")</p>
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="region" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                              <div class="card-body">
+                                <span class="badge badge-info">Region/Event Name</span>
+                                <br>
+                                <span class="badge badge-info">Week</span>
+                                <div class="input-group">
+                                  <select (change)="getEventVP3($event)" class="custom-select mr-sm-2" id="week">
+                                    <option value="" selected>Choose...</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="Houston">Houston Champ</option>
+                                    <option value="Detroit">Detroit Champ</option>
+                                  </select>
+                                </div>
+                                <span class="badge badge-info">Name</span>
+                                <div class="input-group">
+                                  
+                                  <select class="custom-select mr-sm-2" id="event">
+                                      <option *ngFor="let event of editMatchEvent" >{{event}}</option>
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="card">
+                            <div class="card-header" id="headingTwo">
+                              <h2 class="mb-0">
+                                <input *ngIf="!bs[1].b" id="isMatch" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[1].b" id="isMatch" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#matchnumber"
+                                  aria-expanded="false" aria-controls="collapseTwo">
+                                  <p><span id="robinfont">Match Number</span>
+                                     (You can uncheck this if you assign your scouts matches in "Manage")</p>
+                                    
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="matchnumber" class="collapse" aria-labelledby="headingTwo" data-parent="#matchnumber">
+                              <div class="card-body">
+                                <span class="badge badge-info">Match Number</span>
+                          <input type="tel" class="form-control" id="" aria-describedby="emailHelp" placeholder="Enter number">
+                              </div>
+                            </div>
+                          </div>
+                        
+                          <div class="card">
+                            <div class="card-header" id="headingTwo">
+                              <h2 class="mb-0">
+                                <input *ngIf="!bs[2].b" id="isTeam" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[2].b" id="isTeam" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#teamnumber" aria-expanded="false"
+                                  aria-controls="collapseTwo">
+                                  <p><span id="robinfont">Team Number</span> (You can uncheck this if you assign your scouts matches in "Manage")</p>
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="teamnumber" class="collapse" aria-labelledby="headingTwo" data-parent="#sensor">
+                              <div class="card-body">
+                                <span class="badge badge-info">Team Number</span>
+                              <input type="tel" class="form-control" id="" aria-describedby="emailHelp" placeholder="Enter number">
+                              </div>
+                            </div>
+                          </div>
+                        
+                          <div class="card">
+                            <div class="card-header" id="headingTwo">
+                              <h2 class="mb-0">
+                                <input *ngIf="!bs[3].b" id="isImage" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[3].b" id="isImage" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#image" aria-expanded="false"
+                                  aria-controls="collapseTwo">
+                                  Image
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="image" class="collapse" aria-labelledby="headingTwo" data-parent="#image">
+                              <div class="card-body">
+                                <span class="badge badge-info">Image</span>
+                                <input type="text" class="form-control" id="Title" placeholder="Title">
+                                <div class="custom-file">
+                                  <input type="file" class="custom-file-input" id="image1" aria-describedby="inputGroupFileAddon01">
+                                  <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        
+                        
+                          <div class="card">
+                            <div class="card-header" id="headingThree">
+                              <h2 class="mb-0">
+                                <input *ngIf="!bs[4].b" id="isA" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[4].b" id="isA" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#alliance"
+                                  aria-expanded="false" aria-controls="collapseThree">
+                                  Alliance
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="alliance" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                              <div class="card-body">
+                                <span class="badge badge-info">Alliance</span>
+                                <br>
+                                <select id="allianceS" class="form-control form-control-lg">
+                                  <option>Choose...</option>
+                                  <option value="blue">blue</option>
+                                  <option value="red">red</option>
+                                </select>
+                        
+                              </div>
+                            </div>
+                          </div>
+
+
+                          <div class="card">
+                            <div class="card-header" id="headingThree">
+                              <h2 class="mb-0">
+                                <input *ngIf="!bs[5].b" id="isAP" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[5].b" id="isAP" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree"
+                                  aria-expanded="false" aria-controls="collapseThree">
+                                  Autonomous Period
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                              <div class="card-body">
+                                <span class="badge badge-info">Autonomous Period</span>
+                                <br>
+                                <label for="autolvl">Start Platform Level</label>
+                                <select id="autolvl" class="form-control form-control-lg">
+                                  <option>Choose...</option>
+                                  <option value=0></option>
+                                  <option value=3>1</option>
+                                  <option value=6>2</option>
+                                </select>
+                                <label for="autocargo">Auto Cargo</label>
+                                <select id="autocargo" class="form-control form-control-lg">
+                                  <option>Choose...</option>
+                                  <option value=1>1</option>
+                                  <option value=2>2</option>
+                                  <option value=3>3</option>
+                                </select>
+                                <label for="autohatch">Auto Hatch</label>
+                                <select id="autohatch" class="form-control form-control-lg">
+                                  <option>Choose...</option>
+                                  <option value=1>1</option>
+                                  <option value=2>2</option>
+                                  <option value=3>3</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                        
+                          <div class="card">
+                            <div class="card-header" id="headingThree">
+                              <h2 class="mb-0">
+                                <input *ngIf="!bs[6].b" id="isTP" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[6].b" id="isTP" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#teleS" aria-expanded="false"
+                                  aria-controls="collapseThree">
+                                  Teleop Period
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="teleS" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                              <div class="card-body">
+                                <span class="badge badge-info">Teleop Period(It is a template| Counter not working)</span>
+                                <br>
+                                <br>
+                                <span class="badge badge-pill badge-info">Hatch <---> Cargo</span>
+                                <br>
+                                <div class="input-group">
+                                  <div class="input-group-prepend">
+                                    <span id="rlvlspan" class="badge badge-warning">Rocket Lvl3</span>
+                                  </div>
+                                  <div class="input-group">
+                                    <input type="text" value="{{hatchlvl3}}" class="form-control" placeholder="Hatch" aria-label="Recipient's username with two button addons"
+                                      aria-describedby="button-addon4">
+                                    <div class="input-group-append" id="button-addon4">
+                                      <button (click)="addhatchlvl32(true)" class="btn btn-outline-warning" type="button">+</button>
+                                      <button (click)="addhatchlvl32(false)" class="btn btn-outline-warning" type="button">-</button>
+                                    </div>
+                                
+                                    <input type="text" value="{{cargolvl3}}" class="form-control" placeholder="Cargo" aria-label="Recipient's username with two button addons"
+                                      aria-describedby="button-addon4">
+                                    <div class="input-group-append" id="button-addon4">
+                                      <button (click)="addcargolvl32(true)" class="btn btn-outline-warning" type="button">+</button>
+                                      <button (click)="addcargolvl32(false)" class="btn btn-outline-warning" type="button">-</button>
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                                <div id="telecounter">
+                                  <div class="input-group">
+                                    <div class="input-group-prepend">
+                                      <span id="rlvlspan" class="badge badge-warning">Rocket Lvl2</span>
+                                    </div>
+                                    <div class="input-group">
+                                      <input type="text" value="{{hatchlvl2}}" class="form-control" placeholder="Hatch" aria-label="Recipient's username with two button addons"
+                                        aria-describedby="button-addon4">
+                                      <div class="input-group-append" id="button-addon4">
+                                        <button (click)="addhatchlvl22(true)" class="btn btn-outline-warning" type="button">+</button>
+                                        <button (click)="addhatchlvl22(false)" class="btn btn-outline-warning" type="button">-</button>
+                                      </div>
+                                
+                                      <input type="text" value="{{cargolvl2}}" class="form-control" placeholder="Cargo" aria-label="Recipient's username with two button addons"
+                                        aria-describedby="button-addon4">
+                                      <div class="input-group-append" id="button-addon4">
+                                        <button (click)="addcargolvl22(true)" class="btn btn-outline-warning" type="button">+</button>
+                                        <button (click)="addcargolvl22(false)" class="btn btn-outline-warning" type="button">-</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                                <div id="telecounter">
+                                  <div class="input-group">
+                                    <div class="input-group-prepend">
+                                      <span id="rlvlspan" class="badge badge-warning">Rocket Lvl1</span>
+                                    </div>
+                                    <div class="input-group">
+                                      <input type="text" value="{{hatchlvl1}}" class="form-control" placeholder="Hatch" aria-label="Recipient's username with two button addons"
+                                        aria-describedby="button-addon4">
+                                      <div class="input-group-append" id="button-addon4">
+                                        <button (click)="addhatchlvl12(true)" class="btn btn-outline-warning" type="button">+</button>
+                                        <button (click)="addhatchlvl12(false)" class="btn btn-outline-warning" type="button">-</button>
+                                      </div>
+                                
+                                      <input type="text" value="{{cargolvl1}}" class="form-control" placeholder="Cargo" aria-label="Recipient's username with two button addons"
+                                        aria-describedby="button-addon4">
+                                      <div class="input-group-append" id="button-addon4">
+                                        <button (click)="addcargolvl12(true)" class="btn btn-outline-warning" type="button">+</button>
+                                        <button (click)="addcargolvl12(false)" class="btn btn-outline-warning" type="button">-</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                                <div id="telecounter">
+                                  <div class="input-group">
+                                    <div class="input-group-prepend">
+                                      <span id="rlvlspan" class="badge badge-warning">Cargo Ship</span>
+                                    </div>
+                                
+                                    <div class="input-group">
+                                      <input type="text" value="{{hatchship}}" class="form-control" placeholder="Hatch" aria-label="Recipient's username with two button addons"
+                                        aria-describedby="button-addon4">
+                                      <div class="input-group-append" id="button-addon4">
+                                        <button (click)="addhatchship2(true)" class="btn btn-outline-warning" type="button">+</button>
+                                        <button (click)="addhatchship2(false)" class="btn btn-outline-warning" type="button">-</button>
+                                      </div>
+                                
+                                      <input type="text" value="{{cargoship}}" class="form-control" placeholder="Cargo" aria-label="Recipient's username with two button addons"
+                                        aria-describedby="button-addon4">
+                                      <div class="input-group-append" id="button-addon4">
+                                        <button (click)="addcargoship2(true)" class="btn btn-outline-warning" type="button">+</button>
+                                        <button (click)="addcargoship2(false)" class="btn btn-outline-warning" type="button">-</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="card">
+                            <div class="card-header" id="headingThree">
+                              <h2 class="mb-0">
+                                <input *ngIf="!bs[7].b" id="isDe" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[7].b" id="isDe" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#defense" aria-expanded="false"
+                                  aria-controls="collapseThree">
+                                  Defense
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="defense" class="collapse" aria-labelledby="headingThree" data-parent="#defense">
+                              <div class="card-body">
+                                <span class="badge badge-info">Defense</span>
+                                <br>
+                                <span class="badge badge-primary">Add 1 when the opponent drops a game piece</span>
+                                <div class="input-group">
+                                  <input type="tel" class="form-control" value={{editdroppiece2}} aria-describedby="button-addon4">
+                                  <div class="input-group-append" id="button-addon4">
+                                    <button (click)="addeditdroppiece2(true)" class="btn btn-outline-secondary" type="button">+</button>
+                                    <button (click)="addeditdroppiece2(false)" class="btn btn-outline-secondary" type="button">-</button>
+                                  </div>
+                                  </div>
+                                <span class="badge badge-primary">Add 1 when robot blocks or pushes the opponent</span>
+                                <div class="input-group">
+                                  <input type="tel" class="form-control" value={{editblock2}} aria-describedby="button-addon4">
+                                  <div class="input-group-append" id="button-addon4">
+                                    <button (click)="addeditblock2(true)"class="btn btn-outline-secondary" type="button">+</button>
+                                    <button (click)="addeditblock2(false)" class="btn btn-outline-secondary" type="button">-</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        
+                          <div class="card">
+                            <div class="card-header" id="headingThree">
+                              <h2 class="mb-0">
+                                <input *ngIf="!bs[8].b" id="isEfficient" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[8].b" id="isEfficient" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#eff" aria-expanded="false"
+                                  aria-controls="collapseThree">
+                                  Efficiency
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="eff" class="collapse" aria-labelledby="headingThree" data-parent="#speed">
+                              <div class="card-body">
+                                <span class="badge badge-info">Efficient</span>
+                                <br>
+                                <span class="badge badge-primary">Add 1 when the robot drops a hatch</span>
+                                <div class="input-group">
+                                  <input id="drophatch" type="tel" class="form-control" value={{editdrophatch2}} aria-describedby="button-addon4">
+                                  <div class="input-group-append" id="button-addon4">
+                                    <button (click)="addeditdrophatch2(true);" class="btn btn-outline-secondary" type="button">+</button>
+                                    <button (click)="addeditdrophatch2(false);"class="btn btn-outline-secondary" type="button">-</button>
+                                  </div>
+                                </div>
+                                <span class="badge badge-primary">Add 1 when the robot drops a cargo</span>
+                                <div class="input-group">
+                                  <input id="dropcargo" type="tel" class="form-control" value={{editdropcargo2}} aria-describedby="button-addon4">
+                                  <div class="input-group-append" id="button-addon4">
+                                    <button (click)="addeditdropcargo2(true);" class="btn btn-outline-secondary" type="button">+</button>
+                                    <button (click)="addeditdropcargo2(false);" class="btn btn-outline-secondary" type="button">-</button>
+                                  </div>
+                                  
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        
+                          <div class="card">
+                            <div class="card-header" id="headingThree">
+                              <h2 class="mb-0">
+                                <input *ngIf="!bs[9].b" id="isEndgame" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[9].b" id="isEndgame" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#endgame"
+                                  aria-expanded="false" aria-controls="collapseThree">
+                                  End Game
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="endgame" class="collapse" aria-labelledby="headingThree" data-parent="#endgame">
+                              <div class="card-body">
+                                <span class="badge badge-info">End Game</span>
+                                <br>
+                                <label for="platformS">Platform Climb</label>
+                                <select id="platformS" class="form-control form-control-lg">
+                                  <option>Choose...</option>
+                                  <option value=0>Level0</option>
+                                  <option value=3>Level1</option>
+                                  <option value=6>Only_Level2</option>
+                                  <option value=12>Only_Level3</option>
+                                  <option value=18>Level3_And_2</option>
+                                  <option value=24>Level3_Buddy_1</option>
+                                  <option value=36>Level3_Buddy_2</option>
+                                  <option value=12>Level2_Buddy</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                        
+                          
+                        
+                          <div class="card">
+                            <div class="card-header" id="headingThree">
+                              <h2 class="mb-0">
+                                <input *ngIf="!bs[10].b" id="isFit" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[10].b" id="isFit" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#fitness" aria-expanded="false"
+                                  aria-controls="collapseThree">
+                                  Robot Fitness
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="fitness" class="collapse" aria-labelledby="headingThree" data-parent="#driver">
+                              <div class="card-body">
+                                <span class="badge badge-info">Robot Fitness</span>
+                                <br>
+                                <label for="fit">Does the robot fit our robot?</label>
+                                <select id="fit" class="form-control form-control-lg">
+                                  <option>Choose...</option>
+                                  <option value=5>Completely fit our robot(first pick!!!) | 5 stars</option>
+                                  <option value=4>Fit our robot very well | 4 stars</option>
+                                  <option value=3>Fit our robot OK | 3 stars</option>
+                                  <option value=2>Kinds of fit.... | 2 stars</option>
+                                  <option value=1>Same type of robot as us | 1 star</option>
+                                  <option value=0>Useless for us | 0 star</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                        
+                          <div class="card">
+                            <div class="card-header" id="headingThree">
+                              <h2 class="mb-0">
+                                <input *ngIf="!bs[11].b" id="isQ" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[11].b" id="isQ" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#question"
+                                  aria-expanded="false" aria-controls="collapseThree">
+                                  Costumized Question
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="question" class="collapse" aria-labelledby="headingThree" data-parent="#question">
+                              <div class="card-body">
+                                <span class="badge badge-info">Questions to ask</span>
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">Question</span>
+                                </div>
+                                <textarea class="form-control" aria-label="With textarea" placeholder="Like Q1:....Q2:...."></textarea>
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">Answer</span>
+                                </div>
+                                <textarea class="form-control" aria-label="With textarea" placeholder="Like A1:....A2:...."></textarea>
+                              </div>
+                            </div>
+                          </div>
+                        
+                          <div class="card">
+                            <div class="card-header" id="headingThree">
+                              <h2 class="mb-0">
+                                <input *ngIf="!bs[12].b" id="isN" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="bs[12].b" id="isN" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#notes" aria-expanded="false"
+                                  aria-controls="collapseThree">
+                                  Additional Notes
+                                </button>
+                              </h2>
+                            </div>
+                            <div id="notes" class="collapse" aria-labelledby="headingThree" data-parent="#notes">
+                              <div class="card-body">
+                                <span class="badge badge-info">Write your note here</span>
+                                <textarea class="form-control" aria-label="With textarea" placeholder="Notes Here"></textarea>
+                              </div>
+                            </div>
+                          </div>
+                        
+                        </div>
                       </div>
                       <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                        <button class="btn btn-outline-success mr-2" placement="top" ngbPopover="Your pitform updated" popoverTitle="Nice!!">
+                          Save changes
+                        </button>
                       </div>
                     </div>
                   </div>
                 </div>
+                </form>
               </div>
             </div>
           </div>
          
         </div>
-        <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
-          2</div>
-        <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">
-          3</div>
+        
+        <div *ngIf="managerb" class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="list-profile-list">
+          <h5>Matches you scouted <span class="badge badge-warning">Nice Job!!</span></h5>
+             
+            <div *ngFor="let dateobj of history">
+        
+              <button (click)="openHistory($event)" class="btn btn-info">
+                {{dateobj.date}} <span class="badge badge-light">{{dateobj.match.length}}</span>
+              </button>
+            <div *ngFor="let match of dateobj.match">
+     
+           
+            <button *ngIf="showHistory(dateobj.date)" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModalScrollable2" >
+             {{match}}
+            </button>
+            
+            
+            <div class="modal fade" id="exampleModalScrollable2" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle"
+              aria-hidden="true">
+              <div class="modal-dialog modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalScrollableTitle">Edit Info</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div *ngIf="bs2[0].b">
+                      <span class="badge badge-info">Region/Event Name</span>
+                      <br>
+                      <span class="badge badge-info">Week</span>
+                      <div class="input-group">
+                        <select (change)="getEventVP3($event)" class="custom-select mr-sm-2" id="week">
+                          <option value="" selected>Choose...</option>
+                          <option value="6">6</option>
+                          <option value="7">7</option>
+                          <option value="Houston">Houston Champ</option>
+                          <option value="Detroit">Detroit Champ</option>
+                        </select>
+                      </div>
+                      <span class="badge badge-info">Name</span>
+                      <div class="input-group">
+            
+                        <select (change)="sendcurrentRegion($event)" class="custom-select mr-sm-2" id="event">
+                          <option>Choose...</option>
+            
+                          <option *ngFor="let event of editMatchEvent">{{event}}</option>
+                        </select>
+                      </div>
+                      <hr>
+                    </div>
+            
+                    <div *ngIf="bs2[1].b">
+                      <span class="badge badge-info">Match Number</span>
+                      <input (input)="sendcurrentMatchNumber($event)" type="tel" class="form-control" id="matchnumber"
+                        aria-describedby="emailHelp" placeholder="Enter number">
+                      <hr>
+                    </div>
+            
+                    <div *ngIf="bs2[2].b">
+                      <span class="badge badge-info">Team Number</span>
+                      <input (input)="sendcurrentMatchTeam($event)" type="tel" class="form-control" id="teamnumber"
+                        aria-describedby="emailHelp" placeholder="Enter number">
+                      <div class="input-group-append">
+                        <button (click)="updateMatch($event)" value="{{currentMatch}}" class="btn btn-outline-danger" id="thethree">Set
+                          these data first!!</button>
+                      </div>
+                      <div class="alert alert-danger" role="alert">
+                        {{thethreereply}}
+                      </div>
+                      <hr>
+                    </div>
+            
+                    <div *ngIf="bs2[3].b">
+                      <span class="badge badge-info">Image</span>
+                      <input (input)="setCurrentImageTitle($event)" type="text" class="form-control" id="imagetitle" placeholder="Title">
+            
+                      <div class="input-group mb-3">
+                        <div class="custom-file">
+                          <input (input)="setCurrentImage($event)" type="file" class="custom-file-input" id="image2"
+                            aria-describedby="inputGroupFileAddon01">
+                          <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                        </div>
+                        <div class="input-group-append">
+                          <button (click)="updatePitImage()" class="btn btn-outline-secondary" id="" placement="left" ngbPopover="You can add a new one"
+                            popoverTitle="Image Uploaded!!">Upload</button>
+                        </div>
+                      </div>
+                      <img src="{{currentImage}}" style="height: 60px;width:60px;">
+                      <hr>
+                    </div>
+            
+                    <div *ngIf="bs2[4].b">
+                      <span class="badge badge-info">Alliance</span>
+                      <br>
+                      <select (input)="updateMatch($event)" id="alliance" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value="blue">blue</option>
+                        <option value="red">red</option>
+                      </select>
+                      <hr>
+                    </div>
+            
+                    <div *ngIf="bs2[5].b">
+                      <span class="badge badge-info">Autonomous Period</span>
+                      <br>
+                      <label for="autolvl">Successfully Exit Platform Level</label>
+                      <select (change)="updateMatch($event)" id="exitplatform" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value=0>0</option>
+                        <option value=3>1</option>
+                        <option value=6>2</option>
+                      </select>
+                      <label for="autocargo">Auto Cargo</label>
+                      <select (change)="updateMatch($event)" id="autocargo" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value=1>1</option>
+                        <option value=2>2</option>
+                        <option value=3>3</option>
+                      </select>
+                      <label for="autohatch">Auto Hatch</label>
+                      <select (change)="updateMatch($event)" id="autohatch" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value=1>1</option>
+                        <option value=2>2</option>
+                        <option value=3>3</option>
+                      </select>
+                      <hr>
+                    </div>
+            
+                    <div id="teleS" *ngIf="bs2[6].b">
+                      <span class="badge badge-info">Teleop Period</span>
+                      <br>
+                      <br>
+                      <span class="badge badge-pill badge-info">Hatch <---> Cargo</span>
+                      <br>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span id="rlvlspan" class="badge badge-warning">Rocket Lvl3</span>
+                        </div>
+                        <div class="input-group">
+                          <input type="text" value="{{hatchlvl3}}" class="form-control" placeholder="Hatch" aria-label="Recipient's username with two button addons"
+                            aria-describedby="button-addon4">
+                          <div class="input-group-append" id="button-addon4">
+                            <button (click)="addhatchlvl3(true)" class="btn btn-outline-warning" type="button">+</button>
+                            <button (click)="addhatchlvl3(false)" class="btn btn-outline-warning" type="button">-</button>
+                          </div>
+            
+                          <input type="text" value="{{cargolvl3}}" class="form-control" placeholder="Cargo" aria-label="Recipient's username with two button addons"
+                            aria-describedby="button-addon4">
+                          <div class="input-group-append" id="button-addon4">
+                            <button (click)="addcargolvl3(true)" class="btn btn-outline-warning" type="button">+</button>
+                            <button (click)="addcargolvl3(false)" class="btn btn-outline-warning" type="button">-</button>
+                          </div>
+                        </div>
+                      </div>
+            
+                      <div id="telecounter">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span id="rlvlspan" class="badge badge-warning">Rocket Lvl2</span>
+                          </div>
+                          <div class="input-group">
+                            <input type="text" value="{{hatchlvl2}}" class="form-control" placeholder="Hatch" aria-label="Recipient's username with two button addons"
+                              aria-describedby="button-addon4">
+                            <div class="input-group-append" id="button-addon4">
+                              <button (click)="addhatchlvl2(true)" class="btn btn-outline-warning" type="button">+</button>
+                              <button (click)="addhatchlvl2(false)" class="btn btn-outline-warning" type="button">-</button>
+                            </div>
+            
+                            <input type="text" value="{{cargolvl2}}" class="form-control" placeholder="Cargo" aria-label="Recipient's username with two button addons"
+                              aria-describedby="button-addon4">
+                            <div class="input-group-append" id="button-addon4">
+                              <button (click)="addcargolvl2(true)" class="btn btn-outline-warning" type="button">+</button>
+                              <button (click)="addcargolvl2(false)" class="btn btn-outline-warning" type="button">-</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+            
+                      <div id="telecounter">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span id="rlvlspan" class="badge badge-warning">Rocket Lvl1</span>
+                          </div>
+                          <div class="input-group">
+                            <input type="text" value="{{hatchlvl1}}" class="form-control" placeholder="Hatch" aria-label="Recipient's username with two button addons"
+                              aria-describedby="button-addon4">
+                            <div class="input-group-append" id="button-addon4">
+                              <button (click)="addhatchlvl1(true)" class="btn btn-outline-warning" type="button">+</button>
+                              <button (click)="addhatchlvl1(false)" class="btn btn-outline-warning" type="button">-</button>
+                            </div>
+            
+                            <input type="text" value="{{cargolvl1}}" class="form-control" placeholder="Cargo" aria-label="Recipient's username with two button addons"
+                              aria-describedby="button-addon4">
+                            <div class="input-group-append" id="button-addon4">
+                              <button (click)="addcargolvl1(true)" class="btn btn-outline-warning" type="button">+</button>
+                              <button (click)="addcargolvl1(false)" class="btn btn-outline-warning" type="button">-</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+            
+                      <div id="telecounter">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span id="rlvlspan" class="badge badge-warning">Cargo Ship</span>
+                          </div>
+            
+                          <div class="input-group">
+                            <input type="text" value="{{hatchship}}" class="form-control" placeholder="Hatch" aria-label="Recipient's username with two button addons"
+                              aria-describedby="button-addon4">
+                            <div class="input-group-append" id="button-addon4">
+                              <button (click)="addhatchship(true)" class="btn btn-outline-warning" type="button">+</button>
+                              <button (click)="addhatchship(false)" class="btn btn-outline-warning" type="button">-</button>
+                            </div>
+            
+                            <input type="text" value="{{cargoship}}" class="form-control" placeholder="Cargo" aria-label="Recipient's username with two button addons"
+                              aria-describedby="button-addon4">
+                            <div class="input-group-append" id="button-addon4">
+                              <button (click)="addcargoship(true)" class="btn btn-outline-warning" type="button">+</button>
+                              <button (click)="addcargoship(false)" class="btn btn-outline-warning" type="button">-</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+            
+                      <hr>
+                    </div>
+            
+                    <div *ngIf="bs2[7].b">
+                      <span class="badge badge-info">Defense</span>
+                      <br>
+                      <span class="badge badge-primary">Add 1 when the opponent drops a game piece</span>
+                      <div class="input-group">
+                        <input id="defensedrop" type="tel" class="form-control" value={{editdroppiece}} aria-describedby="button-addon4">
+                        <div class="input-group-append" id="button-addon4">
+                          <button (click)="addeditdroppiece(true)" class="btn btn-outline-secondary" type="button">+</button>
+                          <button (click)="addeditdroppiece(false)" class="btn btn-outline-secondary" type="button">-</button>
+                        </div>
+                      </div>
+                      <span class="badge badge-primary">Add 1 when robot blocks or pushes the opponent</span>
+                      <div class="input-group">
+                        <input id="defenseblock" type="tel" class="form-control" value={{editblock}} aria-describedby="button-addon4">
+                        <div class="input-group-append" id="button-addon4">
+                          <button (click)="addeditblock(true)" class="btn btn-outline-secondary" type="button">+</button>
+                          <button (click)="addeditblock(false)" class="btn btn-outline-secondary" type="button">-</button>
+                        </div>
+                      </div>
+                      <hr>
+                    </div>
+            
+                    <div *ngIf="bs2[8].b">
+                      <span class="badge badge-info">Efficient</span>
+                      <br>
+                      <span class="badge badge-primary">Add 1 when the robot drops a hatch</span>
+                      <div class="input-group">
+                        <input id="hatchdrop" type="tel" class="form-control" value={{editdrophatch}} aria-describedby="button-addon4">
+                        <div class="input-group-append" id="button-addon4">
+                          <button (click)="addeditdrophatch(true);" class="btn btn-outline-secondary" type="button">+</button>
+                          <button (click)="addeditdrophatch(false);" class="btn btn-outline-secondary" type="button">-</button>
+                        </div>
+                      </div>
+                      <span class="badge badge-primary">Add 1 when the robot drops a cargo</span>
+                      <div class="input-group">
+                        <input id="cargodrop" type="tel" class="form-control" value={{editdropcargo}} aria-describedby="button-addon4">
+                        <div class="input-group-append" id="button-addon4">
+                          <button (click)="addeditdropcargo(true);" class="btn btn-outline-secondary" type="button">+</button>
+                          <button (click)="addeditdropcargo(false);" class="btn btn-outline-secondary" type="button">-</button>
+                        </div>
+            
+                      </div>
+                      <hr>
+                    </div>
+            
+                    <div *ngIf="bs2[9].b">
+                      <span class="badge badge-info">End Game</span>
+                      <br>
+                      <label for="platformS">Platform Climb</label>
+                      <select (change)="updateMatch($event)" id="climbpoint" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value=0>Level0</option>
+                        <option value=3>Level1</option>
+                        <option value=6>Only_Level2</option>
+                        <option value=12>Only_Level3</option>
+                        <option value=18>Level3_And_2</option>
+                        <option value=24>Level3_Buddy_1</option>
+                        <option value=36>Level3_Buddy_2</option>
+                        <option value=12>Level2_Buddy</option>
+                      </select>
+                    </div>
+            
+                    <div *ngIf="bs2[10].b">
+                      <span class="badge badge-info">Robot Fitness</span>
+                      <br>
+                      <label for="fit">Does the robot fit our robot?</label>
+                      <select (change)="updateMatch($event)" id="fitness" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value=5>Completely fit our robot(first pick!!!) | 5 stars</option>
+                        <option value=4>Fit our robot very well | 4 stars</option>
+                        <option value=3>Fit our robot OK | 3 stars</option>
+                        <option value=2>Kinds of fit.... | 2 stars</option>
+                        <option value=1>Same type of robot as us | 1 star</option>
+                        <option value=0>Useless for us | 0 star</option>
+                      </select>
+                    </div>
+            
+                    <div *ngIf="bs2[11].b">
+                      <span class="badge badge-info">Questions to ask</span>
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Question</span>
+                      </div>
+                      <textarea (input)="updateMatch($event)" id="question" class="form-control" aria-label="With textarea"
+                        placeholder="Like Q1:....Q2:...."></textarea>
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Answer</span>
+                      </div>
+            
+                      <textarea (input)="updateMatch($event)" id="answer" class="form-control" aria-label="With textarea"
+                        placeholder="Like A1:....A2:...."></textarea>
+                    </div>
+                    <div *ngIf="bs2[12].b">
+                      <span class="badge badge-info">Write your note here</span>
+                      <textarea (input)="updateMatch($event)" id="notes" class="form-control" aria-label="With textarea"
+                        placeholder="Notes Here"></textarea>
+                    </div>
+            
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    <button class="btn btn-outline-success mr-2" placement="top" ngbPopover="Your pitform updated" popoverTitle="Nice!!">
+                      Save changes
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+          
+          
+        </div>  
+        <div class="tab-pane fade" id="data" role="tabpanel" aria-labelledby="list-messages-list">
+          <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home"
+                aria-selected="true">Local Data</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile"
+                aria-selected="false">Global</a>
+            </li>
+            
+          </ul>
+          <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+
+              
+              
+
+              <!--<div id="tableid">
+              <table datatable class="row-border hover" id="personal" >
+              <thead>
+                  <tr>
+                    <th *ngFor="let col of currentOptionInner">{{col}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of currentData">
+                    <td *ngFor="let col of col_index">{{row[col]}}</td>
+                  </tr>  
+                </tbody>
+              </table>
+              </div>-->
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#yourdataA">
+                View Data in Average
+              </button>
+
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#yourdata">
+                View Data in Total
+              </button>
+              
+              <!-- Modal -->
+              <div class="modal fade bd-example-modal-xl" id="yourdata" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Data From Your Scouts(Total)</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <!----------------------------->
+                      <a href="#" class="badge badge-success">Current ranking elements</a>
+                      <div class="input-group mb-3">
+                        <select multiple (change)="loadrank()" id="rankOpt" class="form-control form-control-sm">
+                          <option *ngIf="!rankperference.totalautopoint" value="totalautopoint">Total Auto Pnts</option>
+                          <option *ngIf="rankperference.totalautopoint" value="totalautopoint" selected>Total Auto Pnts</option>
+
+                          <option *ngIf="!rankperference.autohatch" value="autohatch">Hatch in Auto</option>
+                          <option *ngIf="rankperference.autohatch" value="autohatch" selected>Hatch in Auto</option>
+                          
+                          <option *ngIf="!rankperference.autocargo" value="autocargo">Cargo in Auto</option>
+                          <option *ngIf="rankperference.autocargo" value="autocargo" selected>Cargo in Auto</option>
+
+                          <option *ngIf="!rankperference.totalcargo" value="totalcargo">Total Cargo</option>
+                          <option *ngIf="rankperference.totalcargo" value="totalcargo" selected>Total Cargo</option>
+
+                          <option *ngIf="!rankperference.totalhatch" value="totalhatch">Total Hatch</option>
+                          <option *ngIf="rankperference.totalhatch" value="totalhatch" selected>Total Hatch</option>
+
+                          <option *ngIf="!rankperference.cargolvl1" value="cargolvl1">Cargo Level1</option>
+                          <option *ngIf="rankperference.cargolvl1" value="cargolvl1" selected>Cargo Level1</option>
+
+                          <option *ngIf="!rankperference.cargolvl2" value="cargolvl2">Cargo Level2</option>
+                          <option *ngIf="rankperference.cargolvl2" value="cargolvl2" selected>Cargo Level2</option>
+
+                          <option *ngIf="!rankperference.cargolvl3" value="cargolvl3">Cargo Level3</option>
+                          <option *ngIf="rankperference.cargolvl3" value="cargolvl3" selected>Cargo Level3</option>
+
+                          <option *ngIf="!rankperference.hatchlvl1" value="hatchlvl1">Hatch Level1</option>
+                          <option *ngIf="rankperference.hatchlvl1" value="hatchlvl1" selected>Hatch Level1</option>
+
+                          <option *ngIf="!rankperference.hatchlvl2" value="hatchlvl2">Hatch Level2</option>
+                          <option *ngIf="rankperference.hatchlvl2" value="hatchlvl2" selected>Hatch Level2</option>
+
+                          <option *ngIf="!rankperference.hatchlvl3" value="hatchlvl3">Hatch Level3</option>
+                          <option *ngIf="rankperference.hatchlvl3" value="hatchlvl3" selected>Hatch Level3</option>
+
+                          <option *ngIf="!rankperference.cargoship" value="cargoship">Cargo Cargoship</option>
+                          <option *ngIf="rankperference.cargoship" value="cargoship" selected>Cargo Cargoship</option>
+
+                          <option *ngIf="!rankperference.hatchship" value="hatchship">Hatch Cargoship</option>
+                          <option *ngIf="rankperference.hatchship" value="hatchship" selected>Hatch Cargoship</option>
+
+                          <option *ngIf="!rankperference.defenseblock" value="defenseblock">Block Other Robot</option>
+                          <option *ngIf="rankperference.defenseblock" value="defenseblock" selected>Block Other Robot</option>
+
+                          <option *ngIf="!rankperference.defensedrop" value="defensedrop">Drop Game Piece Opponent</option>
+                          <option *ngIf="rankperference.defensedrop" value="defensedrop" selected>Drop Game Piece Opponent</option>
+
+                          <option *ngIf="!rankperference.hatchdrop" value="hatchdrop">Dropped Hatch</option>
+                          <option *ngIf="rankperference.hatchdrop" value="hatchdrop" selected>Dropped Hatch</option>
+
+                          <option *ngIf="rankperference.cargodrop" value="cargodrop" selected>Dropped Cargo</option>                          
+                          <option *ngIf="!rankperference.cargodrop" value="cargodrop">Dropped Cargo</option>
+
+
+                        </select>
+                      
+                      </div>
+                      
+                      <div class="input-group mb-3" id="exportgroup">
+                        <input type="text" class="form-control" id="fileName" placeholder="File Name" aria-label="Recipient's username"
+                          aria-describedby="button-addon2">
+                        <div class="input-group-append">
+                          <button class="btn btn-outline-success" (click)="onBtExport()" id="button-addon2">Export</button>
+                        </div>
+                      </div>
+                      <button *ngIf="selectLoader" class="btn btn-primary" disabled>
+                        <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                        Editing your database...
+                      </button>
+                      <span *ngIf="atleastoneteam" class="badge badge-danger">At least pick one team</span>
+                      <input (input)="textSearch('total')" type="text" id="filter-box" placeholder="Filter">
+                      <ag-grid-angular id="tableid" style="width: 100%; height: 300px;" class="ag-theme-balham" [rowData]="currentData"
+                        [columnDefs]="col_index" [domLayout]="autoHeight" (gridReady)="onGridReady($event)"
+                        [pagination]=true [suppressRowClickSelection]=true [groupSelectsChildren]=true [rowSelection]="rowSelection"
+                        [enableRangeSelection]=true [multiSortKey]="multiSortKey" cacheQuickFilter=true>
+                      </ag-grid-angular>
+                      <!----------------------------->
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!--<table mat-table [dataSource]=currentData>
+                  <ng-container matColumnDef="position">
+                    <th mat-header-cell *matHeaderCellDef> No. </th>
+                    <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+                  </ng-container>
+              </table>-->
+
+             
+              
+              <div class="modal fade bd-example-modal-xl" id="yourdataA" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Data From Your Scouts(Average)</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      
+                      <a href="#" class="badge badge-success">Current ranking elements</a>
+                      <div class="input-group mb-3">
+                        <select multiple (change)="loadrankA()" id="rankOptA" class="form-control form-control-sm">
+                          <option *ngIf="!rankperference.totalautopoint" value="totalautopointA">Total Auto Pnts</option>
+                          <option *ngIf="rankperference.totalautopoint" value="totalautopointA" selected>Total Auto Pnts</option>
+                          
+                          <option *ngIf="!rankperference.autohatch" value="autohatchA">Hatch in Auto</option>
+                          <option *ngIf="rankperference.autohatch" value="autohatchA" selected>Hatch in Auto</option>
+                          
+                          <option *ngIf="!rankperference.autocargo" value="autocargoA">Cargo in Auto</option>
+                          <option *ngIf="rankperference.autocargo" value="autocargoA" selected>Cargo in Auto</option>
+                          
+                          <option *ngIf="!rankperference.totalcargo" value="totalcargoA">Total Cargo</option>
+                          <option *ngIf="rankperference.totalcargo" value="totalcargoA" selected>Total Cargo</option>
+                          
+                          <option *ngIf="!rankperference.totalhatch" value="totalhatchA">Total Hatch</option>
+                          <option *ngIf="rankperference.totalhatch" value="totalhatchA" selected>Total Hatch</option>
+                          
+                          <option *ngIf="!rankperference.cargolvl1" value="cargolvl1A">Cargo Level1</option>
+                          <option *ngIf="rankperference.cargolvl1" value="cargolvl1A" selected>Cargo Level1</option>
+                          
+                          <option *ngIf="!rankperference.cargolvl2" value="cargolvl2A">Cargo Level2</option>
+                          <option *ngIf="rankperference.cargolvl2" value="cargolvl2A" selected>Cargo Level2</option>
+                          
+                          <option *ngIf="!rankperference.cargolvl3" value="cargolvl3A">Cargo Level3</option>
+                          <option *ngIf="rankperference.cargolvl3" value="cargolvl3A" selected>Cargo Level3</option>
+                          
+                          <option *ngIf="!rankperference.hatchlvl1" value="hatchlvl1A">Hatch Level1</option>
+                          <option *ngIf="rankperference.hatchlvl1" value="hatchlvl1A" selected>Hatch Level1</option>
+                          
+                          <option *ngIf="!rankperference.hatchlvl2" value="hatchlvl2A">Hatch Level2</option>
+                          <option *ngIf="rankperference.hatchlvl2" value="hatchlvl2A" selected>Hatch Level2</option>
+                          
+                          <option *ngIf="!rankperference.hatchlvl3" value="hatchlvl3A">Hatch Level3</option>
+                          <option *ngIf="rankperference.hatchlvl3" value="hatchlvl3A" selected>Hatch Level3</option>
+                          
+                          <option *ngIf="!rankperference.cargoship" value="cargoshipA">Cargo Cargoship</option>
+                          <option *ngIf="rankperference.cargoship" value="cargoshipA" selected>Cargo Cargoship</option>
+                          
+                          <option *ngIf="!rankperference.hatchship" value="hatchshipA">Hatch Cargoship</option>
+                          <option *ngIf="rankperference.hatchship" value="hatchshipA" selected>Hatch Cargoship</option>
+                          
+                          <option *ngIf="!rankperference.defenseblock" value="defenseblockA">Block Other Robot</option>
+                          <option *ngIf="rankperference.defenseblock" value="defenseblockA" selected>Block Other Robot</option>
+                          
+                          <option *ngIf="!rankperference.defensedrop" value="defensedropA">Drop Game Piece Opponent</option>
+                          <option *ngIf="rankperference.defensedrop" value="defensedropA" selected>Drop Game Piece Opponent</option>
+                          
+                          <option *ngIf="!rankperference.hatchdrop" value="hatchdropA">Dropped Hatch</option>
+                          <option *ngIf="rankperference.hatchdrop" value="hatchdropA" selected>Dropped Hatch</option>
+                          
+                          <option *ngIf="rankperference.cargodrop" value="cargodropA" selected>Dropped Cargo</option>
+                          <option *ngIf="!rankperference.cargodrop" value="cargodropA">Dropped Cargo</option>
+                        </select>
+              
+                      </div>
+              
+                      <div class="input-group mb-3" id="exportgroup">
+                        <input type="text" class="form-control" id="fileNameA" placeholder="File Name" aria-label="Recipient's username"
+                          aria-describedby="button-addon2">
+                        <div class="input-group-append">
+                          <button class="btn btn-outline-success" (click)="onBtExportA()" id="button-addon2">Export</button>
+                        </div>
+                      </div>
+                      <button *ngIf="selectLoaderA" class="btn btn-primary" disabled>
+                        <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                        Editing your database...
+                      </button>
+                      <span *ngIf="atleastoneteamA" class="badge badge-danger">At least pick one team</span>
+                      
+                      <input (input)="textSearch('average')" type="text" id="filter-boxA" placeholder="Filter">
+                      <ag-grid-angular id="tableid" style="width: 100%; height: 300px;" class="ag-theme-balham" [rowData]="currentDataA"
+                        [columnDefs]="col_indexA" [domLayout]="autoHeight" (gridReady)="onGridReadyA($event)"
+                        [pagination]=true [suppressRowClickSelection]=true [groupSelectsChildren]=true [rowSelection]="rowSelection"
+                        [enableRangeSelection]=true [multiSortKey]="multiSortKey" cacheQuickFilter=true>
+                      </ag-grid-angular>
+                      
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                  </div>
+                </div>
+              </div> 
+
+            </div>
+
+            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+              glo
+            </div>
+           </div>
+        </div>
         <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
-          4</div>
+          <h5>Team Selection <span class="badge badge-info">Drag the rows to rank</span></h5>
+
+          <!-- Button trigger modal -->
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#sel">
+            View Your Selections
+          </button>
+          
+          <!-- Modal -->
+          <div class="modal fade" id="sel" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalScrollableTitle">Teams that your team like</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <button *ngIf="selectLoader" class="btn btn-primary" disabled>
+                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                    Editing your database...
+                  </button>
+                  <a href="#" class="badge badge-success">Current ranking elements</a>
+                  <select class="form-control form-control-sm" id="selectTeamElement" (change)="getselectTeamElement()">
+                    <option value="">Choose.....</option>
+                    <option value="General Ability">General Ability</option>
+                    <option value="Teleop(total)">Teleop(total)</option>
+                    <option value="Autonomous(total)">Autonomous(total)</option>
+                    <option value="Teleop(average)">Teleop(average)</option>
+                    <option value="Autonomous(average)">Autonomous(average)</option>
+                  </select>
+                  
+                  <br>
+                  <input (input)="textSearch('select')" type="text" id="filter-boxS" placeholder="Filter" />
+                  <br>
+                  <span *ngIf="managerb" class="badge badge-danger">Drag the row to set ranking</span>
+                  
+                  <ag-grid-angular id="tableid" style="width: 100%; height: 300px;" class="ag-theme-balham" [rowData]="currentData3"
+                    [columnDefs]="col_index3" 
+                    [pagination]=false [suppressRowClickSelection]=true [groupSelectsChildren]=true [rowSelection]="rowSelection"
+                   [rowDragManaged]=true [enableRangeSelection]=true 
+                  
+                    (gridReady)="onGridReady3($event)">
+                  </ag-grid-angular>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        
+
+        </div>
+        <div class="tab-pane fade" id="list-account" role="tabpanel" aria-labelledby="list-messages-list">
+        account
+        </div>
+        <div class="tab-pane fade" id="list-manage" role="tabpanel" aria-labelledby="list-messages-list">
+          manage
+        </div>
       </div>
     </div>
   </div>
+  
 </div>
 <!--end of manager page-->

@@ -1,0 +1,22 @@
+ <div class="full-width-panel"> 
+            <div class="full-width-flag"> 
+                <h6>{{data.Team_Number}}</h6>
+            </div> 
+            <div class="full-width-summary"> 
+                <span class="full-width-title">{{data.Team_Number}}</span>
+                <br/>
+                <label>
+                    <b>Population:</b>
+                    {{data.Team_Number}} 
+                </label>
+                <br/> 
+                <label>
+                    <b>Known For:</b>  
+                    {{data.Team_Number}} 
+                </label>
+                <br/> 
+            </div> 
+            <div class="full-width-center" (mousewheel)="mouseWheelListener($event)" (DOMMouseScroll)="mouseWheelListener($event)"> 
+                {{latinText()}} 
+            </div> 
+        </div>

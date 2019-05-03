@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { SignupComponent } from './signup/signup.component';
 import { ScoutpageComponent } from './scoutpage/scoutpage.component';
 import { AuthGuard } from './auth.guard';
+
 import { ScoutloginComponent } from './scoutlogin/scoutlogin.component';
 const routes: Routes = [
   { path: '', component: ScoutloginComponent,pathMatch: 'full'},
