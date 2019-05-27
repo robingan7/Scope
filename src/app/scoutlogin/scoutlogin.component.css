@@ -78,3 +78,37 @@ table tr th{
     width: 100px;
     border-color: black;  
 }
+.card-text{
+    font-size: 15px;
+}
+#manage_tip{
+    margin-left:5px;
+    color: red;
+}
+#manage_tip:hover, #manage_tip:focus, #manage_tip.focus{
+    color: black;
+}
+#manage_tip:disabled, #manage_tip.disabled{
+    color: red;
+}
+#cards_manage{
+    margin-top:-20px;
+    transform: translateY(20px);
+}
+#manage_scouts{
+    overflow-y: scroll;
+}
+#match_scouts{
+    overflow-y:scroll;
+}
+#assign-home > input{
+    height:5px;
+}
+#assign_edit{
+    height:50%;
+    overflow-y: scroll;
+}
+#taskout{
+    height:30%;
+    overflow-y: scroll;
+}

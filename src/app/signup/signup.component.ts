@@ -14,6 +14,8 @@ export class SignupComponent implements OnInit {
               private router: Router) { }
 
   ngOnInit() {
+    (<HTMLDivElement>document.querySelector("#start_spinner")).style.display = "none"
+
   }
   signupScout(event) {
     event.preventDefault()

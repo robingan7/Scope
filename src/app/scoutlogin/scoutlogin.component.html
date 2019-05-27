@@ -57,6 +57,7 @@
     <span class="badge badge-secondary">'ve scouted {{match_scouted}} matches&pits</span>
     <span class="badge badge-pill badge-primary">{{teamnumber}}</span>
     <span class="badge badge-success">{{role}}</span>
+    <span class="badge badge-pill badge-dark">{{currentRegionMain}}</span>
   </h3>
 
   <div class="row">
@@ -92,8 +93,15 @@
             <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
               <div class="card-body">
                 <!-- Button trigger modal -->
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalScrollable">
-                  Set Current Event(Do this first)
+                <button type="button" class="{{currrentEventButtonCurrentMode.style}}" data-toggle="modal" data-target="#exampleModalScrollable">
+                  <div *ngIf="loadCurrentEvent" class="spinner-border text-light" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                  <div *ngIf="!loadCurrentEvent">
+                {{currrentEventButtonCurrentMode.info[0]}}
+                <span class="badge badge-success">{{currrentEventButtonCurrentMode.info[1]}}</span>
+                {{currrentEventButtonCurrentMode.info[2]}}
+                  </div>
                 </button>
                 
                 <!-- Modal -->
@@ -103,6 +111,9 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalScrollableTitle">Set Current Event</h5>
+                        <div class="spinner-grow text-success" role="status">
+                          <span class="sr-only">Loading...</span>
+                        </div>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
                         </button>
@@ -114,7 +125,7 @@
                         <br>
                         <span class="badge badge-info">Week</span>
                         <div class="input-group">
-                          <select (change)="getEventVP3($event)" class="custom-select mr-sm-2" id="week">
+                          <select (change)="getEventVP3($event)"  class="custom-select mr-sm-2" id="week">
                             <option value="" selected>Choose...</option>
                             <option value="6">6</option>
                             <option value="7">7</option>
@@ -125,8 +136,8 @@
                         <span class="badge badge-info">Name</span>
                         <div class="input-group">
                         
-                          <select  class="custom-select mr-sm-2" id="currentevent">
-                            <option>Choose...</option>
+                          <select value={{currentRegionMain}} class="custom-select mr-sm-2" id="currentevent">
+                            <option value="{{currentRegionMain}}">{{currentRegionMain}}</option>
                         
                             <option *ngFor="let event of editMatchEvent">{{event}}</option>
                           </select>
@@ -135,7 +146,7 @@
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button class="btn btn-primary">Save changes</button>
+                        <button class="btn btn-outline-success mr-2" placement="top" ngbPopover="Data uploaded" popoverTitle="Nice!!">Save changes</button>
                       </div>
                       </form>
                     </div>
@@ -168,10 +179,10 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalScrollableTitle">Pit Scouting 2019</h5>
-                        <h5 *ngIf="editPitError">|<span class="badge badge-danger">Put a team number</span></h5>
                         <div *ngIf="pitspinnerb" class="spinner-border text-success" role="status">
                           <span class="sr-only">Loading...</span>
                         </div>
+                        <h5 *ngIf="editPitError">|<span class="badge badge-danger">Put a team number</span></h5>
                         
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
@@ -428,6 +439,9 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalScrollableTitle">Match Scouting 2019</h5>
+                        <div class="spinner-grow text-success" role="status">
+                          <span class="sr-only">Loading...</span>
+                        </div>
                         <div *ngIf="matchspinnerb" class="spinner-border text-success" role="status">
                           <span class="sr-only">Loading...</span>
                         </div>
@@ -755,6 +769,9 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalScrollableTitle">Edit Pit Form 2019</h5>
+                        <div class="spinner-grow text-success" role="status">
+                          <span class="sr-only">Loading...</span>
+                        </div>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
                         </button>
@@ -1169,6 +1186,9 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalScrollableTitle">Edit Match Form 2019</h5>
+                        <div class="spinner-grow text-success" role="status">
+                          <span class="sr-only">Loading...</span>
+                        </div>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
                         </button>
@@ -1650,585 +1670,626 @@
          
         </div>
         
-        <div *ngIf="managerb" class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="list-profile-list">
-          <h5>Matches you scouted <span class="badge badge-warning">Nice Job!!</span></h5>
-             
-            <div *ngFor="let dateobj of history">
-        
-              <button (click)="openHistory($event)" class="btn btn-info">
-                {{dateobj.date}} <span class="badge badge-light">{{dateobj.match.length}}</span>
-              </button>
-            <div *ngFor="let match of dateobj.match">
-     
-           
-            <button *ngIf="showHistory(dateobj.date)" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModalScrollable2" >
-             {{match}}
-            </button>
-            
-            
-            <div class="modal fade" id="exampleModalScrollable2" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle"
-              aria-hidden="true">
-              <div class="modal-dialog modal-dialog-scrollable" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalScrollableTitle">Edit Info</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
+        <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="list-profile-list">
+
+          <h5>Things you scouted <span class="badge badge-warning">Nice Job!!</span></h5>
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#match_scouted" role="tab" aria-controls="pills-home"
+                  aria-selected="true">Match</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pit_scouted" role="tab" aria-controls="pills-profile"
+                  aria-selected="false">Pit</a>
+              </li>
+              
+            </ul>
+            <div *ngIf="historyload" class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+            <div class="tab-content" id="pills-tabContent">
+              <div class="tab-pane fade show active" id="match_scouted" role="tabpanel" aria-labelledby="pills-home-tab">
+              <div id="match_scouts">
+
+                <div *ngFor="let dateobj of history">
+                
+                  <button (click)="openHistory($event)" class="btn btn-info">
+                    {{dateobj.date}} <span class="badge badge-light">{{dateobj.match.length}}</span>
+                  </button>
+                  <div *ngFor="let match of dateobj.match">
+                
+                
+                    <button *ngIf="showHistory(dateobj.date)" (click)="getEditDataMatch($event)" class="btn btn-primary btn-sm" data-toggle="modal"
+                      data-target="#exampleModalScrollable20">
+                      {{match}}
                     </button>
+                </div>
+                
                   </div>
-                  <div class="modal-body">
-                    <div *ngIf="bs2[0].b">
-                      <span class="badge badge-info">Region/Event Name</span>
-                      <br>
-                      <span class="badge badge-info">Week</span>
-                      <div class="input-group">
-                        <select (change)="getEventVP3($event)" class="custom-select mr-sm-2" id="week">
-                          <option value="" selected>Choose...</option>
-                          <option value="6">6</option>
-                          <option value="7">7</option>
-                          <option value="Houston">Houston Champ</option>
-                          <option value="Detroit">Detroit Champ</option>
-                        </select>
-                      </div>
-                      <span class="badge badge-info">Name</span>
-                      <div class="input-group">
-            
-                        <select (change)="sendcurrentRegion($event)" class="custom-select mr-sm-2" id="event">
-                          <option>Choose...</option>
-            
-                          <option *ngFor="let event of editMatchEvent">{{event}}</option>
-                        </select>
-                      </div>
-                      <hr>
-                    </div>
-            
-                    <div *ngIf="bs2[1].b">
-                      <span class="badge badge-info">Match Number</span>
-                      <input (input)="sendcurrentMatchNumber($event)" type="tel" class="form-control" id="matchnumber"
-                        aria-describedby="emailHelp" placeholder="Enter number">
-                      <hr>
-                    </div>
-            
-                    <div *ngIf="bs2[2].b">
-                      <span class="badge badge-info">Team Number</span>
-                      <input (input)="sendcurrentMatchTeam($event)" type="tel" class="form-control" id="teamnumber"
-                        aria-describedby="emailHelp" placeholder="Enter number">
-                      <div class="input-group-append">
-                        <button (click)="updateMatch($event)" value="{{currentMatch}}" class="btn btn-outline-danger" id="thethree">Set
-                          these data first!!</button>
-                      </div>
-                      <div class="alert alert-danger" role="alert">
-                        {{thethreereply}}
-                      </div>
-                      <hr>
-                    </div>
-            
-                    <div *ngIf="bs2[3].b">
-                      <span class="badge badge-info">Image</span>
-                      <input (input)="setCurrentImageTitle($event)" type="text" class="form-control" id="imagetitle" placeholder="Title">
-            
-                      <div class="input-group mb-3">
-                        <div class="custom-file">
-                          <input (input)="setCurrentImage($event)" type="file" class="custom-file-input" id="image2"
-                            aria-describedby="inputGroupFileAddon01">
-                          <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
-                        </div>
-                        <div class="input-group-append">
-                          <button (click)="updatePitImage()" class="btn btn-outline-secondary" id="" placement="left" ngbPopover="You can add a new one"
-                            popoverTitle="Image Uploaded!!">Upload</button>
-                        </div>
-                      </div>
-                      <img src="{{currentImage}}" style="height: 60px;width:60px;">
-                      <hr>
-                    </div>
-            
-                    <div *ngIf="bs2[4].b">
-                      <span class="badge badge-info">Alliance</span>
-                      <br>
-                      <select (input)="updateMatch($event)" id="alliance" class="form-control form-control-lg">
-                        <option>Choose...</option>
-                        <option value="blue">blue</option>
-                        <option value="red">red</option>
-                      </select>
-                      <hr>
-                    </div>
-            
-                    <div *ngIf="bs2[5].b">
-                      <span class="badge badge-info">Autonomous Period</span>
-                      <br>
-                      <label for="autolvl">Successfully Exit Platform Level</label>
-                      <select (change)="updateMatch($event)" id="exitplatform" class="form-control form-control-lg">
-                        <option>Choose...</option>
-                        <option value=0>0</option>
-                        <option value=3>1</option>
-                        <option value=6>2</option>
-                      </select>
-                      <label for="autocargo">Auto Cargo</label>
-                      <select (change)="updateMatch($event)" id="autocargo" class="form-control form-control-lg">
-                        <option>Choose...</option>
-                        <option value=1>1</option>
-                        <option value=2>2</option>
-                        <option value=3>3</option>
-                      </select>
-                      <label for="autohatch">Auto Hatch</label>
-                      <select (change)="updateMatch($event)" id="autohatch" class="form-control form-control-lg">
-                        <option>Choose...</option>
-                        <option value=1>1</option>
-                        <option value=2>2</option>
-                        <option value=3>3</option>
-                      </select>
-                      <hr>
-                    </div>
-            
-                    <div id="teleS" *ngIf="bs2[6].b">
-                      <span class="badge badge-info">Teleop Period</span>
-                      <br>
-                      <br>
-                      <span class="badge badge-pill badge-info">Hatch <---> Cargo</span>
-                      <br>
-                      <div class="input-group">
-                        <div class="input-group-prepend">
-                          <span id="rlvlspan" class="badge badge-warning">Rocket Lvl3</span>
-                        </div>
-                        <div class="input-group">
-                          <input type="text" value="{{hatchlvl3}}" class="form-control" placeholder="Hatch" aria-label="Recipient's username with two button addons"
-                            aria-describedby="button-addon4">
-                          <div class="input-group-append" id="button-addon4">
-                            <button (click)="addhatchlvl3(true)" class="btn btn-outline-warning" type="button">+</button>
-                            <button (click)="addhatchlvl3(false)" class="btn btn-outline-warning" type="button">-</button>
-                          </div>
-            
-                          <input type="text" value="{{cargolvl3}}" class="form-control" placeholder="Cargo" aria-label="Recipient's username with two button addons"
-                            aria-describedby="button-addon4">
-                          <div class="input-group-append" id="button-addon4">
-                            <button (click)="addcargolvl3(true)" class="btn btn-outline-warning" type="button">+</button>
-                            <button (click)="addcargolvl3(false)" class="btn btn-outline-warning" type="button">-</button>
-                          </div>
-                        </div>
-                      </div>
-            
-                      <div id="telecounter">
-                        <div class="input-group">
-                          <div class="input-group-prepend">
-                            <span id="rlvlspan" class="badge badge-warning">Rocket Lvl2</span>
-                          </div>
-                          <div class="input-group">
-                            <input type="text" value="{{hatchlvl2}}" class="form-control" placeholder="Hatch" aria-label="Recipient's username with two button addons"
-                              aria-describedby="button-addon4">
-                            <div class="input-group-append" id="button-addon4">
-                              <button (click)="addhatchlvl2(true)" class="btn btn-outline-warning" type="button">+</button>
-                              <button (click)="addhatchlvl2(false)" class="btn btn-outline-warning" type="button">-</button>
-                            </div>
-            
-                            <input type="text" value="{{cargolvl2}}" class="form-control" placeholder="Cargo" aria-label="Recipient's username with two button addons"
-                              aria-describedby="button-addon4">
-                            <div class="input-group-append" id="button-addon4">
-                              <button (click)="addcargolvl2(true)" class="btn btn-outline-warning" type="button">+</button>
-                              <button (click)="addcargolvl2(false)" class="btn btn-outline-warning" type="button">-</button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-            
-                      <div id="telecounter">
-                        <div class="input-group">
-                          <div class="input-group-prepend">
-                            <span id="rlvlspan" class="badge badge-warning">Rocket Lvl1</span>
-                          </div>
-                          <div class="input-group">
-                            <input type="text" value="{{hatchlvl1}}" class="form-control" placeholder="Hatch" aria-label="Recipient's username with two button addons"
-                              aria-describedby="button-addon4">
-                            <div class="input-group-append" id="button-addon4">
-                              <button (click)="addhatchlvl1(true)" class="btn btn-outline-warning" type="button">+</button>
-                              <button (click)="addhatchlvl1(false)" class="btn btn-outline-warning" type="button">-</button>
-                            </div>
-            
-                            <input type="text" value="{{cargolvl1}}" class="form-control" placeholder="Cargo" aria-label="Recipient's username with two button addons"
-                              aria-describedby="button-addon4">
-                            <div class="input-group-append" id="button-addon4">
-                              <button (click)="addcargolvl1(true)" class="btn btn-outline-warning" type="button">+</button>
-                              <button (click)="addcargolvl1(false)" class="btn btn-outline-warning" type="button">-</button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-            
-                      <div id="telecounter">
-                        <div class="input-group">
-                          <div class="input-group-prepend">
-                            <span id="rlvlspan" class="badge badge-warning">Cargo Ship</span>
-                          </div>
-            
-                          <div class="input-group">
-                            <input type="text" value="{{hatchship}}" class="form-control" placeholder="Hatch" aria-label="Recipient's username with two button addons"
-                              aria-describedby="button-addon4">
-                            <div class="input-group-append" id="button-addon4">
-                              <button (click)="addhatchship(true)" class="btn btn-outline-warning" type="button">+</button>
-                              <button (click)="addhatchship(false)" class="btn btn-outline-warning" type="button">-</button>
-                            </div>
-            
-                            <input type="text" value="{{cargoship}}" class="form-control" placeholder="Cargo" aria-label="Recipient's username with two button addons"
-                              aria-describedby="button-addon4">
-                            <div class="input-group-append" id="button-addon4">
-                              <button (click)="addcargoship(true)" class="btn btn-outline-warning" type="button">+</button>
-                              <button (click)="addcargoship(false)" class="btn btn-outline-warning" type="button">-</button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-            
-                      <hr>
-                    </div>
-            
-                    <div *ngIf="bs2[7].b">
-                      <span class="badge badge-info">Defense</span>
-                      <br>
-                      <span class="badge badge-primary">Add 1 when the opponent drops a game piece</span>
-                      <div class="input-group">
-                        <input id="defensedrop" type="tel" class="form-control" value={{editdroppiece}} aria-describedby="button-addon4">
-                        <div class="input-group-append" id="button-addon4">
-                          <button (click)="addeditdroppiece(true)" class="btn btn-outline-secondary" type="button">+</button>
-                          <button (click)="addeditdroppiece(false)" class="btn btn-outline-secondary" type="button">-</button>
-                        </div>
-                      </div>
-                      <span class="badge badge-primary">Add 1 when robot blocks or pushes the opponent</span>
-                      <div class="input-group">
-                        <input id="defenseblock" type="tel" class="form-control" value={{editblock}} aria-describedby="button-addon4">
-                        <div class="input-group-append" id="button-addon4">
-                          <button (click)="addeditblock(true)" class="btn btn-outline-secondary" type="button">+</button>
-                          <button (click)="addeditblock(false)" class="btn btn-outline-secondary" type="button">-</button>
-                        </div>
-                      </div>
-                      <hr>
-                    </div>
-            
-                    <div *ngIf="bs2[8].b">
-                      <span class="badge badge-info">Efficient</span>
-                      <br>
-                      <span class="badge badge-primary">Add 1 when the robot drops a hatch</span>
-                      <div class="input-group">
-                        <input id="hatchdrop" type="tel" class="form-control" value={{editdrophatch}} aria-describedby="button-addon4">
-                        <div class="input-group-append" id="button-addon4">
-                          <button (click)="addeditdrophatch(true);" class="btn btn-outline-secondary" type="button">+</button>
-                          <button (click)="addeditdrophatch(false);" class="btn btn-outline-secondary" type="button">-</button>
-                        </div>
-                      </div>
-                      <span class="badge badge-primary">Add 1 when the robot drops a cargo</span>
-                      <div class="input-group">
-                        <input id="cargodrop" type="tel" class="form-control" value={{editdropcargo}} aria-describedby="button-addon4">
-                        <div class="input-group-append" id="button-addon4">
-                          <button (click)="addeditdropcargo(true);" class="btn btn-outline-secondary" type="button">+</button>
-                          <button (click)="addeditdropcargo(false);" class="btn btn-outline-secondary" type="button">-</button>
-                        </div>
-            
-                      </div>
-                      <hr>
-                    </div>
-            
-                    <div *ngIf="bs2[9].b">
-                      <span class="badge badge-info">End Game</span>
-                      <br>
-                      <label for="platformS">Platform Climb</label>
-                      <select (change)="updateMatch($event)" id="climbpoint" class="form-control form-control-lg">
-                        <option>Choose...</option>
-                        <option value=0>Level0</option>
-                        <option value=3>Level1</option>
-                        <option value=6>Only_Level2</option>
-                        <option value=12>Only_Level3</option>
-                        <option value=18>Level3_And_2</option>
-                        <option value=24>Level3_Buddy_1</option>
-                        <option value=36>Level3_Buddy_2</option>
-                        <option value=12>Level2_Buddy</option>
-                      </select>
-                    </div>
-            
-                    <div *ngIf="bs2[10].b">
-                      <span class="badge badge-info">Robot Fitness</span>
-                      <br>
-                      <label for="fit">Does the robot fit our robot?</label>
-                      <select (change)="updateMatch($event)" id="fitness" class="form-control form-control-lg">
-                        <option>Choose...</option>
-                        <option value=5>Completely fit our robot(first pick!!!) | 5 stars</option>
-                        <option value=4>Fit our robot very well | 4 stars</option>
-                        <option value=3>Fit our robot OK | 3 stars</option>
-                        <option value=2>Kinds of fit.... | 2 stars</option>
-                        <option value=1>Same type of robot as us | 1 star</option>
-                        <option value=0>Useless for us | 0 star</option>
-                      </select>
-                    </div>
-            
-                    <div *ngIf="bs2[11].b">
-                      <span class="badge badge-info">Questions to ask</span>
-                      <div class="input-group-prepend">
-                        <span class="input-group-text">Question</span>
-                      </div>
-                      <textarea (input)="updateMatch($event)" id="question" class="form-control" aria-label="With textarea"
-                        placeholder="Like Q1:....Q2:...."></textarea>
-                      <div class="input-group-prepend">
-                        <span class="input-group-text">Answer</span>
-                      </div>
-            
-                      <textarea (input)="updateMatch($event)" id="answer" class="form-control" aria-label="With textarea"
-                        placeholder="Like A1:....A2:...."></textarea>
-                    </div>
-                    <div *ngIf="bs2[12].b">
-                      <span class="badge badge-info">Write your note here</span>
-                      <textarea (input)="updateMatch($event)" id="notes" class="form-control" aria-label="With textarea"
-                        placeholder="Notes Here"></textarea>
-                    </div>
-            
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                    <button class="btn btn-outline-success mr-2" placement="top" ngbPopover="Your pitform updated" popoverTitle="Nice!!">
-                      Save changes
+              </div>                
+                  
+
+              </div>
+
+
+              <div class="tab-pane fade" id="pit_scouted" role="tabpanel" aria-labelledby="pills-profile-tab">
+                
+                <div *ngFor="let dateobj of history_pit">
+                
+                  <button (click)="openHistoryPit($event)" class="btn btn-info">
+                    {{dateobj.date}} <span class="badge badge-light">{{dateobj.match.length}}</span>
+                  </button>
+                  <div *ngFor="let match of dateobj.match">
+                    <button *ngIf="showHistoryPit(dateobj.date)" (click)="getEditDataMatchPit($event)" class="btn btn-primary btn-sm"
+                      data-toggle="modal" data-target="#exampleModalScrollable7">
+                      {{match}}
                     </button>
+                
                   </div>
+                  
+            </div>                
+                  <!---------------all reference to this one page------------->
+                  <div class="modal fade" id="exampleModalScrollable7" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalScrollableTitle">Edit Info</h5>
+                          <div class="spinner-grow text-success" role="status">
+                            <span class="sr-only">Loading...</span>
+                          </div>
+                          <button (click)="setEditingToFalse()" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <div *ngIf="bs[0].b">
+                            <span class="badge badge-info">Team Number</span>
+                            <div class="input-group mb-3">
+                              <input (input)="updatePitEdit($event)" value="{{editdataPit.teamnumber}}" type="tel" class="form-control" id="teamnumber" aria-describedby="emailHelp"
+                                placeholder="Enter number">
+                              
+                            </div>
+                            <hr>
+                          </div>
+                          <div *ngIf="bs[1].b">
+                            <span class="badge badge-info">Weight</span>
+                            <div class="input-group">
+                              <input (input)="updatePitEdit($event)" value="{{editdataPit.weight2}}" id="weight2" type="tel" class="form-control" placeholder="Weight" aria-label="Recipient's username with two button addons"
+                                aria-describedby="button-addon4">
+                              <select (change)="updatePit($event)" value="{{editdataPit.weightunit}}" class="custom-select mr-sm-2" id="weightunit">
+                                <option selected>Unit</option>
+                                <option value="lb">lb</option>
+                                <option value="kg">kg</option>
+                                <option value="k">k</option>
+                              </select>
+                            </div>
+                          
+                            <span class="badge badge-info">Height</span>
+                            <div class="input-group">
+                              <input (input)="updatePitEdit($event)" value="{{editdataPit.height2}}" id="height2" type="tel" class="form-control" placeholder="Height" aria-label="Recipient's username with two button addons"
+                                aria-describedby="button-addon4">
+                              <select (change)="updatePitEdit($event)" value="{{editdataPit.heightunit}}" class="custom-select mr-sm-2" id="heightunit">
+                                <option selected>Unit</option>
+                                <option value="m">m</option>
+                                <option value="inch">inch</option>
+                                <option value="cm">cm</option>
+                              </select>
+                            </div>
+                            <hr>
+                          </div>
+                          
+                          <div *ngIf="bs[2].b">
+                            <span class="badge badge-info">Sensor on robot</span>
+                            <select (change)="updatePitEdit($event)" multiple class="form-control" value="{{editdataPit.sensor}}" id="sensor">
+                              <option value="">Ctrl+Click for multi-selection</option>
+                              <option value="Vision Track Camera">Vision Track Camera</option>
+                              <option value="NAVX">NAVX</option>
+                              <option value="Gyroscope">Gyroscope</option>
+                              <option value="Magnetometer">Magnetometer</option>
+                              <option value="Accelerometer">Accelerometer</option>
+                              <option value="Ulrasonic Sensor">Ulrasonic Sensor</option>
+                            </select>
+                            <hr>
+                          </div>
+                          
+                          <div *ngIf="bs[3].b">
+                            <span class="badge badge-info">Image</span>
+                            <input (input)="setCurrentImageTitle($event)" type="text" class="form-control" id="imagetitle" placeholder="Title">
+                          
+                            <div class="input-group mb-3">
+                              <div class="custom-file">
+                                <input (input)="setCurrentImage($event)" type="file" class="custom-file-input" id="image2" aria-describedby="inputGroupFileAddon01">
+                                <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                              </div>
+                              <div class="input-group-append">
+                                <button (click)="updatePitImage()" class="btn btn-outline-secondary" id="" placement="left" ngbPopover="You can add a new one"
+                                  popoverTitle="Image Uploaded!!">Upload</button>
+                              </div>
+                            </div>
+                            <img src="{{currentImage}}" style="height: 60px;width:60px;">
+                            <hr>
+                          </div>
+                          
+                          <div *ngIf="bs[4].b">
+                            <span class="badge badge-info">Autonomous Type</span>
+                            <select (input)="updatePitEdit($event)" value="{{editdataPit.autotype}}" class="custom-select mr-sm-2" id="autotype">
+                              <option value="">Choose...</option>
+                              <option value="Code">Code</option>
+                              <option value="No">No Autonomous</option>
+                              <option value="Vision_System">Vision_System</option>
+                              <option value="Code & Vision_System">Code & Vision_System</option>
+                            </select>
+                            <hr>
+                          </div>
+                          
+                          <div *ngIf="bs[5].b">
+                            <span class="badge badge-info">Autonomous Ability</span>
+                            <br>
+                            <label for="autolvl">Start Platform Level</label>
+                            <select (change)="updatePitEdit($event)" value="{{editdataPit.autolvl}}" id="autolvl" class="form-control form-control-lg">
+                              <option>Choose...</option>
+                              <option value=0>0</option>
+                              <option value=1>1</option>
+                              <option value=2>2</option>
+                            </select>
+                            <label for="autocargo">Autonomous Choice</label>
+                            <select (change)="updatePitEdit($event)" value="{{editdataPit.autochoice}}" multiple class="form-control" id="autochoice">
+                              <option value="">Ctrl+Click for multi-selection</option>
+                              <option value="1 Cargo in cargoship">1 Cargo in cargoship</option>
+                              <option value="1 Hatch in cargoship">1 Hatch in cargoship</option>
+                              <option value="1 Cargo and Hatch in cargoship">1 Cargo and Hatch in cargoship</option>
+                              <option value="2 Cargos in cargoship">2 Cargos in cargoship</option>
+                              <option value="2 Hatches on cargoship">2 Hatches on cargoship</option>
+                              <option value="3 Cargos in cargoship">3 Cargos in cargoship</option>
+                              <option value="1 Hatch on rocket">1 Hatch on rocket</option>
+                              <option value="2 Hatches on rocket">2 Hatches on rocket</option>
+                            </select>
+                            <hr>
+                          </div>
+                          
+                          <div *ngIf="bs[6].b">
+                            <span class="badge badge-info">Teleop Ability</span>
+                            <br>
+                            <label for="cargolvl">Cargo Level</label>
+                            <select (change)="updatePitEdit($event)" value="{{editdataPit.cargolevel}}" id="cargolevel" class="form-control form-control-lg">
+                              <option>Choose...</option>
+                              <option value=0>0</option>
+                              <option value=1>1</option>
+                              <option value=2>2</option>
+                              <option value=3>3</option>
+                            </select>
+                            <label for="hatchlvl">Hatch Level</label>
+                            <select (change)="updatePitEdit($event)" value="{{editdataPit.hatchlevel}}" id="hatchlevel" class="form-control form-control-lg">
+                              <option>Choose...</option>
+                              <option value=0>0</option>
+                              <option value=1>1</option>
+                              <option value=2>2</option>
+                              <option value=3>3</option>
+                            </select>
+                            <hr>
+                          </div>
+                          
+                          <div *ngIf="bs[7].b">
+                            <span class="badge badge-info">Speed</span>
+                            <br>
+                            <label for="robotspeed">Robot Speed</label>
+                            <select (change)="updatePitEdit($event)" value="{{editdataPit.speed}}" id="speed" class="form-control form-control-lg">
+                              <option>Choose...</option>
+                              <option value="Slow">Slow</option>
+                              <option value="Medium">Medium</option>
+                              <option value="Fast">Fast</option>
+                            </select>
+                            <label for="hatchpickup">Hatch Pickup Speed</label>
+                            <select (change)="updatePitEdit($event)" value="{{editdataPit.hatchpickupspeed}}" id="hatchpickupspeed" class="form-control form-control-lg">
+                              <option>Choose...</option>
+                              <option value="Slow">Slow</option>
+                              <option value="Medium">Medium</option>
+                              <option value="Fast">Fast</option>
+                            </select>
+                            <label for="cargopickup">Cargo Pickup Speed</label>
+                            <select (change)="updatePitEdit($event)" value="{{editdataPit.cargopickupspeed}}" id="cargopickupspeed" class="form-control form-control-lg">
+                              <option>Choose...</option>
+                              <option value="Slow">Slow</option>
+                              <option value="Medium">Medium</option>
+                              <option value="Fast">Fast</option>
+                            </select>
+                            <hr>
+                          </div>
+                          
+                          <div *ngIf="bs[8].b">
+                            <span class="badge badge-info">End Game</span>
+                            <br>
+                            <label for="platform">Platform Climb</label>
+                            <select (change)="updatePitEdit($event)" value="{{editdataPit.climbability}}" id="climbability" class="form-control form-control-lg">
+                              <option>Choose...</option>
+                              <option value="Level1">Level0</option>
+                              <option value="Level1">Level1</option>
+                              <option value="Only_Level2">Only_Level2</option>
+                              <option value="Only_Level3">Only_Level3</option>
+                              <option value="Level3_And_2">Level3_And_2</option>
+                              <option value="Level3_Buddy_1">Level3_Buddy_1</option>
+                              <option value="Level3_Buddy_2">Level3_Buddy_2</option>
+                              <option value="Level2_Buddy">Level2_Buddy</option>
+                              <option value="Level3_And_2_Buddy">Level3_And_2_Buddy</option>
+                            </select>
+                            <hr>
+                          </div>
+                          
+                          <div *ngIf="bs[9].b">
+                            <span class="badge badge-info">Strategy</span>
+                            <br>
+                            <label for="preference">Preference</label>
+                            <select (change)="updatePitEdit($event)" value="{{editdataPit.stra}}" id="stra" class="form-control form-control-lg">
+                              <option>Choose...</option>
+                              <option value="Defense">Defense</option>
+                              <option value="CargoShip">CargoShip</option>
+                              <option value="Rocket">Rocket</option>
+                              <option value="They can do everything">They can do everything</option>
+                            </select>
+                            <hr>
+                          </div>
+                          
+                          <div *ngIf="bs[10].b">
+                            <span class="badge badge-info">Driver Experience</span>
+                            <br>
+                            <label for="years">Years of Driving</label>
+                            <select (change)="updatePitEdit($event)" value="{{editdataPit.driver}}" id="driver" class="form-control form-control-lg">
+                              <option>Choose...</option>
+                              <option value="First Year">First Year</option>
+                              <option value="Second Year">Second Year</option>
+                              <option value="Third Year">Third Year</option>
+                              <option value="Fourth Year">Fourth Year</option>
+                            </select>
+                            <hr>
+                          </div>
+                          
+                          <div *ngIf="bs[11].b">
+                            <span class="badge badge-info">Questions to ask</span>
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Question</span>
+                            </div>
+                            <textarea (input)="updatePitEdit($event)" value="{{editdataPit.question}}" id="question" class="form-control" aria-label="With textarea" placeholder="Like Q1:....Q2:...."></textarea>
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Answer</span>
+                            </div>
+                            <textarea (input)="updatePitEdit($event)" value="{{editdataPit.answer}}" id="answer" class="form-control" aria-label="With textarea" placeholder="Like A1:....A2:...."></textarea>
+                            <hr>
+                          </div>
+                          
+                          <div *ngIf="bs[12].b">
+                            <span class="badge badge-info">Write your note here</span>
+                            <textarea (input)="updatePitEdit($event)" value="{{editdataPit.notes}}" id="notes" class="form-control" aria-label="With textarea" placeholder="Notes Here"></textarea>
+                          </div>
+                        
+                        </div>
+                        <div class="modal-footer">
+                          <button (click)="setEditingToFalse()" class="btn btn-primary" data-dismiss="modal">Close</button>
+                          <button class="btn btn-outline-success mr-2" placement="top" ngbPopover="Your data updated" popoverTitle="Nice!!">
+                            Save changes
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+              </div>
+              
+            
+            
+            <!---------------all reference to this one page------------->
+            </div>
+
+            
+            <div class="tab-pane fade" id="data" role="tabpanel" aria-labelledby="list-messages-list">
+              <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home"
+                    aria-selected="true">Local Data</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile"
+                    aria-selected="false">Global</a>
+                </li>
+            
+              </ul>
+              <div class="tab-content" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+            
+            
+            
+            
+                  <!--<div id="tableid">
+                          <table datatable class="row-border hover" id="personal" >
+                          <thead>
+                              <tr>
+                                <th *ngFor="let col of currentOptionInner">{{col}}</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let row of currentData">
+                                <td *ngFor="let col of col_index">{{row[col]}}</td>
+                              </tr>  
+                            </tbody>
+                          </table>
+                          </div>-->
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#yourdataA">
+                    View Data in Average
+                  </button>
+            
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#yourdata">
+                    View Data in Total
+                  </button>
+            
+                  <!-- Modal -->
+                  <div class="modal fade bd-example-modal-xl" id="yourdata" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-xl">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Data From Your Scouts(Total)</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <!----------------------------->
+                          <a href="#" class="badge badge-success">Current ranking elements</a>
+                          <div class="input-group mb-3">
+                            <select multiple (change)="loadrank()" id="rankOpt" class="form-control form-control-sm">
+                              <option *ngIf="!rankperference.totalautopoint" value="totalautopoint">Total Auto Pnts</option>
+                              <option *ngIf="rankperference.totalautopoint" value="totalautopoint" selected>Total Auto Pnts</option>
+            
+                              <option *ngIf="!rankperference.autohatch" value="autohatch">Hatch in Auto</option>
+                              <option *ngIf="rankperference.autohatch" value="autohatch" selected>Hatch in Auto</option>
+            
+                              <option *ngIf="!rankperference.autocargo" value="autocargo">Cargo in Auto</option>
+                              <option *ngIf="rankperference.autocargo" value="autocargo" selected>Cargo in Auto</option>
+            
+                              <option *ngIf="!rankperference.totalcargo" value="totalcargo">Total Cargo</option>
+                              <option *ngIf="rankperference.totalcargo" value="totalcargo" selected>Total Cargo</option>
+            
+                              <option *ngIf="!rankperference.totalhatch" value="totalhatch">Total Hatch</option>
+                              <option *ngIf="rankperference.totalhatch" value="totalhatch" selected>Total Hatch</option>
+            
+                              <option *ngIf="!rankperference.cargolvl1" value="cargolvl1">Cargo Level1</option>
+                              <option *ngIf="rankperference.cargolvl1" value="cargolvl1" selected>Cargo Level1</option>
+            
+                              <option *ngIf="!rankperference.cargolvl2" value="cargolvl2">Cargo Level2</option>
+                              <option *ngIf="rankperference.cargolvl2" value="cargolvl2" selected>Cargo Level2</option>
+            
+                              <option *ngIf="!rankperference.cargolvl3" value="cargolvl3">Cargo Level3</option>
+                              <option *ngIf="rankperference.cargolvl3" value="cargolvl3" selected>Cargo Level3</option>
+            
+                              <option *ngIf="!rankperference.hatchlvl1" value="hatchlvl1">Hatch Level1</option>
+                              <option *ngIf="rankperference.hatchlvl1" value="hatchlvl1" selected>Hatch Level1</option>
+            
+                              <option *ngIf="!rankperference.hatchlvl2" value="hatchlvl2">Hatch Level2</option>
+                              <option *ngIf="rankperference.hatchlvl2" value="hatchlvl2" selected>Hatch Level2</option>
+            
+                              <option *ngIf="!rankperference.hatchlvl3" value="hatchlvl3">Hatch Level3</option>
+                              <option *ngIf="rankperference.hatchlvl3" value="hatchlvl3" selected>Hatch Level3</option>
+            
+                              <option *ngIf="!rankperference.cargoship" value="cargoship">Cargo Cargoship</option>
+                              <option *ngIf="rankperference.cargoship" value="cargoship" selected>Cargo Cargoship</option>
+            
+                              <option *ngIf="!rankperference.hatchship" value="hatchship">Hatch Cargoship</option>
+                              <option *ngIf="rankperference.hatchship" value="hatchship" selected>Hatch Cargoship</option>
+            
+                              <option *ngIf="!rankperference.defenseblock" value="defenseblock">Block Other Robot</option>
+                              <option *ngIf="rankperference.defenseblock" value="defenseblock" selected>Block Other Robot</option>
+            
+                              <option *ngIf="!rankperference.defensedrop" value="defensedrop">Drop Game Piece Opponent</option>
+                              <option *ngIf="rankperference.defensedrop" value="defensedrop" selected>Drop Game Piece Opponent</option>
+            
+                              <option *ngIf="!rankperference.hatchdrop" value="hatchdrop">Dropped Hatch</option>
+                              <option *ngIf="rankperference.hatchdrop" value="hatchdrop" selected>Dropped Hatch</option>
+            
+                              <option *ngIf="rankperference.cargodrop" value="cargodrop" selected>Dropped Cargo</option>
+                              <option *ngIf="!rankperference.cargodrop" value="cargodrop">Dropped Cargo</option>
+            
+            
+                            </select>
+            
+                          </div>
+            
+                          <div class="input-group mb-3" id="exportgroup">
+                            <input type="text" class="form-control" id="fileName" placeholder="File Name" aria-label="Recipient's username"
+                              aria-describedby="button-addon2">
+                            <div class="input-group-append">
+                              <button class="btn btn-outline-success" (click)="onBtExport()" id="button-addon2">Export</button>
+                            </div>
+                          </div>
+                          <button *ngIf="selectLoader" class="btn btn-primary" disabled>
+                            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                            Editing your database...
+                          </button>
+                          <span *ngIf="atleastoneteam" class="badge badge-danger">At least pick one team</span>
+                          <input (input)="textSearch('total')" type="text" id="filter-box" placeholder="Filter">
+                          <ag-grid-angular id="tableid" style="width: 100%; height: 300px;" class="ag-theme-balham" [rowData]="currentData"
+                            [columnDefs]="col_index" [domLayout]="autoHeight" (gridReady)="onGridReady($event)" [pagination]=true
+                            [suppressRowClickSelection]=true [groupSelectsChildren]=true [rowSelection]="rowSelection"
+                            [enableRangeSelection]=true [multiSortKey]="multiSortKey" cacheQuickFilter=true>
+                          </ag-grid-angular>
+                          <!----------------------------->
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-primary">Save changes</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+            
+                  <!--<table mat-table [dataSource]=currentData>
+                              <ng-container matColumnDef="position">
+                                <th mat-header-cell *matHeaderCellDef> No. </th>
+                                <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+                              </ng-container>
+                          </table>-->
+            
+            
+            
+                  <div class="modal fade bd-example-modal-xl" id="yourdataA" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-xl">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Data From Your Scouts(Average)</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+            
+                          <a href="#" class="badge badge-success">Current ranking elements</a>
+                          <div class="input-group mb-3">
+                            <select multiple (change)="loadrankA()" id="rankOptA" class="form-control form-control-sm">
+                              <option *ngIf="!rankperference.totalautopoint" value="totalautopointA">Total Auto Pnts</option>
+                              <option *ngIf="rankperference.totalautopoint" value="totalautopointA" selected>Total Auto Pnts</option>
+            
+                              <option *ngIf="!rankperference.autohatch" value="autohatchA">Hatch in Auto</option>
+                              <option *ngIf="rankperference.autohatch" value="autohatchA" selected>Hatch in Auto</option>
+            
+                              <option *ngIf="!rankperference.autocargo" value="autocargoA">Cargo in Auto</option>
+                              <option *ngIf="rankperference.autocargo" value="autocargoA" selected>Cargo in Auto</option>
+            
+                              <option *ngIf="!rankperference.totalcargo" value="totalcargoA">Total Cargo</option>
+                              <option *ngIf="rankperference.totalcargo" value="totalcargoA" selected>Total Cargo</option>
+            
+                              <option *ngIf="!rankperference.totalhatch" value="totalhatchA">Total Hatch</option>
+                              <option *ngIf="rankperference.totalhatch" value="totalhatchA" selected>Total Hatch</option>
+            
+                              <option *ngIf="!rankperference.cargolvl1" value="cargolvl1A">Cargo Level1</option>
+                              <option *ngIf="rankperference.cargolvl1" value="cargolvl1A" selected>Cargo Level1</option>
+            
+                              <option *ngIf="!rankperference.cargolvl2" value="cargolvl2A">Cargo Level2</option>
+                              <option *ngIf="rankperference.cargolvl2" value="cargolvl2A" selected>Cargo Level2</option>
+            
+                              <option *ngIf="!rankperference.cargolvl3" value="cargolvl3A">Cargo Level3</option>
+                              <option *ngIf="rankperference.cargolvl3" value="cargolvl3A" selected>Cargo Level3</option>
+            
+                              <option *ngIf="!rankperference.hatchlvl1" value="hatchlvl1A">Hatch Level1</option>
+                              <option *ngIf="rankperference.hatchlvl1" value="hatchlvl1A" selected>Hatch Level1</option>
+            
+                              <option *ngIf="!rankperference.hatchlvl2" value="hatchlvl2A">Hatch Level2</option>
+                              <option *ngIf="rankperference.hatchlvl2" value="hatchlvl2A" selected>Hatch Level2</option>
+            
+                              <option *ngIf="!rankperference.hatchlvl3" value="hatchlvl3A">Hatch Level3</option>
+                              <option *ngIf="rankperference.hatchlvl3" value="hatchlvl3A" selected>Hatch Level3</option>
+            
+                              <option *ngIf="!rankperference.cargoship" value="cargoshipA">Cargo Cargoship</option>
+                              <option *ngIf="rankperference.cargoship" value="cargoshipA" selected>Cargo Cargoship</option>
+            
+                              <option *ngIf="!rankperference.hatchship" value="hatchshipA">Hatch Cargoship</option>
+                              <option *ngIf="rankperference.hatchship" value="hatchshipA" selected>Hatch Cargoship</option>
+            
+                              <option *ngIf="!rankperference.defenseblock" value="defenseblockA">Block Other Robot</option>
+                              <option *ngIf="rankperference.defenseblock" value="defenseblockA" selected>Block Other Robot</option>
+            
+                              <option *ngIf="!rankperference.defensedrop" value="defensedropA">Drop Game Piece Opponent</option>
+                              <option *ngIf="rankperference.defensedrop" value="defensedropA" selected>Drop Game Piece Opponent</option>
+            
+                              <option *ngIf="!rankperference.hatchdrop" value="hatchdropA">Dropped Hatch</option>
+                              <option *ngIf="rankperference.hatchdrop" value="hatchdropA" selected>Dropped Hatch</option>
+            
+                              <option *ngIf="rankperference.cargodrop" value="cargodropA" selected>Dropped Cargo</option>
+                              <option *ngIf="!rankperference.cargodrop" value="cargodropA">Dropped Cargo</option>
+                            </select>
+            
+                          </div>
+            
+                          <div class="input-group mb-3" id="exportgroup">
+                            <input type="text" class="form-control" id="fileNameA" placeholder="File Name" aria-label="Recipient's username"
+                              aria-describedby="button-addon2">
+                            <div class="input-group-append">
+                              <button class="btn btn-outline-success" (click)="onBtExportA()" id="button-addon2">Export</button>
+                            </div>
+                          </div>
+                          <button *ngIf="selectLoaderA" class="btn btn-primary" disabled>
+                            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                            Editing your database...
+                          </button>
+                          <span *ngIf="atleastoneteamA" class="badge badge-danger">At least pick one team</span>
+            
+                          <input (input)="textSearch('average')" type="text" id="filter-boxA" placeholder="Filter">
+                          <ag-grid-angular id="tableid" style="width: 100%; height: 300px;" class="ag-theme-balham" [rowData]="currentDataA"
+                            [columnDefs]="col_indexA" [domLayout]="autoHeight" (gridReady)="onGridReadyA($event)" [pagination]=true
+                            [suppressRowClickSelection]=true [groupSelectsChildren]=true [rowSelection]="rowSelection"
+                            [enableRangeSelection]=true [multiSortKey]="multiSortKey" cacheQuickFilter=true>
+                          </ag-grid-angular>
+            
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-primary">Save changes</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+            
+                </div>
+            
+                <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                  glo
                 </div>
               </div>
             </div>
-            </div>
-          </div>
-          
-          
-        </div>  
-        <div class="tab-pane fade" id="data" role="tabpanel" aria-labelledby="list-messages-list">
-          <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-            <li class="nav-item">
-              <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home"
-                aria-selected="true">Local Data</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile"
-                aria-selected="false">Global</a>
-            </li>
+            <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
+              <h5>Team Selection <span class="badge badge-info">Drag the rows to rank</span></h5>
             
-          </ul>
-          <div class="tab-content" id="pills-tabContent">
-            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-
-              
-              
-
-              <!--<div id="tableid">
-              <table datatable class="row-border hover" id="personal" >
-              <thead>
-                  <tr>
-                    <th *ngFor="let col of currentOptionInner">{{col}}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let row of currentData">
-                    <td *ngFor="let col of col_index">{{row[col]}}</td>
-                  </tr>  
-                </tbody>
-              </table>
-              </div>-->
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#yourdataA">
-                View Data in Average
+              <!-- Button trigger modal -->
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#sel">
+                View Your Selections
               </button>
-
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#yourdata">
-                View Data in Total
-              </button>
-              
+            
               <!-- Modal -->
-              <div class="modal fade bd-example-modal-xl" id="yourdata" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-xl">
+              <div class="modal fade" id="sel" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable" role="document">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalLabel">Data From Your Scouts(Total)</h5>
+                      <h5 class="modal-title" id="exampleModalScrollableTitle">Teams that your team like</h5>
                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                       </button>
                     </div>
                     <div class="modal-body">
-                      <!----------------------------->
-                      <a href="#" class="badge badge-success">Current ranking elements</a>
-                      <div class="input-group mb-3">
-                        <select multiple (change)="loadrank()" id="rankOpt" class="form-control form-control-sm">
-                          <option *ngIf="!rankperference.totalautopoint" value="totalautopoint">Total Auto Pnts</option>
-                          <option *ngIf="rankperference.totalautopoint" value="totalautopoint" selected>Total Auto Pnts</option>
-
-                          <option *ngIf="!rankperference.autohatch" value="autohatch">Hatch in Auto</option>
-                          <option *ngIf="rankperference.autohatch" value="autohatch" selected>Hatch in Auto</option>
-                          
-                          <option *ngIf="!rankperference.autocargo" value="autocargo">Cargo in Auto</option>
-                          <option *ngIf="rankperference.autocargo" value="autocargo" selected>Cargo in Auto</option>
-
-                          <option *ngIf="!rankperference.totalcargo" value="totalcargo">Total Cargo</option>
-                          <option *ngIf="rankperference.totalcargo" value="totalcargo" selected>Total Cargo</option>
-
-                          <option *ngIf="!rankperference.totalhatch" value="totalhatch">Total Hatch</option>
-                          <option *ngIf="rankperference.totalhatch" value="totalhatch" selected>Total Hatch</option>
-
-                          <option *ngIf="!rankperference.cargolvl1" value="cargolvl1">Cargo Level1</option>
-                          <option *ngIf="rankperference.cargolvl1" value="cargolvl1" selected>Cargo Level1</option>
-
-                          <option *ngIf="!rankperference.cargolvl2" value="cargolvl2">Cargo Level2</option>
-                          <option *ngIf="rankperference.cargolvl2" value="cargolvl2" selected>Cargo Level2</option>
-
-                          <option *ngIf="!rankperference.cargolvl3" value="cargolvl3">Cargo Level3</option>
-                          <option *ngIf="rankperference.cargolvl3" value="cargolvl3" selected>Cargo Level3</option>
-
-                          <option *ngIf="!rankperference.hatchlvl1" value="hatchlvl1">Hatch Level1</option>
-                          <option *ngIf="rankperference.hatchlvl1" value="hatchlvl1" selected>Hatch Level1</option>
-
-                          <option *ngIf="!rankperference.hatchlvl2" value="hatchlvl2">Hatch Level2</option>
-                          <option *ngIf="rankperference.hatchlvl2" value="hatchlvl2" selected>Hatch Level2</option>
-
-                          <option *ngIf="!rankperference.hatchlvl3" value="hatchlvl3">Hatch Level3</option>
-                          <option *ngIf="rankperference.hatchlvl3" value="hatchlvl3" selected>Hatch Level3</option>
-
-                          <option *ngIf="!rankperference.cargoship" value="cargoship">Cargo Cargoship</option>
-                          <option *ngIf="rankperference.cargoship" value="cargoship" selected>Cargo Cargoship</option>
-
-                          <option *ngIf="!rankperference.hatchship" value="hatchship">Hatch Cargoship</option>
-                          <option *ngIf="rankperference.hatchship" value="hatchship" selected>Hatch Cargoship</option>
-
-                          <option *ngIf="!rankperference.defenseblock" value="defenseblock">Block Other Robot</option>
-                          <option *ngIf="rankperference.defenseblock" value="defenseblock" selected>Block Other Robot</option>
-
-                          <option *ngIf="!rankperference.defensedrop" value="defensedrop">Drop Game Piece Opponent</option>
-                          <option *ngIf="rankperference.defensedrop" value="defensedrop" selected>Drop Game Piece Opponent</option>
-
-                          <option *ngIf="!rankperference.hatchdrop" value="hatchdrop">Dropped Hatch</option>
-                          <option *ngIf="rankperference.hatchdrop" value="hatchdrop" selected>Dropped Hatch</option>
-
-                          <option *ngIf="rankperference.cargodrop" value="cargodrop" selected>Dropped Cargo</option>                          
-                          <option *ngIf="!rankperference.cargodrop" value="cargodrop">Dropped Cargo</option>
-
-
-                        </select>
-                      
-                      </div>
-                      
-                      <div class="input-group mb-3" id="exportgroup">
-                        <input type="text" class="form-control" id="fileName" placeholder="File Name" aria-label="Recipient's username"
-                          aria-describedby="button-addon2">
-                        <div class="input-group-append">
-                          <button class="btn btn-outline-success" (click)="onBtExport()" id="button-addon2">Export</button>
-                        </div>
-                      </div>
                       <button *ngIf="selectLoader" class="btn btn-primary" disabled>
                         <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
                         Editing your database...
                       </button>
-                      <span *ngIf="atleastoneteam" class="badge badge-danger">At least pick one team</span>
-                      <input (input)="textSearch('total')" type="text" id="filter-box" placeholder="Filter">
-                      <ag-grid-angular id="tableid" style="width: 100%; height: 300px;" class="ag-theme-balham" [rowData]="currentData"
-                        [columnDefs]="col_index" [domLayout]="autoHeight" (gridReady)="onGridReady($event)"
-                        [pagination]=true [suppressRowClickSelection]=true [groupSelectsChildren]=true [rowSelection]="rowSelection"
-                        [enableRangeSelection]=true [multiSortKey]="multiSortKey" cacheQuickFilter=true>
-                      </ag-grid-angular>
-                      <!----------------------------->
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-primary">Save changes</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <!--<table mat-table [dataSource]=currentData>
-                  <ng-container matColumnDef="position">
-                    <th mat-header-cell *matHeaderCellDef> No. </th>
-                    <td mat-cell *matCellDef="let element"> {{element.position}} </td>
-                  </ng-container>
-              </table>-->
-
-             
-              
-              <div class="modal fade bd-example-modal-xl" id="yourdataA" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog modal-xl">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalLabel">Data From Your Scouts(Average)</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div class="modal-body">
-                      
                       <a href="#" class="badge badge-success">Current ranking elements</a>
-                      <div class="input-group mb-3">
-                        <select multiple (change)="loadrankA()" id="rankOptA" class="form-control form-control-sm">
-                          <option *ngIf="!rankperference.totalautopoint" value="totalautopointA">Total Auto Pnts</option>
-                          <option *ngIf="rankperference.totalautopoint" value="totalautopointA" selected>Total Auto Pnts</option>
-                          
-                          <option *ngIf="!rankperference.autohatch" value="autohatchA">Hatch in Auto</option>
-                          <option *ngIf="rankperference.autohatch" value="autohatchA" selected>Hatch in Auto</option>
-                          
-                          <option *ngIf="!rankperference.autocargo" value="autocargoA">Cargo in Auto</option>
-                          <option *ngIf="rankperference.autocargo" value="autocargoA" selected>Cargo in Auto</option>
-                          
-                          <option *ngIf="!rankperference.totalcargo" value="totalcargoA">Total Cargo</option>
-                          <option *ngIf="rankperference.totalcargo" value="totalcargoA" selected>Total Cargo</option>
-                          
-                          <option *ngIf="!rankperference.totalhatch" value="totalhatchA">Total Hatch</option>
-                          <option *ngIf="rankperference.totalhatch" value="totalhatchA" selected>Total Hatch</option>
-                          
-                          <option *ngIf="!rankperference.cargolvl1" value="cargolvl1A">Cargo Level1</option>
-                          <option *ngIf="rankperference.cargolvl1" value="cargolvl1A" selected>Cargo Level1</option>
-                          
-                          <option *ngIf="!rankperference.cargolvl2" value="cargolvl2A">Cargo Level2</option>
-                          <option *ngIf="rankperference.cargolvl2" value="cargolvl2A" selected>Cargo Level2</option>
-                          
-                          <option *ngIf="!rankperference.cargolvl3" value="cargolvl3A">Cargo Level3</option>
-                          <option *ngIf="rankperference.cargolvl3" value="cargolvl3A" selected>Cargo Level3</option>
-                          
-                          <option *ngIf="!rankperference.hatchlvl1" value="hatchlvl1A">Hatch Level1</option>
-                          <option *ngIf="rankperference.hatchlvl1" value="hatchlvl1A" selected>Hatch Level1</option>
-                          
-                          <option *ngIf="!rankperference.hatchlvl2" value="hatchlvl2A">Hatch Level2</option>
-                          <option *ngIf="rankperference.hatchlvl2" value="hatchlvl2A" selected>Hatch Level2</option>
-                          
-                          <option *ngIf="!rankperference.hatchlvl3" value="hatchlvl3A">Hatch Level3</option>
-                          <option *ngIf="rankperference.hatchlvl3" value="hatchlvl3A" selected>Hatch Level3</option>
-                          
-                          <option *ngIf="!rankperference.cargoship" value="cargoshipA">Cargo Cargoship</option>
-                          <option *ngIf="rankperference.cargoship" value="cargoshipA" selected>Cargo Cargoship</option>
-                          
-                          <option *ngIf="!rankperference.hatchship" value="hatchshipA">Hatch Cargoship</option>
-                          <option *ngIf="rankperference.hatchship" value="hatchshipA" selected>Hatch Cargoship</option>
-                          
-                          <option *ngIf="!rankperference.defenseblock" value="defenseblockA">Block Other Robot</option>
-                          <option *ngIf="rankperference.defenseblock" value="defenseblockA" selected>Block Other Robot</option>
-                          
-                          <option *ngIf="!rankperference.defensedrop" value="defensedropA">Drop Game Piece Opponent</option>
-                          <option *ngIf="rankperference.defensedrop" value="defensedropA" selected>Drop Game Piece Opponent</option>
-                          
-                          <option *ngIf="!rankperference.hatchdrop" value="hatchdropA">Dropped Hatch</option>
-                          <option *ngIf="rankperference.hatchdrop" value="hatchdropA" selected>Dropped Hatch</option>
-                          
-                          <option *ngIf="rankperference.cargodrop" value="cargodropA" selected>Dropped Cargo</option>
-                          <option *ngIf="!rankperference.cargodrop" value="cargodropA">Dropped Cargo</option>
-                        </select>
-              
-                      </div>
-              
-                      <div class="input-group mb-3" id="exportgroup">
-                        <input type="text" class="form-control" id="fileNameA" placeholder="File Name" aria-label="Recipient's username"
-                          aria-describedby="button-addon2">
-                        <div class="input-group-append">
-                          <button class="btn btn-outline-success" (click)="onBtExportA()" id="button-addon2">Export</button>
-                        </div>
-                      </div>
-                      <button *ngIf="selectLoaderA" class="btn btn-primary" disabled>
-                        <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
-                        Editing your database...
-                      </button>
-                      <span *ngIf="atleastoneteamA" class="badge badge-danger">At least pick one team</span>
-                      
-                      <input (input)="textSearch('average')" type="text" id="filter-boxA" placeholder="Filter">
-                      <ag-grid-angular id="tableid" style="width: 100%; height: 300px;" class="ag-theme-balham" [rowData]="currentDataA"
-                        [columnDefs]="col_indexA" [domLayout]="autoHeight" (gridReady)="onGridReadyA($event)"
-                        [pagination]=true [suppressRowClickSelection]=true [groupSelectsChildren]=true [rowSelection]="rowSelection"
-                        [enableRangeSelection]=true [multiSortKey]="multiSortKey" cacheQuickFilter=true>
+                      <select class="form-control form-control-sm" id="selectTeamElement" value="{{selctedPerference}}" (change)="updateAndGetSelectTeamElement()">
+                        <option value="">Choose.....</option>
+            
+                        <option *ngIf="!selctedPerference[General_Ability]" value="General_Ability">General Ability</option>
+                        <option *ngIf="selctedPerference[General_Ability]" value="General_Ability" selected>General Ability</option>
+            
+                        <option *ngIf="!selctedPerference[Teleop_Average]" value="Teleop_Average">Teleop(average)</option>
+                        <option *ngIf="selctedPerference[Teleop_Average]" value="Teleop_Average" selected>Teleop(average)</option>
+            
+                        <option *ngIf="!selctedPerference[Autonomous_Average]" value="Autonomous_Average">Autonomous(average)</option>
+                        <option *ngIf="selctedPerference[General_Ability]" value="General_Ability" selected>Autonomous(average)</option>
+            
+                        <option *ngIf="!selctedPerference[Teleop_Total]" value="Teleop_Total">Teleop(total)</option>
+                        <option *ngIf="selctedPerference[Teleop_Total]" value="Teleop_Total" selected>Teleop(total)</option>
+            
+                        <option *ngIf="!selctedPerference[Autonomous_Total]" value="Autonomous_Total">Autonomous(total)</option>
+                        <option *ngIf="selctedPerference[Autonomous_Total]" value="Autonomous_Total" selected>Autonomous(total)</option>
+            
+                      </select>
+            
+                      <br>
+                      <input (input)="textSearch('select')" type="text" id="filter-boxS" placeholder="Filter" />
+                      <br>
+                      <span *ngIf="managerb" class="badge badge-danger">Drag the row to set ranking</span>
+            
+                      <ag-grid-angular id="tableid" style="width: 100%; height: 300px;" class="ag-theme-balham" [rowData]="currentData3"
+                        [columnDefs]="col_index3" [pagination]=false [suppressRowClickSelection]=true [groupSelectsChildren]=true
+                        [rowSelection]="rowSelection" [rowDragManaged]="managerb" [enableRangeSelection]="managerb" (gridReady)="onGridReady3($event)">
                       </ag-grid-angular>
-                      
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -2236,68 +2297,8 @@
                     </div>
                   </div>
                 </div>
-              </div> 
-
-            </div>
-
-            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-              glo
-            </div>
-           </div>
-        </div>
-        <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
-          <h5>Team Selection <span class="badge badge-info">Drag the rows to rank</span></h5>
-
-          <!-- Button trigger modal -->
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#sel">
-            View Your Selections
-          </button>
-          
-          <!-- Modal -->
-          <div class="modal fade" id="sel" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-scrollable" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalScrollableTitle">Teams that your team like</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <button *ngIf="selectLoader" class="btn btn-primary" disabled>
-                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
-                    Editing your database...
-                  </button>
-                  <a href="#" class="badge badge-success">Current ranking elements</a>
-                  <select class="form-control form-control-sm" id="selectTeamElement" (change)="getselectTeamElement()">
-                    <option value="">Choose.....</option>
-                    <option value="General Ability">General Ability</option>
-                    <option value="Teleop(total)">Teleop(total)</option>
-                    <option value="Autonomous(total)">Autonomous(total)</option>
-                    <option value="Teleop(average)">Teleop(average)</option>
-                    <option value="Autonomous(average)">Autonomous(average)</option>
-                  </select>
-                  
-                  <br>
-                  <input (input)="textSearch('select')" type="text" id="filter-boxS" placeholder="Filter" />
-                  <br>
-                  <span *ngIf="managerb" class="badge badge-danger">Drag the row to set ranking</span>
-                  
-                  <ag-grid-angular id="tableid" style="width: 100%; height: 300px;" class="ag-theme-balham" [rowData]="currentData3"
-                    [columnDefs]="col_index3" 
-                    [pagination]=false [suppressRowClickSelection]=true [groupSelectsChildren]=true [rowSelection]="rowSelection"
-                   [rowDragManaged]=true [enableRangeSelection]=true 
-                  
-                    (gridReady)="onGridReady3($event)">
-                  </ag-grid-angular>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-              </div>
-            </div>
+            
+   
           </div>
 
         
@@ -2306,12 +2307,484 @@
         <div class="tab-pane fade" id="list-account" role="tabpanel" aria-labelledby="list-messages-list">
         account
         </div>
+
+
         <div class="tab-pane fade" id="list-manage" role="tabpanel" aria-labelledby="list-messages-list">
-          manage
+
+          <ul class="nav nav-pills mb-3" id="manage-tab" role="tablist">
+            <li class="nav-item">
+              <button class="btn btn-outline-primary btn-sm active" id="pills-home-tab" data-toggle="pill" href="#assign-home" role="tab" aria-controls="pills-home"
+                aria-selected="true">Assign Tasks</button>
+            </li>
+            <li class="nav-item">
+              <button class="btn btn-outline-primary btn-sm" id="pills-pass-tab" data-toggle="pill" href="#pass-profile" role="tab" aria-controls="pills-profile"
+                aria-selected="false">Edit Role</button>
+            </li>
+           
+          </ul>
+          <div class="tab-content" id="pills-tabContent">
+
+
+            <div class="tab-pane fade show active" id="assign-home" role="tabpanel" aria-labelledby="pills-home-tab">
+              <h5>Your scouts <span class="badge badge-primary">{{team_member_list.length}}</span></h5>
+              <span class="badge badge-warning">You're at {{currentRegionMain}}</span>
+              <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" id="home-tab" data-toggle="tab" href="#assign_add" role="tab" aria-controls="home"
+                    aria-selected="true">Add</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="profile-tab" data-toggle="tab" href="#assign_edit" role="tab" aria-controls="profile"
+                    aria-selected="false">Edit</a>
+                </li>
+                
+              </ul>
+              <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="assign_add" role="tabpanel" aria-labelledby="home-tab">
+
+                <i (click)="tipOut()" id="manage_tip" class="fas fa-question-circle"></i>
+                  <div *ngIf="manage_tipb" class="card" style="width: 95%;">
+                    <div class="card-body">
+                      <h5 class="card-title">Tips</h5>
+                      <p class="card-text">
+                        1.Right "#" is the first match for the scout to scout(inclusive)
+                      </p>
+                      <p class="card-text">
+                        2.Left "#" is the last match for the scout to scout(inclusive)
+                      </p>
+                      <p class="card-text">
+                        3."P" stands for position of robot. The system will give the scout the team number.
+                      </p>
+                      <a href="#" class="btn btn-primary">Full Documentation</a>
+                    </div>
+                  </div>
+                  <br />
+                  
+                  <div id="manage_scouts">
+                    <div *ngFor="let name of team_member_list;index as i;">
+                      <div id="cards_manage">
+                        <span class="badge badge-info">{{name}}</span><span id="{{name}}_warn" class="badge badge-pill badge-danger"></span>
+                        <div class="input-group mb-3">
+                          <input type="text" (change)="checkManageInput($event)" id="{{name}}_start" class="form-control" placeholder="Q1"
+                            aria-label="Username" aria-describedby="addon-wrapping">
+                  
+                          <div class="input-group-prepend">
+                            <label class="input-group-text" for="inputGroupSelect01">to</label>
+                          </div>
+                  
+                          <input type="text" (change)="checkManageInput($event)" id="{{name}}_end" class="form-control" placeholder="Q{{matchnumber_max}}"
+                            aria-label="Username" aria-describedby="addon-wrapping">
+                        </div>
+                        <div class="input-group mb-3">
+                          <select id="{{name}}_pos" class="custom-select" id="inputGroupSelect01">
+                            <option selected>P</option>
+                            <option value="Red1">Red1</option>
+                            <option value="Red2">Red2</option>
+                            <option value="Red3">Red3</option>
+                            <option value="Blue1">Blue1</option>
+                            <option value="Blue2">Blue2</option>
+                            <option value="Blue3">Blue3</option>
+                          </select>
+                          <div class="input-group-append">
+                            <button id="{{name}}" (click)="addTask($event)" class="btn btn-outline-primary mr-2" placement="top"
+                              ngbPopover="{{addErrorC.content}}" popoverTitle="{{addErrorC.title}}">ADD</button>
+                          </div>
+                        </div>
+                        <hr>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="tab-pane fade" id="assign_edit" role="tabpanel" aria-labelledby="profile-tab">
+
+                  <div *ngFor="let obj of team_member_task2">
+                    <button (click)="taskOut($event)" id="{{obj.name}}" class="btn btn-info btn-sm">{{obj.name}}<span class="badge badge-light">{{obj.task.length}}</span>
+                    <span class="sr-only">unread messages</span></button>
+                    <div id="{{obj.name}}_task" style="display: none;">
+                      <div id="taskout">
+                      <div *ngFor="let task of obj.task; index as i">
+
+                        <span class="badge badge-warning">Task{{i+1}}</span><span id="{{obj.name}}_warn" class="badge badge-pill badge-danger"></span>
+                        <div class="input-group mb-3">
+                          <input type="text" value="{{task.start}}" (change)="checkManageInput($event)" id="{{obj.name}}_start" class="form-control" placeholder="Q1"
+                            aria-label="Username" aria-describedby="addon-wrapping">
+                        
+                          <div class="input-group-prepend">
+                            <label class="input-group-text" for="inputGroupSelect01">to</label>
+                          </div>
+                        
+                          <input type="text" value="{{task.end}}" (change)="checkManageInput($event)" id="{{obj.name}}_end" class="form-control" placeholder="Q{{matchnumber_max}}"
+                            aria-label="Username" aria-describedby="addon-wrapping">
+                        </div>
+                        <div class="input-group mb-3">
+                          <select id="{{obj.name}}_pos" value="{{task.pos}}" class="custom-select" id="inputGroupSelect01">
+                            <option selected>P</option>
+                            <option value="Red1">Red1</option>
+                            <option value="Red2">Red2</option>
+                            <option value="Red3">Red3</option>
+                            <option value="Blue1">Blue1</option>
+                            <option value="Blue2">Blue2</option>
+                            <option value="Blue3">Blue3</option>
+                          </select>
+                          <div class="input-group-append">
+                            <button id="{{obj.name}}" (click)="addTask($event)" class="btn btn-outline-primary mr-2" placement="top" ngbPopover="{{addErrorC.content}}"
+                              popoverTitle="{{addErrorC.title}}">ADD</button>
+                          </div>
+                        </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+          </div>
+
+            <div class="tab-pane fade" id="pass-profile" role="tabpanel" aria-labelledby="pills-profile-tab">..</div>
+          </div>
+
         </div>
+
+
       </div>
     </div>
   </div>
   
 </div>
+
+<!---------------all reference to this one page------------->
+<div class="modal fade" id="exampleModalScrollable20" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalScrollableTitle">Edit Info</h5>
+        <div class="spinner-grow text-success" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+        <button (click)="setEditingToFalse()" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="bs2[0].b">
+          <span class="badge badge-info">Region/Event Name</span>
+          <br>
+          <span class="badge badge-info">Week</span>
+          <div class="input-group">
+            <select (change)="getEventVP3($event)" class="custom-select mr-sm-2" id="week">
+              <option value="" selected>Choose...</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="Houston">Houston Champ</option>
+              <option value="Detroit">Detroit Champ</option>
+            </select>
+          </div>
+          <span class="badge badge-info">Name</span>
+          <div class="input-group">
+
+            <select (change)="updateMatchEdit($event)" class="custom-select mr-sm-2" id="region">
+              <option value="{{editdata.region}}">{{editdata.region}}</option>
+
+              <option *ngFor="let event of editMatchEvent">{{event}}</option>
+            </select>
+          </div>
+          <hr>
+        </div>
+
+        <div *ngIf="bs2[1].b">
+          <span class="badge badge-info">Match Number</span>
+          <div class="input-group">
+            <input (input)="updateMatchEdit($event)" value="{{editdata.matchnumber}}" type="tel" class="form-control"
+              id="matchnumber" aria-describedby="emailHelp" placeholder="Enter number">
+          </div>
+          <hr>
+        </div>
+
+        <div *ngIf="bs2[2].b">
+          <span class="badge badge-info">Team Number</span>
+          <div class="input-group">
+            <input (input)="updateMatchEdit($event)" id="teamnumber" value="{{editdata.teamnumber}}" type="tel" class="form-control"
+              placeholder="Enter number">
+          </div>
+          <hr>
+        </div>
+
+        <div *ngIf="bs2[3].b">
+          <span class="badge badge-info">Image</span>
+          <input (input)="updateMatchEdit($event)" type="text" class="form-control" id="imagetitle" placeholder="Title">
+
+          <div class="input-group mb-3">
+            <div class="custom-file">
+              <input (input)="updateMatchEdit($event)" value="{{edit_file}}" type="file" class="custom-file-input" id="image2"
+                aria-describedby="inputGroupFileAddon01">
+              <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+            </div>
+            <div class="input-group-append">
+              <button (click)="updatePitImage()" class="btn btn-outline-secondary" id="" placement="left" ngbPopover="You can add a new one"
+                popoverTitle="Image Uploaded!!">Upload</button>
+            </div>
+          </div>
+          <img src="{{currentImage}}" style="height: 60px;width:60px;">
+          <hr>
+        </div>
+
+        <div *ngIf="bs2[4].b">
+          <span class="badge badge-info">Alliance</span>
+          <br>
+          <select (input)="updateMatchEdit($event)" value="{{editdata.alliance}}" id="alliance" class="form-control form-control-lg">
+            <option>Choose...</option>
+            <option value="blue">blue</option>
+            <option value="red">red</option>
+          </select>
+          <hr>
+        </div>
+
+        <div *ngIf="bs2[5].b">
+          <span class="badge badge-info">Autonomous Period</span>
+          <br>
+          <label for="autolvl">Successfully Exit Platform Level</label>
+          <select (change)="updateMatchEdit($event)" id="exitplatform" class="form-control form-control-lg">
+            <option value="{{editdata.exitplatform}}">{{editdata.exitplatform}}</option>
+            <option value=0>0</option>
+            <option value=3>1</option>
+            <option value=6>2</option>
+          </select>
+          <label for="autocargo">Auto Cargo</label>
+          <select (change)="updateMatchEdit($event)" id="autocargo" class="form-control form-control-lg">
+            <option value="{{editdata.autocargo}}">{{editdata.autocargo}}</option>
+            <option value=1>1</option>
+            <option value=2>2</option>
+            <option value=3>3</option>
+          </select>
+          <label for="autohatch">Auto Hatch</label>
+          <select (change)="updateMatchEdit($event)" id="autohatch" class="form-control form-control-lg">
+            <option value="{{editdata.autohatch}}">{{editdata.autohatch}}</option>
+            <option value=1>1</option>
+            <option value=2>2</option>
+            <option value=3>3</option>
+          </select>
+          <hr>
+        </div>
+
+        <div id="teleS" *ngIf="bs2[6].b">
+          <span class="badge badge-info">Teleop Period</span>
+          <br>
+          <br>
+          <span class="badge badge-pill badge-info">Hatch <---> Cargo</span>
+          <br>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span id="rlvlspan" class="badge badge-warning">Rocket Lvl3</span>
+            </div>
+            <div class="input-group">
+              <input id="addhatchlvl3Edit" type="text" value="{{editdata.hatchlvl3}}" class="form-control" placeholder="Hatch"
+                aria-label="Recipient's username with two button addons" aria-describedby="button-addon4" readonly>
+              <div class="input-group-append" id="button-addon4">
+                <button (click)="addhatchlvl3Edit(true)" class="btn btn-outline-warning" type="button">+</button>
+                <button (click)="addhatchlvl3Edit(false)" class="btn btn-outline-warning" type="button">-</button>
+              </div>
+
+              <input id="addcargolvl3Edit" type="text" value="{{editdata.cargolvl3}}" class="form-control" placeholder="Cargo"
+                aria-label="Recipient's username with two button addons" aria-describedby="button-addon4" readonly>
+              <div class="input-group-append" id="button-addon4">
+                <button (click)="addcargolvl3Edit(true)" class="btn btn-outline-warning" type="button">+</button>
+                <button (click)="addcargolvl3Edit(false)" class="btn btn-outline-warning" type="button">-</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="telecounter">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span id="rlvlspan" class="badge badge-warning">Rocket Lvl2</span>
+              </div>
+              <div class="input-group">
+                <input id="addhatchlvl2Edit" type="text" value="{{editdata.hatchlvl2}}" class="form-control"
+                  placeholder="Hatch" aria-label="Recipient's username with two button addons" aria-describedby="button-addon4"
+                  readonly>
+                <div class="input-group-append" id="button-addon4">
+                  <button (click)="addhatchlvl2Edit(true)" class="btn btn-outline-warning" type="button">+</button>
+                  <button (click)="addhatchlvl2Edit(false)" class="btn btn-outline-warning" type="button">-</button>
+                </div>
+
+                <input id="addcargolvl2Edit" type="text" value="{{editdata.cargolvl2}}" class="form-control"
+                  placeholder="Cargo" aria-label="Recipient's username with two button addons" aria-describedby="button-addon4"
+                  readonly>
+                <div class="input-group-append" id="button-addon4">
+                  <button (click)="addcargolvl2Edit(true)" class="btn btn-outline-warning" type="button">+</button>
+                  <button (click)="addcargolvl2Edit(false)" class="btn btn-outline-warning" type="button">-</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="telecounter">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span id="rlvlspan" class="badge badge-warning">Rocket Lvl1</span>
+              </div>
+              <div class="input-group">
+                <input id="addhatchlvl1Edit" type="text" value="{{editdata.hatchlvl1}}" class="form-control"
+                  placeholder="Hatch" aria-label="Recipient's username with two button addons" aria-describedby="button-addon4"
+                  readonly>
+                <div class="input-group-append" id="button-addon4">
+                  <button (click)="addhatchlvl1Edit(true)" class="btn btn-outline-warning" type="button">+</button>
+                  <button (click)="addhatchlvl1Edit(false)" class="btn btn-outline-warning" type="button">-</button>
+                </div>
+
+                <input id="addcargolvl1Edit" type="text" value="{{editdata.cargolvl1}}" class="form-control"
+                  placeholder="Cargo" aria-label="Recipient's username with two button addons" aria-describedby="button-addon4"
+                  readonly>
+                <div class="input-group-append" id="button-addon4">
+                  <button (click)="addcargolvl1Edit(true)" class="btn btn-outline-warning" type="button">+</button>
+                  <button (click)="addcargolvl1Edit(false)" class="btn btn-outline-warning" type="button">-</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="telecounter">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span id="rlvlspan" class="badge badge-warning">Cargo Ship</span>
+              </div>
+
+              <div class="input-group">
+                <input id="addhatchshipEdit" type="text" value="{{editdata.hatchship}}" class="form-control"
+                  placeholder="Hatch" aria-label="Recipient's username with two button addons" aria-describedby="button-addon4"
+                  readonly>
+                <div class="input-group-append" id="button-addon4">
+                  <button (click)="addhatchshipEdit(true)" class="btn btn-outline-warning" type="button">+</button>
+                  <button (click)="addhatchshipEdit(false)" class="btn btn-outline-warning" type="button">-</button>
+                </div>
+
+                <input id="addcargoshipEdit" type="text" value="{{editdata.cargoship}}" class="form-control"
+                  placeholder="Cargo" aria-label="Recipient's username with two button addons" aria-describedby="button-addon4"
+                  readonly>
+                <div class="input-group-append" id="button-addon4">
+                  <button (click)="addcargoshipEdit(true)" class="btn btn-outline-warning" type="button">+</button>
+                  <button (click)="addcargoshipEdit(false)" class="btn btn-outline-warning" type="button">-</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr>
+        </div>
+
+        <div *ngIf="bs2[7].b">
+          <span class="badge badge-info">Defense</span>
+          <br>
+          <span class="badge badge-primary">Add 1 when the opponent drops a game piece</span>
+          <div class="input-group">
+            <input id="addeditdroppieceEdit" type="tel" class="form-control" value={{editdata.defensedrop}}
+              aria-describedby="button-addon4" readonly>
+            <div class="input-group-append" id="button-addon4">
+              <button (click)="addeditdroppieceEdit(true)" class="btn btn-outline-secondary" type="button">+</button>
+              <button (click)="addeditdroppieceEdit(false)" class="btn btn-outline-secondary" type="button">-</button>
+            </div>
+          </div>
+          <span class="badge badge-primary">Add 1 when robot blocks or pushes the opponent</span>
+          <div class="input-group">
+            <input id="addeditblockEdit" type="tel" class="form-control" value={{editdata.defenseblock}}
+              aria-describedby="button-addon4" readonly>
+            <div class="input-group-append" id="button-addon4">
+              <button (click)="addeditblockEdit(true)" class="btn btn-outline-secondary" type="button">+</button>
+              <button (click)="addeditblockEdit(false)" class="btn btn-outline-secondary" type="button">-</button>
+            </div>
+          </div>
+          <hr>
+        </div>
+
+        <div *ngIf="bs2[8].b">
+          <span class="badge badge-info">Efficient</span>
+          <br>
+          <span class="badge badge-primary">Add 1 when the robot drops a hatch</span>
+          <div class="input-group">
+            <input id="addeditdrophatchEdit" type="tel" class="form-control" value={{editdata.hatchdrop}}
+              aria-describedby="button-addon4" readonly>
+            <div class="input-group-append" id="button-addon4">
+              <button (click)="addeditdrophatchEdit(true);" class="btn btn-outline-secondary" type="button">+</button>
+              <button (click)="addeditdrophatchEdit(false);" class="btn btn-outline-secondary" type="button">-</button>
+            </div>
+          </div>
+          <span class="badge badge-primary">Add 1 when the robot drops a cargo</span>
+          <div class="input-group">
+            <input id="addeditdropcargoEdit" type="tel" class="form-control" value={{editdata.cargodrop}}
+              aria-describedby="button-addon4" readonly>
+            <div class="input-group-append" id="button-addon4">
+              <button (click)="addeditdropcargoEdit(true);" class="btn btn-outline-secondary" type="button">+</button>
+              <button (click)="addeditdropcargoEdit(false);" class="btn btn-outline-secondary" type="button">-</button>
+            </div>
+
+          </div>
+          <hr>
+        </div>
+
+        <div *ngIf="bs2[9].b">
+          <span class="badge badge-info">End Game</span>
+          <br>
+          <label for="platformS">Platform Climb</label>
+          <select (change)="updateMatchEdit($event)" value="{{editdata.climbpoint}}" id="climbpoint" class="form-control form-control-lg">
+            <option>Choose...</option>
+            <option value=0>Level0</option>
+            <option value=3>Level1</option>
+            <option value=6>Only_Level2</option>
+            <option value=12>Only_Level3</option>
+            <option value=18>Level3_And_2</option>
+            <option value=24>Level3_Buddy_1</option>
+            <option value=36>Level3_Buddy_2</option>
+            <option value=12>Level2_Buddy</option>
+          </select>
+        </div>
+
+        <div *ngIf="bs2[10].b">
+          <span class="badge badge-info">Robot Fitness</span>
+          <br>
+          <label for="fit">Does the robot fit our robot?</label>
+          <select (change)="updateMatchEdit($event)" value="{{editdata.fitness}}" id="fitness" class="form-control form-control-lg">
+            <option>Choose...</option>
+            <option value=5>Completely fit our robot(first pick!!!) | 5 stars</option>
+            <option value=4>Fit our robot very well | 4 stars</option>
+            <option value=3>Fit our robot OK | 3 stars</option>
+            <option value=2>Kinds of fit.... | 2 stars</option>
+            <option value=1>Same type of robot as us | 1 star</option>
+            <option value=0>Useless for us | 0 star</option>
+          </select>
+        </div>
+
+        <div *ngIf="bs2[11].b">
+          <span class="badge badge-info">Questions to ask</span>
+          <div class="input-group-prepend">
+            <span class="input-group-text">Question</span>
+          </div>
+          <textarea (input)="updateMatchEdit($event)" value="{{editdata.question}}" id="question" class="form-control"
+            aria-label="With textarea" placeholder="Like Q1:....Q2:...."></textarea>
+          <div class="input-group-prepend">
+            <span class="input-group-text">Answer</span>
+          </div>
+
+          <textarea (input)="updateMatchEdit($event)" value="{{editdata.answer}}" id="answer" class="form-control"
+            aria-label="With textarea" placeholder="Like A1:....A2:...."></textarea>
+        </div>
+        <div *ngIf="bs2[12].b">
+          <span class="badge badge-info">Write your note here</span>
+          <textarea (input)="updateMatchEdit($event)" value="{{editdata.notes}}" id="notes" class="form-control"
+            aria-label="With textarea" placeholder="Notes Here"></textarea>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button (click)="setEditingToFalse()" class="btn btn-primary" data-dismiss="modal">Close</button>
+        <button class="btn btn-outline-success mr-2" placement="top" ngbPopover="Your data updated" popoverTitle="Nice!!">
+          Save changes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!--end of manager page-->

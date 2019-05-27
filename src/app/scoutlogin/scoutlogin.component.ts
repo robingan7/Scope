@@ -3,6 +3,7 @@ import { ScoutloginServiceService } from '../scoutlogin-service.service';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { fullWidthCellRenderer } from '../full-width-col/full-width-col.component'
+import { JsonPipe } from '@angular/common';
 declare var $;
 
 @Component({
@@ -30,12 +31,35 @@ export class ScoutloginComponent implements OnInit {
 
   selectTeamOption=[]
   selectTeamOptionInner=[]
-  
+  squence=[]
+
+  selctedPerference="General_Ability"
+
+  getCurrentRegionCycleCounter=0
+  /*
+  selctedPerference={
+    General_Ability:false,
+    Teleop_Total:false,
+    Teleop_Average: false,
+    Autonomous_Average: false,
+    Autonomous_Total: false
+  }*/
+    
   //----Page Control & Error Boolean----
   error = "No error so far"
+
+  
   loginb = !true
   scoutb = true
   managerb = true
+
+  editingCEventCount=0
+/*
+  loginb = true
+  scoutb = !true
+  managerb = !true
+*/
+
   editPitError=true
   alerttype = "alert alert-success alert-dismissible fade show"
 
@@ -46,13 +70,29 @@ export class ScoutloginComponent implements OnInit {
 
   selectLoader = false
   selectLoaderA = false
-  //--------User Info----
+
+
+  loadCurrentEvent=true
+
+  manage_tipb=false
+  //--------User Info----Remember Change Those
   name="Robin"
   role="M"
   match_scouted=3
   teamnumber = "5805"
-  currentRegionMain ="Hopper Division"
-
+  currentRegionMain ="no event"
+  currentRegionMainId=0
+  currrentEventButtonModes=[
+    {
+      style:"btn btn-primary",
+      info:["Change (at ",this.currentRegionMain," now)"]
+    },
+    {
+      style: "btn btn-danger",
+      info: ["Set current event(do this first!!)"]
+    }
+  ]
+  currrentEventButtonCurrentMode = this.currrentEventButtonModes[1]
   atleastoneteam=false
   atleastoneteamA = false
   //----Counter +1 or -1-----
@@ -93,6 +133,8 @@ export class ScoutloginComponent implements OnInit {
   currentNotSelect2 = []
 
   //-------history--------
+
+  //-----match-------
   date=[]
   datematch=[]
   currentHdate=""
@@ -103,7 +145,24 @@ export class ScoutloginComponent implements OnInit {
   historyb=true
   historybs=[]
   historybscount=0
-  
+  historyload=true
+  isFirstHistory=0
+  //------pit------
+  date_pit = []
+  datematch_pit = []
+  currentHdate_pit= ""
+  currentHmatch_pit = ""
+  history_pit = []
+  dateid_pit = []
+
+  historyb_pit = true
+  historybs_pit = []
+  historybscount_pit= 0
+  historyload_pit = true
+  isFirstHistory_pit = 0
+
+
+
   //--------data--------
   currentOption=[]
   currentRank=[]
@@ -129,6 +188,11 @@ export class ScoutloginComponent implements OnInit {
   currentSelect=[]
   currentNotSelect=[]
 
+  editingThethree=false
+  editingTeamnumber=false
+
+  //selectedoptionsVar=[] //use it to debug not using it 
+
   rankperference=
     {
       totalautopoint:false,
@@ -149,7 +213,28 @@ export class ScoutloginComponent implements OnInit {
       hatchdrop: false,
       cargodrop: false
     }
+
+  rankperferencestring =//holds the string data from above object
+    ["totalautopoint", "autohatch", "autocargo", "totalcargo", "totalhatch", "cargolvl1", "cargolvl2", "cargolvl3",
+      "hatchlvl1", "hatchlvl2", "hatchlvl3", "cargoship", "hatchship", "defenseblock", "defensedrop", "hatchdrop", "cargodrop"]
   
+  editdata = {id:-1,region:"none", matchnumber:"0", teamnumber:"0000", alliance:"blue", exitplatform:0, autohatch:0, autocargo:0,
+    cargolvl1:0, cargolvl2:0, cargolvl3:0, hatchlvl1:0, hatchlvl2:0, hatchlvl3:0, cargoship:0,hatchship:0,defenseblock:0,
+    defensedrop:0, hatchdrop:0, cargodrop:0, climbpoint:0, fitness:"0", question:"", answer:"", notes:""}
+
+  editdataPit = {
+    id: -1, teamnumber: "0000", weightunit: "", heightunit: "", weight2: 0, height2: 0, sensor: "", autotype: "",
+    autolvl: "", autochoice: "", cargolevel: "", hatchlevel: "", speed: "", cargopickupspeed: "", hatchpickupspeed: "", climbability: "",
+    stra: "", driver: "", question: "", answer: "", fitness: "0", notes: ""
+  }
+
+  editdatastring= ["id", "region", "matchnumber", "teamnumber", "alliance", "exitplatform", "autohatch", "autocargo",
+    "cargolvl1", "cargolvl2", "cargolvl3", "hatchlvl1", "hatchlvl2", "hatchlvl3", "cargoship", "hatchship", "defenseblock",
+    "defensedrop", "hatchdrop", "cargodrop", "climbpoint", "fitness", "question", "answer", "notes"];
+
+  editdatastringPit = ["id", "teamnumber", "weightunit", "heightunit", "weight2", "height2",
+    "sensor", "autotype", "autolvl", "autochoice", "cargolevel", "hatchlevel", "speed",
+    "cargopickupspeed", "hatchpickupspeed", "climbability", "stra", "driver", "question", "answer", "notes"]
 //----average-----
   gridApiA
 
@@ -196,6 +281,30 @@ export class ScoutloginComponent implements OnInit {
     { id: "#isFit", b: true },
     { id: "#isQ", b: true },
     { id: "#isN", b: true }]
+
+
+    //--------manage page------
+    
+    team_member_list=[this.name]  
+    currentYear="2019"
+    matchnumber_max=1
+    addError=[
+      {
+        title:"Added!!",
+        content:"one more?"
+      },
+      {
+        title:"Fill in",
+        content:"all space"
+      }
+    ]
+  addErrorC = {
+    title: "Fill in",
+    content: "all space"
+  }
+team_member_task:Object
+  team_member_task2=[]
+
   constructor(private Auth: ScoutloginServiceService,
               private router: Router) { 
     this.frameworkComponents = { fullWidthCellRenderer: fullWidthCellRenderer };
@@ -203,15 +312,112 @@ export class ScoutloginComponent implements OnInit {
       return true;
     };
     
-    this.getSelectedTeam(this.selectTeamOption,this.selectTeamOptionInner)
+    
     this.fullWidthCellRenderer = "fullWidthCellRenderer";
                 //this.loadrank()
                 setInterval(()=>{
+                  //------set Event--------
+                  if (this.scoutb && this.editingCEventCount == 0) {
+                    this.getcurrentRegionMain()
+                    this.editingCEventCount = -1
+                  }
+
+                  if (this.getCurrentRegionCycleCounter>1){
+                  if (this.currentRegionMain != "an event") {
+                    this.currrentEventButtonModes[0].info[1] = this.currentRegionMain
+                    this.currrentEventButtonCurrentMode = this.currrentEventButtonModes[0]
+                    this.loadCurrentEvent=false
+                  }else{
+                    this.currrentEventButtonCurrentMode = this.currrentEventButtonModes[1]
+                    this.loadCurrentEvent=false
+                  }}else{
+                    this.getCurrentRegionCycleCounter++
+                  }
+                  //---------end of set event-----
+                  if(this.scoutb){
                   this.Auth.getPitForm(this.name, this.teamnumber).subscribe(data => {
                     if(this.lengthh==0){
-                      this.loadrankA()
+                      var selectedoptionsVar:string[]
+                      this.getSelectedTeam(this.selectTeamOption, this.selectTeamOptionInner)
+
+                      this.getSelectedTeamPerference()
+                     
+                      this.Auth.getRankPerference(this.name, this.teamnumber, this.role).subscribe(data2 => {
+                        selectedoptionsVar = data2.m.split("/")
+                        this.currentOption = data2.m.split("/")
+                        for (var ele in this.currentOption) {
+                          this.rankperference[this.currentOption[ele]] = true
+                        }
+                        this.currentOptionA = data2.m.split("/")
+                        //console.log(this.currentOptionA)
+                        for (var ele in this.currentOptionA) {
+                          this.rankperference[this.currentOptionA[ele]] = true
+                          
+                        }
+                        
+                        this.currentOptionA = ["isSelect"]
+                        this.currentOptionInnerA = ["isSelect"]
+                        this.col_indexA = []
+                        this.currentOption = ["isSelect"]
+                        this.currentOptionInner = ["isSelect"]
+                        this.col_index = []
+
+
+                        var optionsVar = (<HTMLSelectElement>document.querySelector('#rankOptA')).options
+
+                        var optionsVarlist = []
+                        var selectedoptionsVarlist = []
+                        //console.log(<HTMLSelectElement>document.querySelector('#rankOptA'))
+                        for (var i = 0; i < optionsVar.length; i++) {
+                          optionsVarlist.push(optionsVar[i].value)
+                        }
+                        for (var i = 0; i < selectedoptionsVar.length; i++) {
+                          selectedoptionsVarlist.push(selectedoptionsVar[i])
+
+                        }
+                        for (var i = 0; i < optionsVar.length; i++) {
+                          if (!this.contains(selectedoptionsVarlist, optionsVarlist[i].substring(0, optionsVar[i].value.length - 1))) {
+                            this.rankperference[optionsVar[i].value.substring(0, optionsVar[i].value.length - 1)] = false
+                          } else {
+                            this.currentOptionA.push(optionsVar[i].value)
+                            this.currentOptionInnerA.push(optionsVar[i].innerText)
+                            this.currentOption.push(optionsVar[i].value.substring(0, optionsVar[i].value.length - 1))
+                            this.currentOptionInner.push(optionsVar[i].innerText)
+                            this.rankperference[optionsVar[i].value.substring(0, optionsVar[i].value.length - 1)] = true
+
+                          }
+                        }
+
+                        //console.log(this.currentOptionA)
+                        this.Auth.loadrank(this.teamnumber, this.currentRegionMain, this.currentOptionA, this.currentOptionInnerA).subscribe(data3 => {
+                          this.col_indexA = data3.col_index
+                          this.currentDataA = data3.output
+                        })
+
+
+                        this.Auth.loadrank(this.teamnumber, this.currentRegionMain, this.currentOption, this.currentOptionInner).subscribe(data4 => {
+                          this.col_index = data4.col_index
+                          this.currentData = data4.output
+
+                        })
+
+                        var temPerference = []
+                        for (var i = 1; i < this.currentOptionA.length; i++) {
+                          temPerference.push(this.currentOptionA[i].substring(0, this.currentOptionA[i].length - 1))
+                        }
+
+                        this.Auth.updaterankPerference(this.name, this.teamnumber, this.role, temPerference).subscribe(data => {
+
+                        })
+                      })
+                      this.getTeamMember()
+                      this.getMatchNumber()
                       this.lengthh=1
                     }
+
+                    //-----only run once
+
+
                     const split = data.m.split('/')
                     var count = 0;
                     for (var i = 0; i < this.bs.length; i++) {
@@ -228,8 +434,10 @@ export class ScoutloginComponent implements OnInit {
                       count=0
                     }
                   })
-
+                  
+                    if (this.currentRegionMain !="no event"){
                   //----------select team----------
+                  if (this.currentData3!=undefined){
                   var selCurrentSelected=[], selCurrentSelected2=[]
                   for(i=0;i<this.gridApi3.getSelectedRows().length;i++){
                     selCurrentSelected.push(this.gridApi3.getSelectedRows()[i].Team_Number)
@@ -237,14 +445,23 @@ export class ScoutloginComponent implements OnInit {
                   for (i = 0; i < this.currentData3.length; i++) {
                     selCurrentSelected2.push(this.currentData3[i].Team_Number)
                   }
-
-                  //console.log(this.gridApi3.gridCore.gridOptions.rowData)
-                  //console.log(<HTMLTableElement>document.querySelector('#tableid'))
-                  console.log(this.gridApi3)
+                  var currentSquence=[]
+                  this.gridApi3.forEachNode(function (rowNode, index) {
+                    currentSquence.push(rowNode.data.Team_Number + '/' + index)
+                  });
+                  if (!this.arraysEqual(this.squence, currentSquence)){
+                    this.Auth.updateRankSelectedTeam(this.teamnumber, this.currentRegionMain, currentSquence).subscribe(data=>{
+                      //console.log(data)
+                    })
+                    this.squence = currentSquence
+                  }
+ 
+                  //console.log(currentSquence)
                   if (this.arraysEqual(selCurrentSelected, selCurrentSelected2)){
                     //console.log(selCurrentSelected, selCurrentSelected2)
                   }
-
+                }
+              }
                   this.Auth.getMatchForm(this.name, this.teamnumber).subscribe(data => {
                     const split = data.m.split('/')
                     var count = 0;
@@ -263,16 +480,19 @@ export class ScoutloginComponent implements OnInit {
                     }
                   })
 
+                  if(!this.editingThethree && !this.editingTeamnumber){
                   this.getHistory()
                   //console.log(this.historybs[0].a20190416)
                   this.matchspinnerb = false
                   this.pitspinner = false
-
+                  }
                   //-------Data Total---------
                   this.select=[]
                   this.allselect=[]
                   this.currentSelect=[]
                   this.currentNotSelect = []
+
+                  if(this.currentData!=undefined){
                   for(var i=0; i<this.currentData.length;i++){
                     if (this.currentData[i].isSelect==1){
                       this.select.push(this.currentData[i].Team_Number)
@@ -288,7 +508,7 @@ export class ScoutloginComponent implements OnInit {
                       this.currentNotSelect.push(this.allselect[i])
                     }
                   }
-                  
+                }
                   if (!this.arraysEqual(this.select, this.currentSelect) && this.currentSelect.length != 0){
                     console.log(this.select, this.currentSelect, this.currentNotSelect)
                     this.selectTeam()
@@ -318,6 +538,8 @@ export class ScoutloginComponent implements OnInit {
                   this.allselectA = []
                   this.currentSelectA = []
                   this.currentNotSelectA = []
+
+                  if(this.currentDataA!=undefined){
                   for (var i = 0; i < this.currentDataA.length; i++) {
                     if (this.currentDataA[i].isSelect == 1) {
                       this.selectA.push(this.currentDataA[i].Team_Number)
@@ -344,7 +566,7 @@ export class ScoutloginComponent implements OnInit {
                     this.selectLoaderA = false
                     this.selectLoader = false
                   }
-
+                }
                   if (this.currentSelectA.length == 0 && this.selectA.length == 0) {
                     this.atleastoneteamA = true
                   } else {
@@ -356,39 +578,197 @@ export class ScoutloginComponent implements OnInit {
                       node.setSelected(true)
                     }
                   }
+                
                   )
                   //-------team select--------
                   this.gridApi3.forEachNode(function (node) {
                       node.setSelected(true)
                   })
-                  
+                }
                 },2000)
               }
 
   ngOnInit() {
-    this.Auth.getRankPerference(this.name, this.teamnumber, this.role).subscribe(data=>{
-      
-      this.currentOption=data.m.split("/")
-      for (var ele in this.currentOption)
-      {
-        this.rankperference[this.currentOption[ele]]=true
-      }
-      this.currentOptionA = data.m.split("/")
-      for (var ele in this.currentOptionA) {
-        this.rankperference[this.currentOptionA[ele]] = true
-      }
-      
-    })
-    
+    (<HTMLDivElement>document.querySelector("#start_spinner")).style.display="none"
   }
 
+  //--------manage page function-----\
+
+  getTeamMemberTask(){
+    this.Auth.getTeamMemberTask(this.teamnumber,this.name).subscribe(data=>{
+      this.team_member_task=data.m
+      var tem_list=[]
+      for(var ele in this.team_member_list){
+        tem_list.push(
+          {
+            name: this.team_member_list[ele],
+            task: this.team_member_task[this.team_member_list[ele]]
+          })
+      }
+      this.team_member_task2 = tem_list
+      console.log(this.team_member_task2)
+    })
+  }
+  taskOut(e){
+    e.preventDefault()
+    var id=e.target.id
+
+    if ((<HTMLButtonElement>document.querySelector("#" + id + "_task"))!=null){
+    if ((<HTMLButtonElement>document.querySelector("#" + id + "_task")).style.display=="none"){
+      (<HTMLButtonElement>document.querySelector("#" + id + "_task")).style.display = "inline"
+    }else{
+      (<HTMLButtonElement>document.querySelector("#" + id + "_task")).style.display = "none"
+    }
+  }
+  }
+  addTask(e){
+    e.preventDefault()
+    var name_addTask = e.target.id
+    var end_val = Number((<HTMLInputElement>document.querySelector("#" + name_addTask + "_end")).value)
+    var start_val = Number((<HTMLInputElement>document.querySelector("#" + name_addTask + "_start")).value)
+    var pos = (<HTMLInputElement>document.querySelector("#" + name_addTask + "_pos")).value
+    var task = this.currentRegionMainId + "/" + start_val + "/" + end_val + "/" + pos
+    if (end_val == 0 || start_val == 0 || pos=="P") {
+      this.addErrorC = this.addError[1]
+    } else {
+      this.addErrorC = this.addError[0]
+      this.Auth.addTask(this.teamnumber, this.role, name_addTask, task, this.name).subscribe(data => {
+        //console.log(data)
+      })
+    }
+  }
+  checkManageInput(e){
+    e.preventDefault()
+    var tem_id=e.target.id
+    var name = tem_id.split("_")[0]
+    var val = Number(e.target.value)
+    var end_val = Number((<HTMLInputElement>document.querySelector("#" + name + "_end")).value)
+    var start_val = Number((<HTMLInputElement>document.querySelector("#" + name + "_start")).value)
+    if (tem_id.split("_")[1]=="start"){
+      if (end_val<=val){
+        (<HTMLInputElement>document.querySelector("#"+name + "_warn")).innerText="Right is smaller than left"
+        document.querySelector("#Yuhan_warn").className ="badge badge-pill badge-danger"
+      } else if (val>this.matchnumber_max){
+        (<HTMLInputElement>document.querySelector("#" + name + "_warn")).innerText = "Left can't be greater than "+this.matchnumber_max
+        document.querySelector("#Yuhan_warn").className = "badge badge-pill badge-danger"
+      }
+      else{
+        (<HTMLInputElement>document.querySelector("#" + name + "_warn")).innerText = ""
+        document.querySelector("#Yuhan_warn").className = "badge badge-pill badge-successful"
+      }
+    } else if (tem_id.split("_")[1] == "end"){
+      if (start_val >=val) {
+        (<HTMLInputElement>document.querySelector("#" + name + "_warn")).innerText = "Right is smaller than left"
+        document.querySelector("#Yuhan_warn").className = "badge badge-pill badge-danger"
+      } else if (val > this.matchnumber_max) {
+        (<HTMLInputElement>document.querySelector("#" + name + "_warn")).innerText = "Right can't be greater than " + this.matchnumber_max
+        document.querySelector("#Yuhan_warn").className = "badge badge-pill badge-danger"
+      }else {
+        (<HTMLInputElement>document.querySelector("#" + name + "_warn")).innerText = ""
+        document.querySelector("#Yuhan_warn").className = "badge badge-pill badge-successful"
+      }
+    }
+
+    
+  }
+  getMatchNumber(){
+    this.Auth.getAPI3("events/" + this.currentYear).subscribe(data => {
+      var key
+      this.matchnumber_max=1
+      for (var i = 0; i < 236; i++) {
+        if(data[i].name==this.currentRegionMain){
+          key = data[i].key
+        }
+      }
+      this.Auth.getAPI3("event/" + key+"/matches").subscribe(data2 => {
+        for(var ele in data2){
+          if (data2[ele].comp_level=="qm"){
+            if (Number(data2[ele].match_number)>this.matchnumber_max)
+              this.matchnumber_max = Number(data2[ele].match_number)
+          }
+        }
+        //console.log(this.matchnumber_max)
+      })
+
+    })
+  }
+  getTeamMember(){
+    this.Auth.getTeamMember(this.teamnumber).subscribe(data=>{
+      this.team_member_list=data.m;
+      this.team_member_list.splice(0,0,this.name)
+      //console.log(this.team_member_list)
+      this.getTeamMemberTask()
+    })
+  }
+  tipOut() {
+    var ch = !this.manage_tipb
+    this.manage_tipb = ch
+  }
   //----team selection--------
-  getselectTeamElement(){
-    const ev = (<HTMLInputElement>document.querySelector("#selectTeamElement")).value
-    if (ev =='General Ability'){
+  getSelectedTeamPerference(){
+    this.Auth.getSelectedTeamPerference(this.name,this.teamnumber,this.role).subscribe(data=>{
+      //console.log(data.m);
+      this.selctedPerference=data.m
+      //console.log("dddd" + this.selctedPerference)
+      this.updateAndGetSelectTeamElementFirstTime()
+    })
+  }
+
+
+  updateAndGetSelectTeamElementFirstTime(){
+    const ev = this.selctedPerference
+    if (ev == 'General_Ability') {
       //console.log('jj')
       return
-    } else if (ev == 'Teleop(total)'){
+    } else if (ev == 'Teleop_Total') {
+      this.selectTeamOption = [
+        "isSelect", "totalcargo", "totalhatch", "climbpoint",
+        "cargolvl1", "cargolvl2", "cargolvl3",
+        "hatchlvl1", "hatchlvl2", "hatchlvl3",
+        "cargoship", "hatchship"]
+      this.selectTeamOptionInner = [
+        "isSelect", "Total Cargo", "Total Hatch", "Climb Point",
+        "Cargo Level1", "Cargo Level2", "Cargo Level3",
+        "Hatch Level1", "Hatch Level2", "Hatch Level3",
+        "Cargo Cargoship", "Hatch Cargoship"]
+    } else if (ev == 'Teleop_Average') {
+      this.selectTeamOption = [
+        "isSelect", "totalcargoA", "totalhatchA", "climbpointA",
+        "cargolvl1A", "cargolvl2A", "cargolvl3A",
+        "hatchlvl1A", "hatchlvl2A", "hatchlvl3A",
+        "cargoshipA", "hatchshipA"]
+      this.selectTeamOptionInner = [
+        "isSelect", "Total Cargo", "Total Hatch", "Climb Point",
+        "Cargo Level1", "Cargo Level2", "Cargo Level3",
+        "Hatch Level1", "Hatch Level2", "Hatch Level3",
+        "Cargo Cargoship", "Hatch Cargoship"]
+    } else if (ev == 'Autonomous_Total') {
+      this.selectTeamOption = [
+        "totalautopoint", "exitplatform"
+        , "autohatch", "autocargo"]
+      this.selectTeamOptionInner = [
+        "Total Auto Pnts", "Exit Plaform pnts"
+        , "Hatch in Auto", "Cargo in Auto"]
+    } else if (ev == 'Autonomous_Average') {
+      this.selectTeamOption = [
+        "totalautopointA", "exitplatformA"
+        , "autohatchA", "autocargoA"]
+      this.selectTeamOptionInner = [
+        "Total Auto Pnts", "Exit Plaform pnts"
+        , "Hatch in Auto", "Cargo in Auto"]
+    }
+    this.getSelectedTeam(this.selectTeamOption, this.selectTeamOptionInner)
+    this.Auth.updateSelectedTeamPerference(this.teamnumber, this.name, this.role, ev).subscribe(data => {
+      //console.log(this.selectTeamOption)
+    })
+  }
+  updateAndGetSelectTeamElement(){
+    const ev = (<HTMLSelectElement>document.querySelector("#selectTeamElement")).value 
+    console.log(ev)
+    if (ev =='General_Ability'){
+      //console.log('jj')
+      return
+    } else if (ev == 'Teleop_Total'){
       this.selectTeamOption = [
         "isSelect", "totalcargo", "totalhatch", "climbpoint",
         "cargolvl1","cargolvl2","cargolvl3",
@@ -399,7 +779,7 @@ export class ScoutloginComponent implements OnInit {
         "Cargo Level1", "Cargo Level2", "Cargo Level3",
         "Hatch Level1", "Hatch Level2", "Hatch Level3",
         "Cargo Cargoship", "Hatch Cargoship"]
-    } else if (ev == 'Teleop(average)') {
+    } else if (ev == 'Teleop_Average') {
       this.selectTeamOption = [
         "isSelect", "totalcargoA", "totalhatchA", "climbpointA",
         "cargolvl1A", "cargolvl2A", "cargolvl3A",
@@ -410,14 +790,14 @@ export class ScoutloginComponent implements OnInit {
         "Cargo Level1", "Cargo Level2", "Cargo Level3",
         "Hatch Level1", "Hatch Level2", "Hatch Level3",
         "Cargo Cargoship", "Hatch Cargoship"]
-    } else if (ev == 'Autonomous(total)') {
+    } else if (ev == 'Autonomous_Total') {
       this.selectTeamOption = [
         "totalautopoint","exitplatform"
         ,"autohatch","autocargo"]
       this.selectTeamOptionInner = [
         "Total Auto Pnts", "Exit Plaform pnts"
         , "Hatch in Auto", "Cargo in Auto"]  
-    } else if (ev == 'Autonomous(average)') {
+    } else if (ev == 'Autonomous_Average') {
       this.selectTeamOption = [
         "totalautopointA", "exitplatformA"
         , "autohatchA", "autocargoA"]
@@ -426,7 +806,10 @@ export class ScoutloginComponent implements OnInit {
         , "Hatch in Auto", "Cargo in Auto"]
     }
     this.getSelectedTeam(this.selectTeamOption, this.selectTeamOptionInner)
-    console.log(this.gridApi3.getSelectedRows())
+    this.Auth.updateSelectedTeamPerference(this.teamnumber, this.name, this.role, ev).subscribe(data=>{
+      console.log(data)
+    })
+    //console.log(this.gridApi3.getSelectedRows())
   }
   onGridReady3(params) {
     this.gridApi3 = params.api;
@@ -437,9 +820,11 @@ export class ScoutloginComponent implements OnInit {
      
       this.col_index3=data.col_index
       this.currentData3=data.output
-      console.log(this.currentData3)
+      //console.log(this.currentData3)
     })
   }
+
+
   //-----data------
   textSearch(input){
     if(input=="total"){
@@ -537,7 +922,42 @@ arraysEqual(arr1, arr2) {
 
   setcurrentRegionMain(event){ 
     this.currentRegionMain = event.target.currentevent.value
-    console.log(this.currentRegionMain)
+    this.Auth.setMainEvent(this.teamnumber, this.name, this.currentRegionMain ).subscribe(data => {
+      //console.log(data)
+      this.getSelectedTeam(this.selectTeamOption, this.selectTeamOptionInner)
+      this.Auth.loadrank(this.teamnumber, this.currentRegionMain, this.currentOptionA, this.currentOptionInnerA).subscribe(data3 => {
+        this.col_indexA = data3.col_index
+        this.currentDataA = data3.output
+      })
+      this.Auth.loadrank(this.teamnumber, this.currentRegionMain, this.currentOption, this.currentOptionInner).subscribe(data4 => {
+        this.col_index = data4.col_index
+        this.currentData = data4.output
+
+      })
+      this.Auth.getAPI3("events/" + this.currentYear).subscribe(data2 => {
+        for (var ele in data2) {
+          if (data2[ele].name == this.currentRegionMain) {
+            this.currentRegionMainId = data2[ele].key
+          }
+        }
+      })
+    })
+    //console.log(this.currentRegionMain)
+  }
+
+  getcurrentRegionMain() {
+    this.Auth.getcurrentRegionMain(this.teamnumber, this.name).subscribe(data => {
+      this.currentRegionMain=data.m
+      //console.log(data)
+      this.Auth.getAPI3("events/" + this.currentYear).subscribe(data2 => {
+        for(var ele in data2){
+          if (data2[ele].name ==this.currentRegionMain){
+            this.currentRegionMainId = data2[ele].key
+          }
+        }
+      })
+    })
+    //console.log(this.currentRegionMain)
   }
  contains(arr, element) {
   for (let i = 0; i < arr.length; i++) {
@@ -609,26 +1029,26 @@ arraysEqual(arr1, arr2) {
     this.currentOption = ["isSelect"]
     this.currentOptionInner = ["isSelect"]
     this.col_index = []
-
-
+    
     var optionsVar = (<HTMLSelectElement>document.querySelector('#rankOptA')).options
     var selectedoptionsVar = (<HTMLSelectElement>document.querySelector('#rankOptA')).selectedOptions
+    
     var optionsVarlist=[]
     var selectedoptionsVarlist=[]
-
+    console.log(<HTMLSelectElement>document.querySelector('#rankOptA'))
     for (var i = 0; i<optionsVar.length;i++){
       optionsVarlist.push(optionsVar[i].value)
     }
-
     for (var i = 0; i < selectedoptionsVar.length; i++) {
       selectedoptionsVarlist.push(selectedoptionsVar[i].value)
+      
     }
-    //console.log(selectedoptionsVarlist)
+    console.log(selectedoptionsVarlist, optionsVarlist)
     for (var i = 0; i < optionsVar.length; i++) {
       if (!this.contains(selectedoptionsVarlist, optionsVarlist[i])){
         this.rankperference[optionsVar[i].value.substring(0, optionsVar[i].value.length - 1)] = false
       }else{
-       
+        
         this.currentOptionA.push(optionsVar[i].value)
         this.currentOptionInnerA.push(optionsVar[i].innerText)
         this.currentOption.push(optionsVar[i].value.substring(0, optionsVar[i].value.length - 1))
@@ -644,7 +1064,7 @@ arraysEqual(arr1, arr2) {
       this.currentOptionInnerA.push(document.querySelector('#rankOptA').selectedOptions[i].innerText)
       this.rankperference[document.querySelector('#rankOptA').selectedOptions[i].value.substring(0, document.querySelector('#rankOptA').selectedOptions[i].value.length - 1)] = true
     }*/
-
+    //console.log(this.currentOptionA)
     this.Auth.loadrank(this.teamnumber, this.currentRegionMain, this.currentOptionA, this.currentOptionInnerA).subscribe(data => {
       this.col_indexA = data.col_index
       this.currentDataA = data.output
@@ -689,6 +1109,233 @@ arraysEqual(arr1, arr2) {
       //console.log(data.currentId)
     })
   }
+
+  //--------Edit Match Function---------
+  addhatchlvl3Edit(b: boolean) {
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addhatchlvl3Edit')).value)
+    if (b && edit_tem_value < 4)
+      (<HTMLSelectElement>document.querySelector('#addhatchlvl3Edit')).value = String(edit_tem_value+1)
+    else if (!b) {
+      if (edit_tem_value > 0)
+        (<HTMLSelectElement>document.querySelector('#addhatchlvl3Edit')).value = String(edit_tem_value-1)
+      else {
+
+      }
+    }
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addhatchlvl3Edit')).value)
+    this.Auth.updateMatchEdit("hatchlvl3", edit_tem_value, this.editdata.id).subscribe(data => {
+      //console.log(data)
+    }) 
+    //console.log(edit_tem_value)
+    
+  }
+
+  addhatchlvl2Edit(b: boolean) {
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addhatchlvl2Edit')).value)
+    if (b && edit_tem_value < 4)
+      (<HTMLSelectElement>document.querySelector('#addhatchlvl2Edit')).value = String(edit_tem_value + 1)
+    else if (!b) {
+      if (edit_tem_value > 0)
+        (<HTMLSelectElement>document.querySelector('#addhatchlvl2Edit')).value = String(edit_tem_value - 1)
+      else {
+
+      }
+    }
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addhatchlvl2Edit')).value)
+    this.Auth.updateMatchEdit("hatchlvl2", edit_tem_value, this.editdata.id).subscribe(data => {
+      //console.log(data)
+    })
+    //console.log(edit_tem_value)
+
+  }
+
+  addhatchlvl1Edit(b: boolean) {
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addhatchlvl1Edit')).value)
+    if (b && edit_tem_value < 4)
+      (<HTMLSelectElement>document.querySelector('#addhatchlvl1Edit')).value = String(edit_tem_value + 1)
+    else if (!b) {
+      if (edit_tem_value > 0)
+        (<HTMLSelectElement>document.querySelector('#addhatchlvl1Edit')).value = String(edit_tem_value - 1)
+      else {
+
+      }
+    }
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addhatchlvl1Edit')).value)
+    this.Auth.updateMatchEdit("hatchlvl1", edit_tem_value, this.editdata.id).subscribe(data => {
+      //console.log(data)
+    })
+  //onsole.log(edit_tem_value)
+
+  }
+
+  addcargolvl3Edit(b: boolean) {
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addcargolvl3Edit')).value)
+    if (b && edit_tem_value < 4)
+      (<HTMLSelectElement>document.querySelector('#addcargolvl3Edit')).value = String(edit_tem_value + 1)
+    else if (!b) {
+      if (edit_tem_value > 0)
+        (<HTMLSelectElement>document.querySelector('#addcargolvl3Edit')).value = String(edit_tem_value - 1)
+      else {
+
+      }
+    }
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addcargolvl3Edit')).value)
+    this.Auth.updateMatchEdit("cargolvl3", edit_tem_value, this.editdata.id).subscribe(data => {
+      //console.log(data)
+    })
+  //console.log(edit_tem_value)
+
+  }
+
+  addcargolvl2Edit(b: boolean) {
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addcargolvl2Edit')).value)
+    if (b && edit_tem_value < 4)
+      (<HTMLSelectElement>document.querySelector('#addcargolvl2Edit')).value = String(edit_tem_value + 1)
+    else if (!b) {
+      if (edit_tem_value > 0)
+        (<HTMLSelectElement>document.querySelector('#addcargolvl2Edit')).value = String(edit_tem_value - 1)
+      else {
+
+      }
+    }
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addcargolvl2Edit')).value)
+    this.Auth.updateMatchEdit("cargolvl2", edit_tem_value, this.editdata.id).subscribe(data => {
+      //console.log(data)
+    })
+  //console.log(edit_tem_value)
+
+  }
+
+  addcargolvl1Edit(b: boolean) {
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addcargolvl1Edit')).value)
+    if (b && edit_tem_value < 4)
+      (<HTMLSelectElement>document.querySelector('#addcargolvl1Edit')).value = String(edit_tem_value + 1)
+    else if (!b) {
+      if (edit_tem_value > 0)
+        (<HTMLSelectElement>document.querySelector('#addcargolvl1Edit')).value = String(edit_tem_value - 1)
+      else {
+
+      }
+    }
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addcargolvl1Edit')).value)
+    this.Auth.updateMatchEdit("cargolvl1", edit_tem_value, this.editdata.id).subscribe(data => {
+      //console.log(data)
+    })
+    //console.log(edit_tem_value)
+
+  }
+
+  addhatchshipEdit(b: boolean) {
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addhatchshipEdit')).value)
+    if (b && edit_tem_value < 8)
+      (<HTMLSelectElement>document.querySelector('#addhatchshipEdit')).value = String(edit_tem_value + 1)
+    else if (!b) {
+      if (edit_tem_value > 0)
+        (<HTMLSelectElement>document.querySelector('#addhatchshipEdit')).value = String(edit_tem_value - 1)
+      else {
+
+      }
+    }
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addhatchshipEdit')).value)
+    this.Auth.updateMatchEdit("hatchship", edit_tem_value, this.editdata.id).subscribe(data => {
+      //console.log(data)
+    })
+    //console.log(edit_tem_value)
+
+  }
+
+  addcargoshipEdit(b: boolean) {
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addcargoshipEdit')).value)
+    if (b && edit_tem_value < 8)
+      (<HTMLSelectElement>document.querySelector('#addcargoshipEdit')).value = String(edit_tem_value + 1)
+    else if (!b) {
+      if (edit_tem_value > 0)
+        (<HTMLSelectElement>document.querySelector('#addcargoshipEdit')).value = String(edit_tem_value - 1)
+      else {
+
+      }
+    }
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addcargoshipEdit')).value)
+    this.Auth.updateMatchEdit("cargoship", edit_tem_value, this.editdata.id).subscribe(data => {
+      //console.log(data)
+    })
+    //console.log(edit_tem_value)
+
+  }
+  addeditdroppieceEdit(b: boolean) {
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addeditdroppieceEdit')).value)
+    if (b)
+      (<HTMLSelectElement>document.querySelector('#addeditdroppieceEdit')).value = String(edit_tem_value + 1)
+    else if (!b) {
+      if (edit_tem_value > 0)
+        (<HTMLSelectElement>document.querySelector('#addeditdroppieceEdit')).value = String(edit_tem_value - 1)
+      else {
+
+      }
+    }
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addeditdroppieceEdit')).value)
+    this.Auth.updateMatchEdit("defensedrop", edit_tem_value, this.editdata.id).subscribe(data => {
+      //console.log(data)
+    })
+    console.log(edit_tem_value)
+
+  }
+  addeditblockEdit(b: boolean) {
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addeditblockEdit')).value)
+    if (b)
+      (<HTMLSelectElement>document.querySelector('#addeditblockEdit')).value = String(edit_tem_value + 1)
+    else if (!b) {
+      if (edit_tem_value > 0)
+        (<HTMLSelectElement>document.querySelector('#addeditblockEdit')).value = String(edit_tem_value - 1)
+      else {
+
+      }
+    }
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addeditblockEdit')).value)
+    this.Auth.updateMatchEdit("defenseblock", edit_tem_value, this.editdata.id).subscribe(data => {
+      //console.log(data)
+    })
+    console.log(edit_tem_value)
+
+  }
+  addeditdrophatchEdit(b: boolean) {
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addeditdrophatchEdit')).value)
+    if (b)
+      (<HTMLSelectElement>document.querySelector('#addeditdrophatchEdit')).value = String(edit_tem_value + 1)
+    else if (!b) {
+      if (edit_tem_value > 0)
+        (<HTMLSelectElement>document.querySelector('#addeditdrophatchEdit')).value = String(edit_tem_value - 1)
+      else {
+
+      }
+    }
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addeditdrophatchEdit')).value)
+    this.Auth.updateMatchEdit("hatchdrop", edit_tem_value, this.editdata.id).subscribe(data => {
+      //console.log(data)
+    })
+    //console.log(edit_tem_value)
+
+  }
+  addeditdropcargoEdit(b: boolean) {
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addeditdropcargoEdit')).value)
+    if (b)
+      (<HTMLSelectElement>document.querySelector('#addeditdropcargoEdit')).value = String(edit_tem_value + 1)
+    else if (!b) {
+      if (edit_tem_value > 0)
+        (<HTMLSelectElement>document.querySelector('#addeditdropcargoEdit')).value = String(edit_tem_value - 1)
+      else {
+
+      }
+    }
+    var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addeditdropcargoEdit')).value)
+    this.Auth.updateMatchEdit("cargodrop", edit_tem_value, this.editdata.id).subscribe(data => {
+      //console.log(data)
+    })
+    //console.log(edit_tem_value)
+
+  }
+
+  //--------Edit Match Function---------
 
   addcargolvl3(b: boolean) {
     if (b && this.cargolvl3 < 4)
@@ -917,12 +1564,68 @@ arraysEqual(arr1, arr2) {
   //------service request function-----
 
   //----History----
+  setEditingToFalse(){
+    this.editingThethree=false
+    this.editingTeamnumber=false
+  }
+  updateMatchEdit(event) {
+    event.preventDefault()
+    const target = event.target
+    if (target.id == 'region' || target.id == 'matchnumber' || target.id == 'teamnumber') {
+      this.editingThethree = true
+    }
+    this.Auth.updateMatchEdit(target.id, target.value, this.editdata.id).subscribe(data => {
+      //console.log(data)
+    }) 
+  }
+
+  updatePitEdit(event) {
+    event.preventDefault()
+    const target = event.target
+    if (target.id == 'teamnumber') {
+      this.editingTeamnumber = true
+    }
+    this.Auth.updatePitEdit(target.id, target.value, this.editdataPit.id).subscribe(data => {
+      //console.log(data)
+    })
+  }
+  getEditDataMatch(e){
+    this.editingThethree = false
+    const inner = e.target.innerText.split('-')
+    console.log(inner)
+    this.Auth.getEditDataMatch(this.teamnumber,this.name,inner[0],inner[1],inner[2]).subscribe(data=>{
+      console.log(data.m)
+      for(var i=0;i<this.editdatastring.length;i++){
+        this.editdata[this.editdatastring[i]] = data.m[0][this.editdatastring[i]]  
+      }
+      console.log(this.editdata)
+    })
+  }
+  getEditDataMatchPit(e) {
+    this.editingTeamnumber = false
+    const inner = e.target.innerText
+    console.log(inner)
+    this.Auth.getEditDataMatchPit(this.teamnumber, this.name, inner).subscribe(data => {
+      console.log(data.m)
+      for (var i = 0; i < this.editdatastringPit.length; i++) {
+        this.editdataPit[this.editdatastringPit[i]] = data.m[0][this.editdatastringPit[i]]
+      }
+      //console.log(this.editdataPit)
+    })
+  }
   showHistory(date){
     //console.log('a' + date.split('-').join(""))
     return this.historybs[0]['a'+date.split('-').join("")]
   }
+  showHistoryPit(date) {
+    //console.log('a' + date.split('-').join(""))
+    return this.historybs_pit[0]['a' + date.split('-').join("")]
+  }
   getHistory(){
     this.Auth.getHistory(this.name, this.teamnumber).subscribe(data=>{
+      if (this.isFirstHistory==0 && this.history==[]){
+        this.historyload=true
+      }
       //console.log(data)
       if (this.currentHdate != data.currentId){
         this.historybs = data.bs
@@ -953,11 +1656,59 @@ arraysEqual(arr1, arr2) {
         }
         )
       }
- 
+      if(this.isFirstHistory==0){
+        this.historyload = false
+        this.isFirstHistory=1
+      }
     }
     
     })
+
+    this.Auth.getHistoryPit(this.name, this.teamnumber).subscribe(data => {
+      
+      if (this.isFirstHistory_pit == 0 && this.history_pit == []) {
+        this.historyload = true
+      }
+      //console.log(data)
+      if (this.currentHdate_pit != data.currentId) {
+        this.historybs_pit = data.bs
+      }
+      if (this.currentHdate_pit != data.currentId || this.currentHmatch_pit != data.col_name) {
+        this.history_pit = []
+        this.currentHdate_pit = data.currentId
+        this.currentHmatch_pit = data.col_name
+        this.date_pit = data.currentId.split("/")
+        this.datematch_pit = data.col_name.split("*")
+
+        this.dateid_pit = []
+
+        for (var i = 0; i < this.date_pit.length; i++) {
+          this.dateid_pit.push("#" + this.date[i])
+        }
+
+        for (var i = 0; i < this.datematch_pit.length; i++) {
+          this.datematch_pit[i] = this.datematch_pit[i].split("/")
+        }
+
+        for (var i = 0; i < this.datematch_pit.length; i++) {
+          this.history_pit.push(
+            {
+              date: this.date_pit[i],
+              match: this.datematch_pit[i],
+              dateid: this.dateid_pit[i]
+            }
+          )
+        }
+        if (this.isFirstHistory_pit == 0) {
+          this.historyload_pit = false
+          this.isFirstHistory_pit = 1
+        }
+      }
+
+    })
   }
+
+
   openHistory(event){
     event.preventDefault()
     
@@ -965,22 +1716,31 @@ arraysEqual(arr1, arr2) {
     this.historybs[0][inner] = !this.historybs[0][inner]
     //console.log(this.historybs[0][inner])
   }
+
+  openHistoryPit(event) {
+    event.preventDefault()
+
+    const inner = 'a' + event.target.innerText.split(' ')[0].split('-').join("")
+    this.historybs_pit[0][inner] = !this.historybs_pit[0][inner]
+    //console.log(this.historybs_pit[0][inner])
+  }
     //-----blue alliance
   getEventVP3(event){
-    this.Auth.getAPI3("events/2019").subscribe(data=>{
+    this.Auth.getAPI3("events/"+this.currentYear).subscribe(data=>{
       var selectedevent=[]
-      for(var i=0;i<207;i++){
-        if (event.target.value =="Houston"){
-          if (data[i].city == "Houston" && data[i].event_type_string == "Championship Division"){
-            selectedevent.push(data[i].name)
+       
+      for(var ele in data){
+        if (event.target.value == "Houston") {
+          if (data[ele].city == "Houston" && data[ele].event_type_string == "Championship Division") {
+            selectedevent.push(data[ele].name)
           }
-        } else if (event.target.value == "Detroit"){
-          if (data[i].city == "Detroit" && data[i].event_type_string == "Championship Division") {
-            selectedevent.push(data[i].name)
+        } else if (event.target.value == "Detroit") {
+          if (data[ele].city == "Detroit" && data[ele].event_type_string == "Championship Division") {
+            selectedevent.push(data[ele].name)
           }
         }
-        else if (data[i].week == event.target.value-1){
-          selectedevent.push(data[i].name)
+        else if (data[ele].week == event.target.value - 1) {
+          selectedevent.push(data[ele].name)
         }
       }
       this.editMatchEvent = selectedevent
@@ -988,6 +1748,7 @@ arraysEqual(arr1, arr2) {
       //event.target.value
     })
   }
+  //--------end of blue alliance
 
   resetMatchForm(){
     this.updateTotalVal()
@@ -1125,6 +1886,7 @@ arraysEqual(arr1, arr2) {
       //console.log(data.currentId)
     })
   }
+
 
   editMatch(event) {
     event.preventDefault()
