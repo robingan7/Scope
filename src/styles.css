@@ -1,0 +1,19 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~ag-grid-community/dist/styles/ag-grid.css";
+@import "~ag-grid-community/dist/styles/ag-theme-balham.css";
+
+@import url('https://fonts.googleapis.com/css?family=Aldrich|Electrolize|Quantico&display=swap');
+img[alt="www.000webhost.com"]{
+    display:none;}
+html, body { 
+    height: 100%; 
+}
+body { 
+    margin: 0; 
+    font-family: 'Aldrich', sans-serif;
+    /*
+    font-family: 'Quantico', sans-serif;
+    font-family: 'Electrolize', sans-serif;
+    font-family: 'Aldrich', sans-serif;
+    */
+}

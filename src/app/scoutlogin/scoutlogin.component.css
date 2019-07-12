@@ -1,0 +1,115 @@
+#scoutlogin{
+    height: 20%;
+    width: 50%;
+    position: relative;
+    text-align: center; /* has to be scroll, not auto */
+  -webkit-overflow-scrolling: touch;
+  
+}
+
+button{
+    margin-left: 3px;
+    margin-top: 3px;
+}
+#ad{
+    left: 60%;
+    position: absolute;
+    width: 40%;
+    top:30%;
+}
+#editteam{
+/* has to be scroll, not auto */
+  -webkit-overflow-scrolling: touch;
+}
+*{
+    -webkit-overflow-scrolling: touch;
+}
+#teleS input[type="checkbox"]{
+    margin-left: 8px;
+}
+#hc{
+    margin-left:30%;
+}
+
+#hc #cargospan{
+    margin-left:120%;
+}
+#rlvlspan{
+    height: 20px;
+}
+
+p{
+    color: rgb(185, 58, 58);
+}
+#robinfont{
+    color: #007bff;
+}
+.progress{
+    width: 100%;
+}
+#telecounter{
+    margin-top:5px;
+}
+#personal{
+    font-size:10px;
+    width: 100%;
+}
+
+table tr th{
+    width:10px;
+}
+
+#tableid{
+    overflow: scroll;
+    color:red;
+}
+#yourdata{
+    width:100%;
+}
+#filter-box{
+    width: 100px;
+    border-color: black;  
+}
+#filter-boxA{
+    width: 100px;
+    border-color: black;  
+}
+#filter-boxS{
+    width: 100px;
+    border-color: black;  
+}
+.card-text{
+    font-size: 15px;
+}
+#manage_tip{
+    margin-left:5px;
+    color: black;/*used to be red, I set to black for testing*/
+}
+#manage_tip:hover, #manage_tip:focus, #manage_tip.focus{
+    color: black;
+}
+#manage_tip:disabled, #manage_tip.disabled{
+    color: black;
+}
+#cards_manage{
+    margin-top:-20px;
+    transform: translateY(20px);
+}
+#match_scouts{
+    overflow-y:scroll;
+}
+#assign-home > input{
+    height:5px;
+}
+#assign_edit{
+    height:50%;
+    overflow-y: visible;
+}
+#taskout{
+    height:30%;
+    overflow-y: scroll;
+}
+#collapseOne > .card-body{
+    overflow-x: scroll;
+}
+
