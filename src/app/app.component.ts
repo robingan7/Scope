@@ -1,4 +1,5 @@
 import { Component} from '@angular/core';
+import { ScoutloginServiceService } from './scoutlogin-service.service';
 
 @Component({
   selector: 'app-root',
@@ -19,4 +20,6 @@ export class AppComponent{
     { make: 'Ford', model: 'Mondeo', price: 32000 },
     { make: 'Porsche', model: 'Boxter', price: 72000 }
   ];
+  constructor(private auth: ScoutloginServiceService){
+  }
 }

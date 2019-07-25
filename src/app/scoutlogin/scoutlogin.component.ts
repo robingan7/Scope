@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ScoutloginServiceService } from '../scoutlogin-service.service';
 import { Router } from '@angular/router';
-
+import { DatatransferService } from "../datatransfer.service";
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'scoutlogin',
@@ -19,6 +20,9 @@ export class ScoutloginComponent implements OnInit {
   isFullWidthCell:any;
   fullWidthCellRenderer:any;
 
+  paginationPageSize=5
+
+
   pit_question
   match_question
 
@@ -26,12 +30,17 @@ export class ScoutloginComponent implements OnInit {
 
   col_index3=[]
   currentData3=[]
+  pitData=[]
   gridApi3
+
+  gridApiScout
 
   editPitLoader=true
 
   selectTeamOption=[]
   selectTeamOptionInner=[]
+
+  pit_search_team = []
   squence=[]
 
   selctedPerference="General_Ability"
@@ -45,15 +54,6 @@ export class ScoutloginComponent implements OnInit {
 
   taskMatchLoader=true
   taskPitLoader = false
-
-  /*
-  selctedPerference={
-    General_Ability:false,
-    Teleop_Total:false,
-    Teleop_Average: false,
-    Autonomous_Average: false,
-    Autonomous_Total: false
-  }*/
     
   //----Page Control & Error Boolean----
   error = "No error so far"
@@ -65,7 +65,6 @@ export class ScoutloginComponent implements OnInit {
 
   editingCEventCount=0
 
-  loginb = true
   scoutb = !true
   managerb = !true
 
@@ -178,10 +177,8 @@ currentTaskPit={
   currentHdate=""
   currentHmatch=""
   history=[]
-  dateid=[]
 
   historyb=true
-  historybs=[]
   historybscount=0
   historyload=true
   historyPersonload=false
@@ -192,7 +189,6 @@ currentTaskPit={
   currentHdate_pit= ""
   currentHmatch_pit = ""
   history_pit = []
-  dateid_pit = []
 
   historyb_pit = true
   historybs_pit = []
@@ -215,6 +211,7 @@ currentTaskPit={
   autoHeight="autoHeight"
 
   gridApi
+  gridApiPit
 
   rowSelection = "multiple";
   rowGroupPanelShow = "always";
@@ -265,11 +262,13 @@ currentTaskPit={
     defensedrop:0, hatchdrop:0, cargodrop:0, climbpoint:0, fitness:"0", question:"", answer:"", notes:""}
 
   editdataPit = {
-    id: -1, teamnumber: "0000", weightunit: "", heightunit: "", weight2: 0, height2: 0, sensor: "", autotype: "",
-    autolvl: "", autochoice: "", cargolevel: "", hatchlevel: "", speed: "", cargopickupspeed: "", hatchpickupspeed: "", climbability: "",
+    id: -1, teamnumber: "0000", weightunit: "", heightunit: "", weight2: 0, height2: 0, sensor: [], autotype: "",
+    autolvl: "", autochoice: [], cargolevel: "", hatchlevel: "", speed: "", cargopickupspeed: "", hatchpickupspeed: "", climbability: "",
     stra: "", driver: "", question: "", answer: "", fitness: "0", notes: ""
   }
-
+  editSensorNew = []
+  editAutochoiceNew=[]
+  resetSensor_Auto = true
   editdatastring= ["id", "region", "matchnumber", "teamnumber", "alliance", "exitplatform", "autohatch", "autocargo",
     "cargolvl1", "cargolvl2", "cargolvl3", "hatchlvl1", "hatchlvl2", "hatchlvl3", "cargoship", "hatchship", "defenseblock",
     "defensedrop", "hatchdrop", "cargodrop", "climbpoint", "fitness", "question", "answer", "notes"];
@@ -288,6 +287,12 @@ currentTaskPit={
   currentDataA = []
 
   col_indexA: any[]
+
+  pit_index:any[]
+
+  col_indexScout:any[]
+  currentDataScout=[]
+
   selectA = []
   allselectA = []
 
@@ -384,7 +389,9 @@ currentTaskPit={
   }
   
   constructor(private Auth: ScoutloginServiceService,
-              private router: Router) { 
+              private router: Router,
+              private datatransfer: DatatransferService,
+              private cookie: CookieService) { 
     this.isFullWidthCell = function (rowNode) {
       return true;
     };
@@ -430,7 +437,6 @@ currentTaskPit={
                           this.rankperference[this.currentOption[ele]] = true
                         }
                         this.currentOptionA = data2.m.split("/")
-                        //console.log(this.currentOptionA)
                         for (var ele in this.currentOptionA) {
                           this.rankperference[this.currentOptionA[ele]] = true
                           
@@ -442,13 +448,13 @@ currentTaskPit={
                         this.currentOption = ["isSelect"]
                         this.currentOptionInner = ["isSelect"]
                         this.col_index = []
-
+                        this.col_indexScout=[]
 
                         var optionsVar = (<HTMLSelectElement>document.querySelector('#rankOptA')).options
 
                         var optionsVarlist = []
                         var selectedoptionsVarlist = []
-                        //console.log(<HTMLSelectElement>document.querySelector('#rankOptA'))
+
                         for (var i = 0; i < optionsVar.length; i++) {
                           optionsVarlist.push(optionsVar[i].value)
                         }
@@ -469,7 +475,6 @@ currentTaskPit={
                           }
                         }
 
-                        //console.log(this.currentOptionA)
                         this.Auth.loadrank(this.teamnumber, this.currentRegionMain, this.currentOptionA, this.currentOptionInnerA).subscribe(data3 => {
                           this.col_indexA = data3.col_index
                           this.currentDataA = data3.output
@@ -479,7 +484,11 @@ currentTaskPit={
                         this.Auth.loadrank(this.teamnumber, this.currentRegionMain, this.currentOption, this.currentOptionInner).subscribe(data4 => {
                           this.col_index = data4.col_index
                           this.currentData = data4.output
+                        })
 
+                        this.Auth.loadrankScout(this.teamnumber).subscribe(data5 => {
+                          this.col_indexScout = data5.col_index
+                          this.currentDataScout = data5.output
                         })
 
                         var temPerference = []
@@ -491,10 +500,16 @@ currentTaskPit={
 
                         })
                       })
-                      this.getTeamMember()
+                      if(this.managerb){
+                        this.getTeamMember()
+                      }else{
+                        this.team_member_list=[]
+                        this.getTeamMemberTask()
+                      }
                       this.getMatchNumber()
                       this.getQuestion()
                       this.getTotal_pit_match()
+                      this.getPit_rank_team()
                       this.lengthh=1
                     }
 
@@ -534,14 +549,11 @@ currentTaskPit={
                   });
                   if (!this.arraysEqual(this.squence, currentSquence)){
                     this.Auth.updateRankSelectedTeam(this.teamnumber, this.currentRegionMain, currentSquence).subscribe(data=>{
-                      //console.log(data)
                     })
                     this.squence = currentSquence
                   }
  
-                  //console.log(currentSquence)
                   if (this.arraysEqual(selCurrentSelected, selCurrentSelected2)){
-                    //console.log(selCurrentSelected, selCurrentSelected2)
                   }
                 }
               }
@@ -569,7 +581,6 @@ currentTaskPit={
                     }else{
                       this.getHistory(this.history_person)
                     }
-                  //console.log(this.historybs[0].a20190416)
                   this.matchspinnerb = false
                   this.pitspinner = false
                   }
@@ -597,7 +608,6 @@ currentTaskPit={
                   }
                 }
                   if (!this.arraysEqual(this.select, this.currentSelect) && this.currentSelect.length != 0){
-                    console.log(this.select, this.currentSelect, this.currentNotSelect)
                     this.selectTeam()
                     this.selectTeamA2()
                   }else{
@@ -605,6 +615,7 @@ currentTaskPit={
                     this.gridApi.hideOverlay()
                     this.gridApiA.hideOverlay()
                     this.gridApi3.hideOverlay()
+                    this.gridApiScout.hideOverlay()
                   }
 
                   if(this.currentSelect.length==0 && this.select.length==0){
@@ -645,7 +656,6 @@ currentTaskPit={
                   }
 
                   if (!this.arraysEqual(this.selectA, this.currentSelectA) && this.currentSelectA.length != 0) {
-                    console.log(this.selectA, this.currentSelectA, this.currentNotSelectA)
                     this.selectTeamA()
                     this.selectTeam2()
                   } else {
@@ -671,7 +681,6 @@ currentTaskPit={
                       node.setSelected(true)
                   })
 
-
                 }
               }
                 },7000)
@@ -679,9 +688,148 @@ currentTaskPit={
               }
 
   ngOnInit() {
-    (<HTMLDivElement>document.querySelector("#start_spinner")).style.display="none"
+    if(this.Auth.isLoggedIn){
+     this.datatransfer.currentMessage.subscribe(data => {
+          this.getLoginInfo(data)
+      })
+    }else{
+      if (this.cookie.get("isLog") == 'true'){
+        this.getLoginInfoByCookie()
+      }else{
+        this.scoutb = false;
+        this.router.navigate(['login'])
+      }
+    }
+   }
+
+  //--------pit form view-----------
+  getPit_rank_team(){
+    this.Auth.getPit_rank_team(this.teamnumber, this.name, this.role).subscribe(data => {
+        this.pit_search_team = data.m
+        this.Auth.loadrankPit(this.teamnumber, this.pit_search_team).subscribe(data2 => {
+          this.pit_index = data2.col_index
+          this.pitData = data2.output
+        })
+    })
+  }
+  addOrDrop(e){
+    e.preventDefault()
+    var inpp = e.target.value
+
+    if (this.pit_search_team.includes(inpp)) {
+      (<HTMLButtonElement>document.querySelector("#addOrDrop")).innerText = "Drop"
+    } else {
+      (<HTMLButtonElement>document.querySelector("#addOrDrop")).innerText = "Add"
+    }
   }
 
+  addPitSearch(e){
+    e.preventDefault()
+    var addOrDr = e.target.innerText
+    var value = (<HTMLButtonElement>document.querySelector("#search_pit")).value
+    console.log(value)
+
+    if (addOrDr == "Add") {
+      this.pit_search_team.push(value)
+      e.target.innerText="Drop"
+      this.Auth.loadrankPit(this.teamnumber, this.pit_search_team).subscribe(data => {
+        this.pit_index = data.col_index
+        this.pitData = data.output
+      })
+      this.Auth.updateRankPitTeam(this.teamnumber, this.name,this.role,this.pit_search_team).subscribe(data => {
+        
+      })
+    } else {
+        this.pit_search_team.splice(this.pit_search_team.indexOf(value),1)
+        e.target.innerText = "Add"
+      this.Auth.loadrankPit(this.teamnumber, this.pit_search_team).subscribe(data => {
+        this.pit_index = data.col_index
+        this.pitData = data.output
+      })
+      this.Auth.updateRankPitTeam(this.teamnumber, this.name,this.role,this.pit_search_team).subscribe(data => {
+          
+        })
+    }
+  }
+
+  addOrDrop2(e) {
+    e.preventDefault()
+    var inpp = e.target.value
+
+    if (this.pit_search_team.includes(inpp)) {
+      (<HTMLButtonElement>document.querySelector("#addOrDrop2")).innerText = "Drop"
+    } else {
+      (<HTMLButtonElement>document.querySelector("#addOrDrop2")).innerText = "Add"
+    }
+  }
+
+  addPitSearch2(e) {
+    e.preventDefault()
+    var addOrDr = e.target.innerText
+    var value = (<HTMLButtonElement>document.querySelector("#search_pit2")).value
+    console.log(value)
+    if (addOrDr == "Add") {
+      this.pit_search_team.push(value)
+      e.target.innerText = "Drop"
+      this.Auth.loadrankPit(this.teamnumber, this.pit_search_team).subscribe(data => {
+        this.pit_index = data.col_index
+        this.pitData = data.output
+      })
+      this.Auth.updateRankPitTeam(this.teamnumber, this.name, this.role, this.pit_search_team).subscribe(data => {
+
+      })
+    } else {
+      this.pit_search_team.splice(this.pit_search_team.indexOf(value), 1)
+      e.target.innerText = "Add"
+      this.Auth.loadrankPit(this.teamnumber, this.pit_search_team).subscribe(data => {
+        this.pit_index = data.col_index
+        this.pitData = data.output
+      })
+      this.Auth.updateRankPitTeam(this.teamnumber, this.name, this.role, this.pit_search_team).subscribe(data => {
+
+      })
+    }
+  }
+
+  addOrDrop3(e) {
+    e.preventDefault()
+    var inpp = e.target.value
+
+    if (this.pit_search_team.includes(inpp)) {
+      (<HTMLButtonElement>document.querySelector("#addOrDrop3")).innerText = "Drop"
+    } else {
+      (<HTMLButtonElement>document.querySelector("#addOrDrop3")).innerText = "Add"
+    }
+  }
+
+  addPitSearch3(e) {
+    e.preventDefault()
+    var addOrDr = e.target.innerText
+    var value = (<HTMLButtonElement>document.querySelector("#search_pit3")).value
+    console.log(value)
+    if (addOrDr == "Add") {
+      this.pit_search_team.push(value)
+      e.target.innerText = "Drop"
+      this.Auth.loadrankPit(this.teamnumber, this.pit_search_team).subscribe(data => {
+        this.pit_index = data.col_index
+        this.pitData = data.output
+      })
+      this.Auth.updateRankPitTeam(this.teamnumber, this.name, this.role, this.pit_search_team).subscribe(data => {
+
+      })
+    } else {
+      this.pit_search_team.splice(this.pit_search_team.indexOf(value), 1)
+      e.target.innerText = "Add"
+      this.Auth.loadrankPit(this.teamnumber, this.pit_search_team).subscribe(data => {
+        this.pit_index = data.col_index
+        this.pitData = data.output
+      })
+      this.Auth.updateRankPitTeam(this.teamnumber, this.name, this.role, this.pit_search_team).subscribe(data => {
+
+      })
+    }
+  }
+  //-----------end--------------
   getTotal_pit_match(){
     this.Auth.getTotal_pit_match(this.name,this.teamnumber).subscribe(data=>{
       this.total_pit_match=data.m
@@ -689,8 +837,14 @@ currentTaskPit={
   }
   //--------manage page function-----\
   signOut(){
-    this.lengthh = 0
+    this.scoutb = false;
 
+    /*
+    this.lengthh = 0
+    this.error = "No error so far"
+    this.name="Robin"
+    this.teamnumber="58055"
+    this.role="M"
     this.col_index3 = []
     this.currentData3 = []
     this.gridApi3
@@ -705,9 +859,23 @@ currentTaskPit={
 
     this.editingCEventCount = 0
 
-    this.loginb = true
     this.scoutb = !true
     this.managerb = !true
+    
+    this.pitLock = false
+    this.pitLock2 = false
+    this.matchLock = false
+    this.matchLock2=false*/
+  
+    this.datatransfer.signout()
+    this.router.navigate(['login'])
+    this.Auth.setLoggedIn(false)
+
+    this.cookie.set("isLog", "false");
+    this.cookie.set("name", "");
+    this.cookie.set("match_scouted", "");
+    this.cookie.set("teamnumber", "");
+    this.cookie.set("role", "");
   }
   getQuestion(){
     this.Auth.getQuestion(this.teamnumber).subscribe(data => {
@@ -716,13 +884,14 @@ currentTaskPit={
     })
   }
   setQuestion(){
-    var match = (<HTMLInputElement>document.querySelector("#match_question")).value
-    var pit = (<HTMLInputElement>document.querySelector("#pit_question")).value
+    if(this.managerb){
+      var match = (<HTMLInputElement>document.querySelector("#match_question")).value
+      var pit = (<HTMLInputElement>document.querySelector("#pit_question")).value
 
-    this.Auth.setQuestion(this.name,this.teamnumber,match,pit).subscribe(data=>{
-      this.getQuestion()
-    })
-
+      this.Auth.setQuestion(this.name,this.teamnumber,match,pit).subscribe(data=>{
+        this.getQuestion()
+      })
+    }
   }
   changeAddMember(e){
     e.preventDefault()
@@ -784,7 +953,6 @@ currentTaskPit={
         tem.push(data[ele].key.substring(3, data[ele].key.length))
       }
       this.currentRegionTeams=tem
-      //console.log(this.currentRegionTeams)
     })
   }
   editModalOut(e){
@@ -799,11 +967,9 @@ currentTaskPit={
     this.editMemberTaskLoader = true
     this.Auth.getTeamMemberTask(this.teamnumber,this.name).subscribe(data=>{
       this.team_member_task=data.m
-      //console.log(this.team_member_task)
       
       this.Auth.getTeamMemberTaskPit(this.teamnumber, this.name).subscribe(data2 => {
         this.team_member_task_pit = data2.m
-        console.log(this.team_member_task_pit)
         var tem_list = []
         for (var ele in this.team_member_list) {
           tem_list.push(
@@ -813,7 +979,6 @@ currentTaskPit={
             })
         }
         this.team_member_task2 = tem_list
-        //console.log(this.team_member_task2)
         this.team_member_task2.forEach(element => {
           if(element.name==this.name){
             this.match_scouted = element.task
@@ -831,7 +996,6 @@ currentTaskPit={
           }
           this.Auth.getAPI3("event/" + this.currentRegionMainId + "/matches").subscribe(data3 => {
             this.currentTemMatchList=data3
-
             this.team_member_task[this.name].forEach(element => {
               var addlist = []
               for (var i = element.start; i <= element.end; i++) {
@@ -857,7 +1021,6 @@ currentTaskPit={
                 content: addlist
               })
             });
-            console.log(this.team_member_task_this, this.team_member_task_pit)
             this.yourtask = false
             this.editMemberTaskLoader=false
             this.currentAddMember = this.team_member_task[this.name_addTask]
@@ -875,12 +1038,10 @@ currentTaskPit={
 
     this.Auth.getTeamMemberTask(this.teamnumber, this.name).subscribe(data => {
       this.team_member_task = data.m
-      console.log(this.team_member_task)
       
      
       this.Auth.getTeamMemberTaskPit(this.teamnumber, this.name).subscribe(data2 => {
         this.team_member_task_pit = data2.m
-        console.log(this.team_member_task_pit)
         var tem_list = []
         for (var ele in this.team_member_list) {
           tem_list.push(
@@ -942,11 +1103,11 @@ currentTaskPit={
 
 
         });
-        //console.log(this.team_member_task2)
       })
-      //console.log(this.team_member_task2)
     })
   }
+
+  
   taskOut(e){
     e.preventDefault()
     var id=e.target.id
@@ -1004,7 +1165,6 @@ currentTaskPit={
     else {
       this.addErrorC = this.addError[0]
       this.Auth.addTask(this.teamnumber, this.role, this.name_addTask, task, this.name).subscribe(data => {
-        //console.log(data)
         this.getTeamMemberTask()
       })
     }
@@ -1019,9 +1179,7 @@ currentTaskPit={
       }else {
         this.addErrorC = this.addError[0]
         task2=this.asssign_pits
-        console.log(task2)
         this.Auth.addTaskPit(this.teamnumber, this.role, this.name_addTask, task2, this.name).subscribe(data => {
-        //console.log(data)
         this.getTeamMemberTask()
         })
       }
@@ -1078,10 +1236,8 @@ currentTaskPit={
         this.addErrorC = this.addError[3]
       }
        else {
-        console.log(task)
         this.addErrorC = this.addError[0]
         this.Auth.editTaskMatch(this.teamnumber, this.name, name, num , task).subscribe(data => {
-          console.log(data)
           this.getTeamMemberTask()
         })
       }
@@ -1092,7 +1248,6 @@ currentTaskPit={
         this.addErrorC = this.addError[3]
       }else{
          this.Auth.editTaskPit(this.teamnumber, this.name, name, num, task2).subscribe(data => {
-           console.log(data)
            this.addErrorC = this.addError[0]
            this.getTeamMemberTask()
          })
@@ -1230,21 +1385,21 @@ currentTaskPit={
               this.matchnumber_max = Number(data2[ele].match_number)
           }
         }
-        //console.log(this.matchnumber_max)
       })
 
     })
   }
   changeHistoryPerson(e){
-    this.historyPersonload=true;
-    e.preventDefault()
-    this.history_person=e.target.value
+    if(this.managerb){
+      this.historyPersonload=true;
+      e.preventDefault()
+      this.history_person=e.target.value
+    }
   }
   getTeamMember(){
     this.Auth.getTeamMember(this.teamnumber).subscribe(data=>{
       this.team_member_list=data.m;
       this.team_member_list.splice(0,0,this.name)
-      //console.log(this.team_member_list)
       this.getTeamMemberTask()
     })
   }
@@ -1258,9 +1413,7 @@ currentTaskPit={
   //----team selection--------
   getSelectedTeamPerference(){
     this.Auth.getSelectedTeamPerference(this.name,this.teamnumber,this.role).subscribe(data=>{
-      //console.log(data.m);
       this.selctedPerference=data.m
-      //console.log("dddd" + this.selctedPerference)
       this.updateAndGetSelectTeamElementFirstTime()
     })
   }
@@ -1269,7 +1422,6 @@ currentTaskPit={
   updateAndGetSelectTeamElementFirstTime(){
     const ev = this.selctedPerference
     if (ev == 'General_Ability') {
-      //console.log('jj')
       return
     } else if (ev == 'Teleop_Total') {
       this.selectTeamOption = [
@@ -1310,14 +1462,11 @@ currentTaskPit={
     }
     this.getSelectedTeam(this.selectTeamOption, this.selectTeamOptionInner)
     this.Auth.updateSelectedTeamPerference(this.teamnumber, this.name, this.role, ev).subscribe(data => {
-      //console.log(this.selectTeamOption)
     })
   }
   updateAndGetSelectTeamElement(){
     const ev = (<HTMLSelectElement>document.querySelector("#selectTeamElement")).value 
-    console.log(ev)
     if (ev =='General_Ability'){
-      //console.log('jj')
       return
     } else if (ev == 'Teleop_Total'){
       this.selectTeamOption = [
@@ -1358,9 +1507,7 @@ currentTaskPit={
     }
     this.getSelectedTeam(this.selectTeamOption, this.selectTeamOptionInner)
     this.Auth.updateSelectedTeamPerference(this.teamnumber, this.name, this.role, ev).subscribe(data=>{
-      console.log(data)
     })
-    //console.log(this.gridApi3.getSelectedRows())
   }
   onGridReady3(params) {
     this.gridApi3 = params.api;
@@ -1371,7 +1518,6 @@ currentTaskPit={
      
       this.col_index3=data.col_index
       this.currentData3=data.output
-      //console.log(this.currentData3)
     })
   }
 
@@ -1385,6 +1531,8 @@ currentTaskPit={
       this.gridApiA.setQuickFilter(String((<HTMLInputElement>document.querySelector('#filter-boxA')).value))
     } else if (input == 'select') {
       this.gridApi3.setQuickFilter(String((<HTMLInputElement>document.querySelector('#filter-boxS')).value))
+    }else if(input == 'scout'){
+      this.gridApiScout.setQuickFilter(String((<HTMLInputElement>document.querySelector('#filter-boxScout')).value))
     }
   }
 arraysEqual(arr1, arr2) {
@@ -1403,13 +1551,10 @@ arraysEqual(arr1, arr2) {
     this.gridApiA.showLoadingOverlay()
     this.gridApi3.showLoadingOverlay()
     return this.Auth.selectTeam(this.currentRegionMain, this.teamnumber, this.currentSelect, this.currentNotSelect).subscribe(data=>{
-      console.log(data)
       this.Auth.loadrank(this.teamnumber, this.currentRegionMain, this.currentOption, this.currentOptionInner).subscribe(data => {
         this.col_index = data.col_index
         this.currentData = data.output
         this.getSelectedTeam(this.selectTeamOption, this.selectTeamOptionInner)        
-        console.log(this.col_index, this.currentData)
-        
       })
     })
   }
@@ -1420,12 +1565,10 @@ arraysEqual(arr1, arr2) {
     this.gridApiA.showLoadingOverlay()
     this.gridApi3.showLoadingOverlay()
     return this.Auth.selectTeam(this.currentRegionMain, this.teamnumber, this.currentSelectA, this.currentNotSelectA).subscribe(data => {
-      console.log(data)
       this.Auth.loadrank(this.teamnumber, this.currentRegionMain, this.currentOptionA, this.currentOptionInnerA).subscribe(data => {
         this.col_indexA = data.col_index
         this.currentDataA = data.output
         this.getSelectedTeam(this.selectTeamOption, this.selectTeamOptionInner)
-        //console.log(this.col_index, this.currentData)
       })
     })
   }
@@ -1433,12 +1576,9 @@ arraysEqual(arr1, arr2) {
   selectTeam2() {
     this.selectLoader = true
     return this.Auth.selectTeam(this.currentRegionMain, this.teamnumber, this.currentSelectA, this.currentNotSelectA).subscribe(data => {
-      console.log(data)
       this.Auth.loadrank(this.teamnumber, this.currentRegionMain, this.currentOption, this.currentOptionInner).subscribe(data => {
         this.col_index = data.col_index
         this.currentData = data.output
-
-        console.log(this.col_index, this.currentData)
       })
     })
   }
@@ -1446,26 +1586,29 @@ arraysEqual(arr1, arr2) {
   selectTeamA2() {
     this.selectLoaderA = true
     return this.Auth.selectTeam(this.currentRegionMain, this.teamnumber, this.currentSelect, this.currentNotSelect).subscribe(data => {
-      console.log(data)
       this.Auth.loadrank(this.teamnumber, this.currentRegionMain, this.currentOptionA, this.currentOptionInnerA).subscribe(data => {
         this.col_indexA = data.col_index
         this.currentDataA = data.output
-        //console.log(this.col_index, this.currentData)
       })
     })
   }
   onGridReady(params) {
     this.gridApi = params.api;
   }
+  onGridReadyScout(params) {
+    this.gridApiScout = params.api;
+  }
   onGridReadyA(params) {
     this.gridApiA = params.api;
+  }
+  onGridReadyPit(params) {
+    this.gridApiPit= params.api;    
   }
   onBtExport() {
     var params = {
       fileName: (<HTMLInputElement>document.querySelector("#fileName")).value,
       columnSeparator: ','
     };
-    //console.log(params)
     this.gridApi.exportDataAsCsv(params);
   }
   onBtExportA() {
@@ -1473,45 +1616,52 @@ arraysEqual(arr1, arr2) {
       fileName: (<HTMLInputElement>document.querySelector("#fileNameA")).value,
       columnSeparator: ','
     };
-    //console.log(params)
     this.gridApiA.exportDataAsCsv(params);
   }
-
+  onBtExportScout() {
+    var params = {
+      fileName: (<HTMLInputElement>document.querySelector("#fileNameScout")).value,
+      columnSeparator: ','
+    };
+    this.gridApiScout.exportDataAsCsv(params);
+  }
+  onBtExportPit() {
+    var params = {
+      fileName: "Pit_info",
+      columnSeparator: ','
+    };
+    this.gridApiPit.exportDataAsCsv(params);
+  }
   setcurrentRegionMain(event){ 
-    this.currentRegionMain = event.target.currentevent.value
-    this.Auth.setMainEvent(this.teamnumber, this.name, this.currentRegionMain ).subscribe(data => {
-      //console.log(data)
-      this.getSelectedTeam(this.selectTeamOption, this.selectTeamOptionInner)
-      this.Auth.loadrank(this.teamnumber, this.currentRegionMain, this.currentOptionA, this.currentOptionInnerA).subscribe(data3 => {
-        this.col_indexA = data3.col_index
-        this.currentDataA = data3.output
-      })
-      this.Auth.loadrank(this.teamnumber, this.currentRegionMain, this.currentOption, this.currentOptionInner).subscribe(data4 => {
-        this.col_index = data4.col_index
-        this.currentData = data4.output
-
-      })
-      this.Auth.getAPI3("events/" + this.currentYear).subscribe(data2 => {
-        for (var ele in data2) {
-          if (data2[ele].short_name == this.currentRegionMain) {
-            this.currentRegionMainId = data2[ele].key
-            this.getCurrentRegionTeams()
-            break
+    if(this.managerb){
+      this.currentRegionMain = event.target.currentevent.value
+      this.Auth.setMainEvent(this.teamnumber, this.name, this.currentRegionMain ).subscribe(data => {
+        this.getSelectedTeam(this.selectTeamOption, this.selectTeamOptionInner)
+        this.Auth.loadrank(this.teamnumber, this.currentRegionMain, this.currentOptionA, this.currentOptionInnerA).subscribe(data3 => {
+          this.col_indexA = data3.col_index
+          this.currentDataA = data3.output
+        })
+        this.Auth.loadrank(this.teamnumber, this.currentRegionMain, this.currentOption, this.currentOptionInner).subscribe(data4 => {
+          this.col_index = data4.col_index
+          this.currentData = data4.output
+        })
+        this.Auth.getAPI3("events/" + this.currentYear).subscribe(data2 => {
+          for (var ele in data2) {
+            if (data2[ele].short_name == this.currentRegionMain) {
+              this.currentRegionMainId = data2[ele].key
+              this.getCurrentRegionTeams()
+              break
+            }
           }
-
-        }
       })
-
-      this.getMatchNumber()
-      
-    })
-    //console.log(this.currentRegionMain)
+       this.getMatchNumber()
+      })
+    }
   }
 
   getcurrentRegionMain() {
     this.Auth.getcurrentRegionMain(this.teamnumber, this.name).subscribe(data => {
       this.currentRegionMain=data.m
-      console.log(data.m)
       this.Auth.getAPI3("events/" + this.currentYear).subscribe(data2 => {
         for(var ele in data2){
           if (data2[ele].short_name ==this.currentRegionMain){
@@ -1523,7 +1673,6 @@ arraysEqual(arr1, arr2) {
         
       })
     })
-    //console.log(this.currentRegionMain)
   }
  contains(arr, element) {
   for (let i = 0; i < arr.length; i++) {
@@ -1566,7 +1715,6 @@ arraysEqual(arr1, arr2) {
       }
     }
   
-    //console.log(this.currentOption)
     this.Auth.loadrank(this.teamnumber, this.currentRegionMain, this.currentOption, this.currentOptionInner).subscribe(data=>{
       
       this.col_index=data.col_index
@@ -1601,7 +1749,6 @@ arraysEqual(arr1, arr2) {
     
     var optionsVarlist=[]
     var selectedoptionsVarlist=[]
-    console.log(<HTMLSelectElement>document.querySelector('#rankOptA'))
     for (var i = 0; i<optionsVar.length;i++){
       optionsVarlist.push(optionsVar[i].value)
     }
@@ -1609,7 +1756,6 @@ arraysEqual(arr1, arr2) {
       selectedoptionsVarlist.push(selectedoptionsVar[i].value)
       
     }
-    console.log(selectedoptionsVarlist, optionsVarlist)
     for (var i = 0; i < optionsVar.length; i++) {
       if (!this.contains(selectedoptionsVarlist, optionsVarlist[i])){
         this.rankperference[optionsVar[i].value.substring(0, optionsVar[i].value.length - 1)] = false
@@ -1624,17 +1770,9 @@ arraysEqual(arr1, arr2) {
     }
   }
     
-    /*
-    for (var i = 0; i < document.querySelector('#rankOptA').selectedOptions.length; i++) {
-      this.currentOptionA.push(document.querySelector('#rankOptA').selectedOptions[i].value)
-      this.currentOptionInnerA.push(document.querySelector('#rankOptA').selectedOptions[i].innerText)
-      this.rankperference[document.querySelector('#rankOptA').selectedOptions[i].value.substring(0, document.querySelector('#rankOptA').selectedOptions[i].value.length - 1)] = true
-    }*/
-    //console.log(this.currentOptionA)
     this.Auth.loadrank(this.teamnumber, this.currentRegionMain, this.currentOptionA, this.currentOptionInnerA).subscribe(data => {
       this.col_indexA = data.col_index
       this.currentDataA = data.output
-      //console.log(this.col_index, this.currentData)
     })
 
     
@@ -1650,13 +1788,10 @@ arraysEqual(arr1, arr2) {
     }
     
     this.Auth.updaterankPerference(this.name, this.teamnumber, this.role, temPerference).subscribe(data => {
-      //console.log(temPerference)
-      //console.log(data)
     })
   }
   test(event){
     event.preventDefault()
-    console.log(event.target.innerText)
   }
   //-----JS replacement function-----
   addhatchlvl3(b: boolean) {
@@ -1670,9 +1805,7 @@ arraysEqual(arr1, arr2) {
       }
     }
     this.Auth.updateMatch("hatchlvl3", this.hatchlvl3, this.name, this.teamnumber, this.currentMatch, this.currentRegion, this.currentMatchNumber, this.currentMatchTeam).subscribe(data => {
-      console.log(data)
       this.currentMatch = data.currentId
-      //console.log(data.currentId)
     })
   }
 
@@ -1690,10 +1823,7 @@ arraysEqual(arr1, arr2) {
     }
     var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addhatchlvl3Edit')).value)
     this.Auth.updateMatchEdit("hatchlvl3", edit_tem_value, this.editdata.id).subscribe(data => {
-      //console.log(data)
     }) 
-    //console.log(edit_tem_value)
-    
   }
 
   addhatchlvl2Edit(b: boolean) {
@@ -1709,10 +1839,7 @@ arraysEqual(arr1, arr2) {
     }
     var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addhatchlvl2Edit')).value)
     this.Auth.updateMatchEdit("hatchlvl2", edit_tem_value, this.editdata.id).subscribe(data => {
-      //console.log(data)
     })
-    //console.log(edit_tem_value)
-
   }
 
   addhatchlvl1Edit(b: boolean) {
@@ -1728,9 +1855,7 @@ arraysEqual(arr1, arr2) {
     }
     var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addhatchlvl1Edit')).value)
     this.Auth.updateMatchEdit("hatchlvl1", edit_tem_value, this.editdata.id).subscribe(data => {
-      //console.log(data)
     })
-  //onsole.log(edit_tem_value)
 
   }
 
@@ -1747,9 +1872,7 @@ arraysEqual(arr1, arr2) {
     }
     var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addcargolvl3Edit')).value)
     this.Auth.updateMatchEdit("cargolvl3", edit_tem_value, this.editdata.id).subscribe(data => {
-      //console.log(data)
     })
-  //console.log(edit_tem_value)
 
   }
 
@@ -1766,10 +1889,7 @@ arraysEqual(arr1, arr2) {
     }
     var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addcargolvl2Edit')).value)
     this.Auth.updateMatchEdit("cargolvl2", edit_tem_value, this.editdata.id).subscribe(data => {
-      //console.log(data)
     })
-  //console.log(edit_tem_value)
-
   }
 
   addcargolvl1Edit(b: boolean) {
@@ -1785,10 +1905,7 @@ arraysEqual(arr1, arr2) {
     }
     var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addcargolvl1Edit')).value)
     this.Auth.updateMatchEdit("cargolvl1", edit_tem_value, this.editdata.id).subscribe(data => {
-      //console.log(data)
     })
-    //console.log(edit_tem_value)
-
   }
 
   addhatchshipEdit(b: boolean) {
@@ -1804,10 +1921,7 @@ arraysEqual(arr1, arr2) {
     }
     var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addhatchshipEdit')).value)
     this.Auth.updateMatchEdit("hatchship", edit_tem_value, this.editdata.id).subscribe(data => {
-      //console.log(data)
     })
-    //console.log(edit_tem_value)
-
   }
 
   addcargoshipEdit(b: boolean) {
@@ -1823,10 +1937,7 @@ arraysEqual(arr1, arr2) {
     }
     var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addcargoshipEdit')).value)
     this.Auth.updateMatchEdit("cargoship", edit_tem_value, this.editdata.id).subscribe(data => {
-      //console.log(data)
     })
-    //console.log(edit_tem_value)
-
   }
   addeditdroppieceEdit(b: boolean) {
     var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addeditdroppieceEdit')).value)
@@ -1841,10 +1952,7 @@ arraysEqual(arr1, arr2) {
     }
     var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addeditdroppieceEdit')).value)
     this.Auth.updateMatchEdit("defensedrop", edit_tem_value, this.editdata.id).subscribe(data => {
-      //console.log(data)
     })
-    console.log(edit_tem_value)
-
   }
   addeditblockEdit(b: boolean) {
     var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addeditblockEdit')).value)
@@ -1859,10 +1967,7 @@ arraysEqual(arr1, arr2) {
     }
     var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addeditblockEdit')).value)
     this.Auth.updateMatchEdit("defenseblock", edit_tem_value, this.editdata.id).subscribe(data => {
-      //console.log(data)
     })
-    console.log(edit_tem_value)
-
   }
   addeditdrophatchEdit(b: boolean) {
     var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addeditdrophatchEdit')).value)
@@ -1877,10 +1982,7 @@ arraysEqual(arr1, arr2) {
     }
     var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addeditdrophatchEdit')).value)
     this.Auth.updateMatchEdit("hatchdrop", edit_tem_value, this.editdata.id).subscribe(data => {
-      //console.log(data)
     })
-    //console.log(edit_tem_value)
-
   }
   addeditdropcargoEdit(b: boolean) {
     var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addeditdropcargoEdit')).value)
@@ -1895,10 +1997,7 @@ arraysEqual(arr1, arr2) {
     }
     var edit_tem_value = parseInt((<HTMLSelectElement>document.querySelector('#addeditdropcargoEdit')).value)
     this.Auth.updateMatchEdit("cargodrop", edit_tem_value, this.editdata.id).subscribe(data => {
-      //console.log(data)
     })
-    //console.log(edit_tem_value)
-
   }
 
   //--------Edit Match Function---------
@@ -1914,9 +2013,7 @@ arraysEqual(arr1, arr2) {
       }
     }
     this.Auth.updateMatch("cargolvl3", this.cargolvl3, this.name, this.teamnumber, this.currentMatch, this.currentRegion, this.currentMatchNumber, this.currentMatchTeam).subscribe(data => {
-      console.log(data)
       this.currentMatch = data.currentId
-      //console.log(data.currentId)
     })
   }
   addhatchlvl2(b: boolean) {
@@ -1930,9 +2027,7 @@ arraysEqual(arr1, arr2) {
       }
     }
     this.Auth.updateMatch("hatchlvl2", this.hatchlvl2, this.name, this.teamnumber, this.currentMatch, this.currentRegion, this.currentMatchNumber, this.currentMatchTeam).subscribe(data => {
-      console.log(data)
       this.currentMatch = data.currentId
-      //console.log(data.currentId)
     })
   }
 
@@ -1947,9 +2042,7 @@ arraysEqual(arr1, arr2) {
       }
     }
     this.Auth.updateMatch("cargolvl2", this.cargolvl2, this.name, this.teamnumber, this.currentMatch, this.currentRegion, this.currentMatchNumber, this.currentMatchTeam).subscribe(data => {
-      console.log(data)
       this.currentMatch = data.currentId
-      //console.log(data.currentId)
     })
   }
   addhatchlvl1(b: boolean) {
@@ -1963,9 +2056,7 @@ arraysEqual(arr1, arr2) {
       }
     }
     this.Auth.updateMatch("hatchlvl1", this.hatchlvl1, this.name, this.teamnumber, this.currentMatch, this.currentRegion, this.currentMatchNumber, this.currentMatchTeam).subscribe(data => {
-      console.log(data)
       this.currentMatch = data.currentId
-      //console.log(data.currentId)
     })
   }
   addcargolvl1(b: boolean) {
@@ -1979,9 +2070,7 @@ arraysEqual(arr1, arr2) {
       }
     }
     this.Auth.updateMatch("cargolvl1", this.cargolvl1, this.name, this.teamnumber, this.currentMatch, this.currentRegion, this.currentMatchNumber, this.currentMatchTeam).subscribe(data => {
-      console.log(data)
       this.currentMatch = data.currentId
-      //console.log(data.currentId)
     })
   }
   addcargoship(b: boolean) {
@@ -1995,9 +2084,7 @@ arraysEqual(arr1, arr2) {
       }
     }
     this.Auth.updateMatch("cargoship", this.cargoship, this.name, this.teamnumber, this.currentMatch, this.currentRegion, this.currentMatchNumber, this.currentMatchTeam).subscribe(data => {
-      console.log(data)
       this.currentMatch = data.currentId
-      //console.log(data.currentId)
     })
   }
   addhatchship(b: boolean) {
@@ -2011,9 +2098,7 @@ arraysEqual(arr1, arr2) {
       }
     }
     this.Auth.updateMatch("hatchship", this.hatchship, this.name, this.teamnumber, this.currentMatch, this.currentRegion, this.currentMatchNumber, this.currentMatchTeam).subscribe(data => {
-      console.log(data)
       this.currentMatch = data.currentId
-      //console.log(data.currentId)
     })
   }
 
@@ -2074,9 +2159,7 @@ arraysEqual(arr1, arr2) {
       }  
     }
     this.Auth.updateMatch("hatchdrop", this.editdrophatch , this.name, this.teamnumber, this.currentMatch, this.currentRegion, this.currentMatchNumber, this.currentMatchTeam).subscribe(data => {
-      console.log(data)
       this.currentMatch = data.currentId
-      //console.log(data.currentId)
     })
   }
   addeditdropcargo(b:boolean) {
@@ -2090,9 +2173,7 @@ arraysEqual(arr1, arr2) {
       }
     }
     this.Auth.updateMatch("cargodrop", this.editdropcargo, this.name, this.teamnumber, this.currentMatch, this.currentRegion, this.currentMatchNumber, this.currentMatchTeam).subscribe(data => {
-      console.log(data)
       this.currentMatch = data.currentId
-      //console.log(data.currentId)
     })
   }
   addeditdroppiece(b: boolean) {
@@ -2106,9 +2187,7 @@ arraysEqual(arr1, arr2) {
       }
     }
     this.Auth.updateMatch("defensedrop", this.editdroppiece, this.name, this.teamnumber, this.currentMatch, this.currentRegion, this.currentMatchNumber, this.currentMatchTeam).subscribe(data => {
-      console.log(data)
       this.currentMatch = data.currentId
-      //console.log(data.currentId)
     })
   }
   addeditblock(b: boolean) {
@@ -2118,13 +2197,10 @@ arraysEqual(arr1, arr2) {
       if (this.editblock > 0)
         this.editblock--
       else {
-
       }
     }
     this.Auth.updateMatch("defenseblock", this.editblock, this.name, this.teamnumber, this.currentMatch, this.currentRegion, this.currentMatchNumber, this.currentMatchTeam).subscribe(data => {
-      console.log(data)
       this.currentMatch = data.currentId
-      //console.log(data.currentId)
     })
   }
   //------service request function-----
@@ -2133,6 +2209,9 @@ arraysEqual(arr1, arr2) {
   setEditingToFalse(){
     this.editingThethree=false
     this.editingTeamnumber=false
+    this.Auth.updateTotalVal(this.teamnumber, this.editdata.region, this.editdata.teamnumber).subscribe(data=>{
+
+    })
   }
   updateMatchEdit(event) {
     event.preventDefault()
@@ -2141,18 +2220,55 @@ arraysEqual(arr1, arr2) {
       this.editingThethree = true
     }
     this.Auth.updateMatchEdit(target.id, target.value, this.editdata.id).subscribe(data => {
-      //console.log(data)
+      this.Auth.updateTotalVal(this.teamnumber, this.editdata.region, this.editdata.teamnumber).subscribe(data => {
+      })
+
+      if (target.id == 'teamnumber') {
+        this.Auth.updateTotalVal(this.teamnumber, this.editdata.region, target.value).subscribe(data => {
+        })
+      } else if (target.id == 'region'){
+        this.Auth.updateTotalVal(this.teamnumber, target.value, this.editdata.teamnumber).subscribe(data => {
+        })
+      }
     }) 
+
+  }
+  updateTotalAfterEdit(){
+    this.Auth.updateTotalVal(this.teamnumber, this.editdata.region, this.editdata.teamnumber).subscribe(data=>{
+    })
   }
 
   updatePitEdit(event) {
     event.preventDefault()
     const target = event.target
-    if (target.id == 'teamnumber') {
-      this.editingTeamnumber = true
+    var result:string;
+    var new_=[]
+    if (target.id == "sensor" || target.id == "autochoice") {
+      var idd = "";
+      var opts = target.selectedOptions;
+      for (var i = 0; i < opts.length; i++) {
+        new_.push(opts[i].value)
+        if (i != opts.length - 1) {
+          idd += opts[i].value + "/"
+        } else {
+          idd += opts[i].value
+        }
+      }
+
+      if (target.id == "sensor"){
+        this.editSensorNew = new_
+      }else{
+        this.editAutochoiceNew = new_
+      }
+      result=idd
     }
-    this.Auth.updatePitEdit(target.id, target.value, this.editdataPit.id).subscribe(data => {
-      //console.log(data)
+    else if (target.id == 'teamnumber') {
+      this.editingTeamnumber = true
+      result = target.value
+    }else{
+      result = target.value
+    }
+    this.Auth.updatePitEdit(target.id, result, this.editdataPit.id).subscribe(data => {
     })
   }
   getEditDataMatch(e){
@@ -2161,69 +2277,61 @@ arraysEqual(arr1, arr2) {
     const inner = e.target.innerText.split('-')
 
     if(inner.length==3){
-    //console.log(inner)
     this.Auth.getEditDataMatch(this.teamnumber,this.history_person,inner[0],inner[1],inner[2]).subscribe(data=>{
-      //console.log(data.m)
       for(var i=0;i<this.editdatastring.length;i++){
         this.editdata[this.editdatastring[i]] = data.m[0][this.editdatastring[i]]  
       }
       this.editMatchLoader = false
-      //console.log(this.editdata)
     })
   }else{
       this.Auth.getEditDataMatch(this.teamnumber, this.history_person, inner[0]+"-"+inner[1], inner[2], inner[3]).subscribe(data => {
-        //console.log(data.m)
         for (var i = 0; i < this.editdatastring.length; i++) {
           this.editdata[this.editdatastring[i]] = data.m[0][this.editdatastring[i]]
         }
         this.editMatchLoader = false
-        //console.log(this.editdata)
       })
   }
   }
   getEditDataMatchPit(e) {
+    this.resetSensor_Auto=false
     this.editingTeamnumber = false
     this.editPitLoader=true
     const inner = e.target.innerText
-    console.log(inner)
+    this.editdataPit.autochoice=[]
+    this.editdataPit.sensor=[]
+    this.editAutochoiceNew=[],this.editSensorNew=[]
+
     this.Auth.getEditDataMatchPit(this.teamnumber, this.history_person, inner).subscribe(data => {
-      console.log(data.m)
       for (var i = 0; i < this.editdatastringPit.length; i++) {
-        this.editdataPit[this.editdatastringPit[i]] = data.m[0][this.editdatastringPit[i]]
+        if (this.editdatastringPit[i] == "sensor" || this.editdatastringPit[i] == "autochoice"){
+          this.editdataPit[this.editdatastringPit[i]] = data.m[0][this.editdatastringPit[i]].split("/")
+        }else{
+          this.editdataPit[this.editdatastringPit[i]] = data.m[0][this.editdatastringPit[i]]
+        }
       }
-      //console.log(this.editdataPit)
+      if (this.editdataPit.autochoice[0] == "" && this.editdataPit.autochoice.length==1){
+        this.editdataPit.autochoice=["empty"]
+      }
+      if (this.editdataPit.sensor[0] == "" && this.editdataPit.sensor.length == 1) {
+        this.editdataPit.sensor = ["empty"]
+      }
       this.editPitLoader = false
+      this.resetSensor_Auto = true
     })
   }
-  showHistory(date){
-    //console.log('a' + date.split('-').join(""))
-    return this.historybs[0]['a'+date.split('-').join("")]
-  }
-  showHistoryPit(date) {
-    //console.log('a' + date.split('-').join(""))
-    return this.historybs_pit[0]['a' + date.split('-').join("")]
-  }
+  
   getHistory(nn){
     this.Auth.getHistory(nn, this.teamnumber).subscribe(data=>{
       if (this.isFirstHistory==0 && this.history==[]){
         this.historyload=true
       }
-      //console.log(data)
-      if (this.currentHdate != data.currentId){
-        this.historybs = data.bs
-      } 
+      
       if (this.currentHdate != data.currentId || this.currentHmatch != data.col_name){
         this.history=[]
       this.currentHdate = data.currentId
       this.currentHmatch = data.col_name
       this.date =data.currentId.split("/")
       this.datematch = data.col_name.split("*")
-      
-      this.dateid=[]
-
-        for (var i = 0; i < this.date.length; i++) {
-          this.dateid.push("#" + this.date[i])
-        }
 
       for (var i = 0; i < this.datematch.length;i++){
         this.datematch[i] = this.datematch[i].split("/")
@@ -2233,8 +2341,7 @@ arraysEqual(arr1, arr2) {
         this.history.push(
           {
             date: this.date[i],
-            match:this.datematch[i],
-            dateid: this.dateid[i]
+            match:this.datematch[i]
         }
         )
       }
@@ -2247,12 +2354,11 @@ arraysEqual(arr1, arr2) {
         this.history=[
           {
           date: "No history",
-            dateid: "#No history",
           match: []
           }]
         this.historyload = false
-        this.historyPersonload = false;
       }
+      this.historyPersonload = false;
     })
 
     this.Auth.getHistoryPit(nn, this.teamnumber).subscribe(data => {
@@ -2260,7 +2366,6 @@ arraysEqual(arr1, arr2) {
       if (this.isFirstHistory_pit == 0 && this.history_pit == []) {
         this.historyload = true
       }
-      //console.log(data)
       if (this.currentHdate_pit != data.currentId) {
         this.historybs_pit = data.bs
       }
@@ -2271,12 +2376,6 @@ arraysEqual(arr1, arr2) {
         this.date_pit = data.currentId.split("/")
         this.datematch_pit = data.col_name.split("*")
 
-        this.dateid_pit = []
-
-        for (var i = 0; i < this.date_pit.length; i++) {
-          this.dateid_pit.push("#" + this.date[i])
-        }
-
         for (var i = 0; i < this.datematch_pit.length; i++) {
           this.datematch_pit[i] = this.datematch_pit[i].split("/")
         }
@@ -2285,8 +2384,7 @@ arraysEqual(arr1, arr2) {
           this.history_pit.push(
             {
               date: this.date_pit[i],
-              match: this.datematch_pit[i],
-              dateid: this.dateid_pit[i]
+              match: this.datematch_pit[i]
             }
           )
         }
@@ -2299,7 +2397,6 @@ arraysEqual(arr1, arr2) {
         this.history_pit = [
           {
             date: "No history",
-            dateid: "#No history",
             match: []
           }]
       }
@@ -2307,21 +2404,37 @@ arraysEqual(arr1, arr2) {
     })
   }
 
-
+  setStyle(nodeList , style){
+    for (var ii = 0; ii < nodeList.length;ii++){
+      nodeList[ii].style.display=style
+    }
+  }
   openHistory(event){
     event.preventDefault()
-    
-    const inner = 'a' + event.target.innerText.split(' ')[0].split('-').join("")
-    this.historybs[0][inner] = !this.historybs[0][inner]
-    //console.log(this.historybs[0][inner])
+    const inner = 'a' + event.target.innerText.split(" ")[0] + "_match";
+
+    var node_list = document.querySelectorAll("." + inner);
+    if (node_list[0] != null) {
+      if ((<HTMLButtonElement>node_list[0]).style.display == "none") {
+        this.setStyle(node_list,"inline")
+      } else {
+        this.setStyle(node_list, "none")
+      }
+    }
   }
 
   openHistoryPit(event) {
     event.preventDefault()
-
-    const inner = 'a' + event.target.innerText.split(' ')[0].split('-').join("")
-    this.historybs_pit[0][inner] = !this.historybs_pit[0][inner]
-    //console.log(this.historybs_pit[0][inner])
+    const inner = 'a' + event.target.innerText.split(" ")[0] + "_pit"
+    
+    var node_list = document.querySelectorAll("." + inner);
+    if (node_list[0] != null) {
+      if ((<HTMLButtonElement>node_list[0]).style.display == "none") {
+        this.setStyle(node_list, "inline")
+      } else {
+        this.setStyle(node_list, "none")
+      }
+    }
   }
     //-----blue alliance
   getEventVP3(event){
@@ -2368,8 +2481,6 @@ arraysEqual(arr1, arr2) {
         }
       }
       this.editMatchEvent = selectedevent
-      //console.log(selectedevent)
-      //event.target.value
     })
   }
   //--------end of blue alliance
@@ -2390,7 +2501,7 @@ arraysEqual(arr1, arr2) {
     this.matchLock=false
   }
 
-    //----update pit form-----
+  //----update pit form-----
 
   resetPitForm() {
     for (var i = 0; i < this.bs.length; i++) {
@@ -2418,7 +2529,6 @@ arraysEqual(arr1, arr2) {
         (<HTMLInputElement>document.querySelector("#a" + value + "_manual_add_pit")).style.display = "none"
       }
     })
-    //console.log(this.currentPitReceiver)
   }
 
   copyToAddPit(e){
@@ -2449,7 +2559,6 @@ arraysEqual(arr1, arr2) {
       }
       
       this.Auth.updatePit(target.id, idd, this.name, this.teamnumber, this.currentPit).subscribe(data => {
-        console.log(idd)
         if (data.col_name == "teamnumber") {
           this.editPitError = false
           this.pitLock = true;
@@ -2457,7 +2566,6 @@ arraysEqual(arr1, arr2) {
           this.getTotal_pit_match()
         }
         this.currentPit = data.currentId
-        //console.log(data.currentId)
       })
     }else{
     this.Auth.updatePit(target.id,target.value,this.name,this.teamnumber,this.currentPit).subscribe(data=>{
@@ -2468,7 +2576,6 @@ arraysEqual(arr1, arr2) {
         this.getTotal_pit_match()
       }
       this.currentPit=data.currentId
-      console.log(data.currentId)
     })
   }
   }
@@ -2486,18 +2593,17 @@ arraysEqual(arr1, arr2) {
           idd += opts[i].value
         }
       }
-
-      this.Auth.updatePit(target.id, idd, this.name, this.teamnumber, this.currentPitTask).subscribe(data => {
-        console.log(idd)
-        if (data.col_name == "teamnumber") {
-          this.editPitError = false
-          this.pitLock2 = true;
-          (<HTMLInputElement>document.querySelector("#manual_add_pit")).style.display = "none"
-          this.getTotal_pit_match()
-        }
-        this.currentPitTask = data.currentId
-        //console.log(data.currentId)
-      })
+      if(target.value != "0000"){
+        this.Auth.updatePit(target.id, idd, this.name, this.teamnumber, this.currentPitTask).subscribe(data => {
+          if (data.col_name == "teamnumber") {
+            this.editPitError = false
+            this.pitLock2 = true;
+            (<HTMLInputElement>document.querySelector("#manual_add_pit")).style.display = "none"
+            this.getTotal_pit_match()
+          }
+          this.currentPitTask = data.currentId
+        })
+      }
     }else{
     this.Auth.updatePit(target.id, target.value, this.name, this.teamnumber, this.currentPitTask).subscribe(data => {
       if (data.col_name == "teamnumber") {
@@ -2506,7 +2612,6 @@ arraysEqual(arr1, arr2) {
         this.getTotal_pit_match()
       }
       this.currentPitTask = data.currentId
-      //console.log(data.currentId)
     })
   }
   }
@@ -2521,16 +2626,15 @@ arraysEqual(arr1, arr2) {
         }
       }
     })  
-    //console.log(split[0])
   }
   editPit(event){
-    event.preventDefault()
-    const ids = ['#isTeam','#isWH','#isSensor', '#isImage', '#isAT', '#isAA', '#isTA'
+    if(this.managerb){
+      event.preventDefault()
+      const ids = ['#isTeam','#isWH','#isSensor', '#isImage', '#isAT', '#isAA', '#isTA'
       ,'#isSpeed', '#isEndgame', '#isStr', '#isDri', '#isQ', '#isN']
-    const target = event.target
-    const falseElement = ids.filter(id => target.querySelector(id).checked==false)
-    this.Auth.editPit(falseElement,this.name,this.teamnumber).subscribe(data=>{
-      //console.log(data)
+      const target = event.target
+      const falseElement = ids.filter(id => target.querySelector(id).checked==false)
+      this.Auth.editPit(falseElement,this.name,this.teamnumber).subscribe(data=>{
       const split = data.m.split('/')
       var count=0;
       for (var i = 0; i < this.bs.length; i++) {
@@ -2539,25 +2643,22 @@ arraysEqual(arr1, arr2) {
             count++;
           }
         }
-        if(count>0){
-          this.bs[i].b = false
-        }else{
-          this.bs[i].b = true
+          if(count>0){
+            this.bs[i].b = false
+          }else{
+            this.bs[i].b = true
+          }
+          count=0
         }
-        count=0
-      }
       
-      //console.log(this.bs)
-    })
-    
+      })
+    }
   }
 
     //-----update match form------
   updateTotalVal(){
     this.Auth.updateTotalVal(this.teamnumber,this.currentRegion, this.currentMatchTeam).subscribe(data => {
-      console.log(data)
       this.currentMatch = data.currentId
-      //console.log(data.currentId)
     })
   }
   sendcurrentMatchTeam(event){
@@ -2582,7 +2683,6 @@ arraysEqual(arr1, arr2) {
       this.currentRegion = String(this.currentRegionMain);
     }
     this.Auth.updateMatch(target.id, target.value, this.name, this.teamnumber, this.currentMatch,this.currentRegion,this.currentMatchNumber,this.currentMatchTeam).subscribe(data => {
-      console.log(data)
       if (data.currentId == "Match Already Exist, go to history page to edit" || data.currentId == "Fill in all the part"){
         this.thethreereply.mes = data.currentId
       }else{
@@ -2608,6 +2708,7 @@ arraysEqual(arr1, arr2) {
       mes: "Complete to unlock the rest",
       style: "alert alert-danger"
     }
+    this.updateTotalVal()
   }
 
   updateMatchTask(event){
@@ -2616,65 +2717,64 @@ arraysEqual(arr1, arr2) {
     this.currentMatchTeam=this.currentTask.teamnumber
     this.currentMatchNumber=Number(this.currentTask.matchnumber)
     this.currentRegion = this.currentTask.region
-    this.Auth.updateMatch(target.id, target.value, this.name, this.teamnumber, this.currentMatch, this.currentRegion, this.currentMatchNumber, this.currentMatchTeam).subscribe(data => {
-      console.log(data)
 
-      if (data.currentId == "Match Already Exist, go to history page to edit" || data.currentId == "Fill in all the part") {
-        this.thethreereply.mes = data.currentId
-      } else {
-        this.matchLock = true
-        this.currentMatch = data.currentId
-        this.thethreereply.mes = "Unlocked!"
-        this.thethreereply.style = "alert alert-success"
-        this.getTotal_pit_match()
-      }
+    if (this.currentMatchTeam != "0000" && this.currentMatchNumber != 0 && this.currentRegion != "no event"){
+      this.Auth.updateMatch(target.id, target.value, this.name, this.teamnumber, this.currentMatch, this.currentRegion, this.currentMatchNumber, this.currentMatchTeam).subscribe(data => {
+        if (data.currentId == "Match Already Exist, go to history page to edit" || data.currentId == "Fill in all the part") {
+          this.thethreereply.mes = data.currentId
+        } else {
+          this.matchLock = true
+          this.currentMatch = data.currentId
+          this.thethreereply.mes = "Unlocked!"
+          this.thethreereply.style = "alert alert-success"
+          this.getTotal_pit_match()
+        }
+      })
+    }
+    this.Auth.updateTotalVal(this.teamnumber, this.currentRegion, this.currentMatchTeam).subscribe(data => {
+       this.currentMatch = data.currentId
     })
   }
   updateMatchCounter(event){
-    //if()
     event.preventDefault()
     const target = event.target
     this.Auth.updateMatch(target.id, target.value, this.name, this.teamnumber, this.currentMatch, this.currentRegion, this.currentMatchNumber, this.currentMatchTeam).subscribe(data => {
-      console.log(data)
       this.currentMatch = data.currentId
-      //console.log(data.currentId)
     })
   }
 
 
   editMatch(event) {
-    event.preventDefault()
-    const ids = ['#isEvent', '#isMatch', '#isTeam', '#isImage', '#isA', '#isAP', '#isTP'
-      , '#isDe', '#isEfficient', ,'#isFit','#isEndgame', '#isQ', '#isN']
-    const target = event.target
-    const falseElement = ids.filter(id => target.querySelector(id).checked == false)
-    this.Auth.editMatch(falseElement, this.name, this.teamnumber).subscribe(data => {
-      //console.log(data)
-      const split = data.m.split('/')
-      var count = 0;
-      for (var i = 0; i < this.bs2.length; i++) {
-        for (var i2 = 0; i2 < split.length; i2++) {
-          if (this.bs2[i].id == split[i2]) {
-            count++;
+    if(this.managerb){
+      event.preventDefault()
+      const ids = ['#isEvent', '#isMatch', '#isTeam', '#isImage', '#isA', '#isAP', '#isTP'
+        , '#isDe', '#isEfficient', ,'#isFit','#isEndgame', '#isQ', '#isN']
+      const target = event.target
+      const falseElement = ids.filter(id => target.querySelector(id).checked == false)
+      this.Auth.editMatch(falseElement, this.name, this.teamnumber).subscribe(data => {
+        const split = data.m.split('/')
+        var count = 0;
+        for (var i = 0; i < this.bs2.length; i++) {
+          for (var i2 = 0; i2 < split.length; i2++) {
+            if (this.bs2[i].id == split[i2]) {
+              count++;
+            }
           }
+          if (count > 0) {
+            this.bs2[i].b = false
+          } else {
+            this.bs2[i].b = true
+          }
+          count = 0
         }
-        if (count > 0) {
-          this.bs2[i].b = false
-        } else {
-          this.bs2[i].b = true
-        }
-        count = 0
-      }
-      //console.log(this.bs2)
-    })
-
+      })
+    }
   }
   //------image update------
 
   updatePitImage(){
     
     this.Auth.updatePitImage(this.currentPit,this.currentImage,this.currentImageTitle,this.name,this.teamnumber).subscribe(data=>{
-      console.log(data)
       this.currentMatch = data.currentId
    })
   }
@@ -2686,7 +2786,6 @@ arraysEqual(arr1, arr2) {
 
   setCurrentImage(event) {
     event.preventDefault()
-    //console.log(event.target.files)
     const reader=new FileReader()
     reader.onload=(filedata:any)=>{
       this.currentImage = filedata.target.result
@@ -2696,46 +2795,52 @@ arraysEqual(arr1, arr2) {
   }
 
   //------login and sign up user-------
-  loginUser(event){
-    (<HTMLButtonElement>document.querySelector("#loginnnn")).innerText="Logging in"
 
-    event.preventDefault()
-    const target = event.target
-    const role = target.querySelector('#role').value
-    const name = target.querySelector('#name').value
-    const team = target.querySelector('#teamnumberr').value
-    const password = target.querySelector('#password').value
-    //this.Auth.getAPI3().subscribe(data => {
-      //console.log("we got", data)
-   // })
-    
-    this.Auth.loginUser(role,name, team, password).subscribe(data => {
-      if (data.success) {
-        //this.router.navigate(['signup'])
-        this.Auth.setLoggedIn(true)
-        this.error = data.message
-        this.alerttype = "alert alert-success alert-dismissible fade show"
-        this.loginb=false;
-        this.scoutb=true
-        this.name=data.name
-        this.match_scouted = data.match_scouted
-        this.teamnumber=data.teamnumber
-        if(data.role=="scout"){
-          this.managerb=false
-          this.role="S"
-        }
-        else{
-          this.managerb = true
-          this.role = "M"
-        }
+  
 
-      } else {
-        this.error=data.message
-        this.alerttype = "alert alert-danger alert-dismissible fade show"
-      }
-      this.getHistory(this.name);
+  getLoginInfo(dataa){
+    //this.error = dataa.message
+    //this.alerttype = "alert alert-success alert-dismissible fade show"
+    //this.loginb = false;
+    this.scoutb = true
+    this.name = dataa.name
+    this.match_scouted = dataa.match_scouted
+    this.teamnumber = dataa.teamnumber
+    if (dataa.role == "scout") {
+      this.managerb = false
+      this.role = "S"
+    }
+    else {
+      this.managerb = true
+      this.role = "M"
+    }
+
+    this.getHistory(this.name);
+    if ((<HTMLButtonElement>document.querySelector("#loginnnn"))!=null){
       (<HTMLButtonElement>document.querySelector("#loginnnn")).innerText = "Login"
-    })
-    //console.log(name, team,password)
+    }
+    this.datatransfer.signin()
+  }
+
+  getLoginInfoByCookie() {
+    this.scoutb = true
+    this.name = this.cookie.get('name')
+    this.match_scouted = Number(this.cookie.get('match_scouted'))
+    this.teamnumber = this.cookie.get('teamnumber')
+    if (this.cookie.get('role') == "scout") {
+      this.managerb = false
+      this.role = "S"
+    }
+    else {
+      this.managerb = true
+      this.role = "M"
+    }
+
+    this.getHistory(this.name);
+    if ((<HTMLButtonElement>document.querySelector("#loginnnn")) != null) {
+      (<HTMLButtonElement>document.querySelector("#loginnnn")).innerText = "Login"
+    }
+    this.datatransfer.signin()
   }
 }
+

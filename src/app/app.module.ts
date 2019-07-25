@@ -13,6 +13,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatMenuModule, MatSidenavModule } from '@angular/material';
 import { AgGridModule } from 'ag-grid-angular';
 import { QuestionComponent } from './question/question.component';
+import { LoginComponent } from './login/login.component';
+import { CookieService} from 'ngx-cookie-service';
 //import { DataTablesModule } from 'angular-datatables';
 //import { DataTableComponent } from '../app/data-table/data-table.component';
 @NgModule({
@@ -20,7 +22,8 @@ import { QuestionComponent } from './question/question.component';
     AppComponent,
     ScoutloginComponent,
     routingC,
-    QuestionComponent
+    QuestionComponent,
+    LoginComponent
   ],
   imports: [
     NgbModule,
@@ -33,7 +36,7 @@ import { QuestionComponent } from './question/question.component';
     MatSidenavModule,
     AgGridModule
   ],
-  providers: [AuthGuard,ScoutloginServiceService],
+  providers: [AuthGuard, ScoutloginServiceService, CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,0 +1,17 @@
+#scoutlogin{
+    height: 20%;
+    width: 50%;
+    position: relative;
+    text-align: center; /* has to be scroll, not auto */
+  -webkit-overflow-scrolling: touch;
+  
+}
+
+button{
+    margin-left: 3px;
+    margin-top: 3px;
+}
+.ad{
+    width: 50%;
+    transform: translate(100%,-30%);
+}

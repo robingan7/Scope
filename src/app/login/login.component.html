@@ -1,0 +1,50 @@
+<div id="scoutlogin" *ngIf="loginb">
+    <form (submit)="loginUser($event)">
+        <h1>Login</h1>
+        <div class="{{alerttype}}" role="alert">
+            <strong>Hello!</strong> {{error}}
+            <button type="button" class="close" data-dismiss="alet" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="input-group-prepend">
+            <label class="input-group-text" for="inputGroupSelect01">I am a</label>
+        </div>
+        <select class="custom-select" id="role">
+            <option selected>Choose...</option>
+            <option value="scout">Scout</option>
+            <option value="manager">Manager</option>
+        </select>
+        <div class="form-group">
+            <label for="exampleInputEmail1">Your Name</label>
+            <input type="text" class="form-control" id="name" aria-describedby="emailHelp" placeholder="Enter name">
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1">Your Team#</label>
+            <input type="tel" class="form-control" id="teamnumberr" placeholder="Enter Number">
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1">Password</label>
+            <input type="password" class="form-control" id="password" placeholder="Password">
+        </div>
+
+        <button type="submit" id="loginnnn" class="btn btn-primary">Login</button>
+    </form>
+</div>
+
+<!--start of ad-->
+
+  <div *ngIf="loginb" class="carousel slide ad" data-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active" data-interval="2000">
+        <img src="http://frcscouting.ga/Scope_Ad.png" class="d-block w-100" alt="...">
+      </div>
+      <div class="carousel-item" data-interval="2000">
+        <img id="yoshi" src="http://frcscouting.ga/Scope_Ad.png" class="d-block w-100" alt="...">
+      </div>
+      <div class="carousel-item" data-interval="2000">
+        <img src="http://frcscouting.ga/Scope_Ad.png" class="d-block w-100" alt="...">
+      </div>
+    </div>
+  </div>
+<!--end of ad-->

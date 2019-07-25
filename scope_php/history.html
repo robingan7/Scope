@@ -1,0 +1,321 @@
+<div class="modal fade" id="exampleModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle"
+              aria-hidden="true">
+              <div class="modal-dialog modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalScrollableTitle">Edit Info</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div *ngIf="bs2[0].b">
+                      <span class="badge badge-info">Region/Event Name</span>
+                      <br>
+                      <span class="badge badge-info">Week</span>
+                      <div class="input-group">
+                        <select (change)="getEventVP3($event)" class="custom-select mr-sm-2" id="week">
+                          <option value="" selected>Choose...</option>
+                          <option value="6">6</option>
+                          <option value="7">7</option>
+                          <option value="Houston">Houston Champ</option>
+                          <option value="Detroit">Detroit Champ</option>
+                        </select>
+                      </div>
+                      <span class="badge badge-info">Name</span>
+                      <div class="input-group">
+            
+                        <select (change)="sendcurrentRegion($event)" class="custom-select mr-sm-2" id="event">
+                          <option>Choose...</option>
+            
+                          <option *ngFor="let event of editMatchEvent">{{event}}</option>
+                        </select>
+                      </div>
+                      <hr>
+                    </div>
+            
+                    <div *ngIf="bs2[1].b">
+                      <span class="badge badge-info">Match Number</span>
+                      <input (input)="sendcurrentMatchNumber($event)" type="tel" class="form-control" id="matchnumber"
+                        aria-describedby="emailHelp" placeholder="Enter number">
+                      <hr>
+                    </div>
+            
+                    <div *ngIf="bs2[2].b">
+                      <span class="badge badge-info">Team Number</span>
+                      <input (input)="sendcurrentMatchTeam($event)" type="tel" class="form-control" id="teamnumber"
+                        aria-describedby="emailHelp" placeholder="Enter number">
+                      <div class="input-group-append">
+                        <button (click)="updateMatch($event)" value="{{currentMatch}}" class="btn btn-outline-danger" id="thethree">Set
+                          these data first!!</button>
+                      </div>
+                      <div class="alert alert-danger" role="alert">
+                        {{thethreereply}}
+                      </div>
+                      <hr>
+                    </div>
+            
+                    <div *ngIf="bs2[3].b">
+                      <span class="badge badge-info">Image</span>
+                      <input (input)="setCurrentImageTitle($event)" type="text" class="form-control" id="imagetitle" placeholder="Title">
+            
+                      <div class="input-group mb-3">
+                        <div class="custom-file">
+                          <input (input)="setCurrentImage($event)" type="file" class="custom-file-input" id="image2"
+                            aria-describedby="inputGroupFileAddon01">
+                          <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                        </div>
+                        <div class="input-group-append">
+                          <button (click)="updatePitImage()" class="btn btn-outline-secondary" id="" placement="left" ngbPopover="You can add a new one"
+                            popoverTitle="Image Uploaded!!">Upload</button>
+                        </div>
+                      </div>
+                      <img src="{{currentImage}}" style="height: 60px;width:60px;">
+                      <hr>
+                    </div>
+            
+                    <div *ngIf="bs2[4].b">
+                      <span class="badge badge-info">Alliance</span>
+                      <br>
+                      <select (input)="updateMatch($event)" id="alliance" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value="blue">blue</option>
+                        <option value="red">red</option>
+                      </select>
+                      <hr>
+                    </div>
+            
+                    <div *ngIf="bs2[5].b">
+                      <span class="badge badge-info">Autonomous Period</span>
+                      <br>
+                      <label for="autolvl">Successfully Exit Platform Level</label>
+                      <select (change)="updateMatch($event)" id="exitplatform" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value=0>0</option>
+                        <option value=3>1</option>
+                        <option value=6>2</option>
+                      </select>
+                      <label for="autocargo">Auto Cargo</label>
+                      <select (change)="updateMatch($event)" id="autocargo" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value=1>1</option>
+                        <option value=2>2</option>
+                        <option value=3>3</option>
+                      </select>
+                      <label for="autohatch">Auto Hatch</label>
+                      <select (change)="updateMatch($event)" id="autohatch" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value=1>1</option>
+                        <option value=2>2</option>
+                        <option value=3>3</option>
+                      </select>
+                      <hr>
+                    </div>
+            
+                    <div id="teleS" *ngIf="bs2[6].b">
+                      <span class="badge badge-info">Teleop Period</span>
+                      <br>
+                      <br>
+                      <span class="badge badge-pill badge-info">Hatch <---> Cargo</span>
+                      <br>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span id="rlvlspan" class="badge badge-warning">Rocket Lvl3</span>
+                        </div>
+                        <div class="input-group">
+                          <input type="text" value="{{hatchlvl3}}" class="form-control" placeholder="Hatch" aria-label="Recipient's username with two button addons"
+                            aria-describedby="button-addon4">
+                          <div class="input-group-append" id="button-addon4">
+                            <button (click)="addhatchlvl3(true)" class="btn btn-outline-warning" type="button">+</button>
+                            <button (click)="addhatchlvl3(false)" class="btn btn-outline-warning" type="button">-</button>
+                          </div>
+            
+                          <input type="text" value="{{cargolvl3}}" class="form-control" placeholder="Cargo" aria-label="Recipient's username with two button addons"
+                            aria-describedby="button-addon4">
+                          <div class="input-group-append" id="button-addon4">
+                            <button (click)="addcargolvl3(true)" class="btn btn-outline-warning" type="button">+</button>
+                            <button (click)="addcargolvl3(false)" class="btn btn-outline-warning" type="button">-</button>
+                          </div>
+                        </div>
+                      </div>
+            
+                      <div id="telecounter">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span id="rlvlspan" class="badge badge-warning">Rocket Lvl2</span>
+                          </div>
+                          <div class="input-group">
+                            <input type="text" value="{{hatchlvl2}}" class="form-control" placeholder="Hatch" aria-label="Recipient's username with two button addons"
+                              aria-describedby="button-addon4">
+                            <div class="input-group-append" id="button-addon4">
+                              <button (click)="addhatchlvl2(true)" class="btn btn-outline-warning" type="button">+</button>
+                              <button (click)="addhatchlvl2(false)" class="btn btn-outline-warning" type="button">-</button>
+                            </div>
+            
+                            <input type="text" value="{{cargolvl2}}" class="form-control" placeholder="Cargo" aria-label="Recipient's username with two button addons"
+                              aria-describedby="button-addon4">
+                            <div class="input-group-append" id="button-addon4">
+                              <button (click)="addcargolvl2(true)" class="btn btn-outline-warning" type="button">+</button>
+                              <button (click)="addcargolvl2(false)" class="btn btn-outline-warning" type="button">-</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+            
+                      <div id="telecounter">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span id="rlvlspan" class="badge badge-warning">Rocket Lvl1</span>
+                          </div>
+                          <div class="input-group">
+                            <input type="text" value="{{hatchlvl1}}" class="form-control" placeholder="Hatch" aria-label="Recipient's username with two button addons"
+                              aria-describedby="button-addon4">
+                            <div class="input-group-append" id="button-addon4">
+                              <button (click)="addhatchlvl1(true)" class="btn btn-outline-warning" type="button">+</button>
+                              <button (click)="addhatchlvl1(false)" class="btn btn-outline-warning" type="button">-</button>
+                            </div>
+            
+                            <input type="text" value="{{cargolvl1}}" class="form-control" placeholder="Cargo" aria-label="Recipient's username with two button addons"
+                              aria-describedby="button-addon4">
+                            <div class="input-group-append" id="button-addon4">
+                              <button (click)="addcargolvl1(true)" class="btn btn-outline-warning" type="button">+</button>
+                              <button (click)="addcargolvl1(false)" class="btn btn-outline-warning" type="button">-</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+            
+                      <div id="telecounter">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span id="rlvlspan" class="badge badge-warning">Cargo Ship</span>
+                          </div>
+            
+                          <div class="input-group">
+                            <input type="text" value="{{hatchship}}" class="form-control" placeholder="Hatch" aria-label="Recipient's username with two button addons"
+                              aria-describedby="button-addon4">
+                            <div class="input-group-append" id="button-addon4">
+                              <button (click)="addhatchship(true)" class="btn btn-outline-warning" type="button">+</button>
+                              <button (click)="addhatchship(false)" class="btn btn-outline-warning" type="button">-</button>
+                            </div>
+            
+                            <input type="text" value="{{cargoship}}" class="form-control" placeholder="Cargo" aria-label="Recipient's username with two button addons"
+                              aria-describedby="button-addon4">
+                            <div class="input-group-append" id="button-addon4">
+                              <button (click)="addcargoship(true)" class="btn btn-outline-warning" type="button">+</button>
+                              <button (click)="addcargoship(false)" class="btn btn-outline-warning" type="button">-</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+            
+                      <hr>
+                    </div>
+            
+                    <div *ngIf="bs2[7].b">
+                      <span class="badge badge-info">Defense</span>
+                      <br>
+                      <span class="badge badge-primary">Add 1 when the opponent drops a game piece</span>
+                      <div class="input-group">
+                        <input id="defensedrop" type="tel" class="form-control" value={{editdroppiece}} aria-describedby="button-addon4">
+                        <div class="input-group-append" id="button-addon4">
+                          <button (click)="addeditdroppiece(true)" class="btn btn-outline-secondary" type="button">+</button>
+                          <button (click)="addeditdroppiece(false)" class="btn btn-outline-secondary" type="button">-</button>
+                        </div>
+                      </div>
+                      <span class="badge badge-primary">Add 1 when robot blocks or pushes the opponent</span>
+                      <div class="input-group">
+                        <input id="defenseblock" type="tel" class="form-control" value={{editblock}} aria-describedby="button-addon4">
+                        <div class="input-group-append" id="button-addon4">
+                          <button (click)="addeditblock(true)" class="btn btn-outline-secondary" type="button">+</button>
+                          <button (click)="addeditblock(false)" class="btn btn-outline-secondary" type="button">-</button>
+                        </div>
+                      </div>
+                      <hr>
+                    </div>
+            
+                    <div *ngIf="bs2[8].b">
+                      <span class="badge badge-info">Efficient</span>
+                      <br>
+                      <span class="badge badge-primary">Add 1 when the robot drops a hatch</span>
+                      <div class="input-group">
+                        <input id="hatchdrop" type="tel" class="form-control" value={{editdrophatch}} aria-describedby="button-addon4">
+                        <div class="input-group-append" id="button-addon4">
+                          <button (click)="addeditdrophatch(true);" class="btn btn-outline-secondary" type="button">+</button>
+                          <button (click)="addeditdrophatch(false);" class="btn btn-outline-secondary" type="button">-</button>
+                        </div>
+                      </div>
+                      <span class="badge badge-primary">Add 1 when the robot drops a cargo</span>
+                      <div class="input-group">
+                        <input id="cargodrop" type="tel" class="form-control" value={{editdropcargo}} aria-describedby="button-addon4">
+                        <div class="input-group-append" id="button-addon4">
+                          <button (click)="addeditdropcargo(true);" class="btn btn-outline-secondary" type="button">+</button>
+                          <button (click)="addeditdropcargo(false);" class="btn btn-outline-secondary" type="button">-</button>
+                        </div>
+            
+                      </div>
+                      <hr>
+                    </div>
+            
+                    <div *ngIf="bs2[9].b">
+                      <span class="badge badge-info">End Game</span>
+                      <br>
+                      <label for="platformS">Platform Climb</label>
+                      <select (change)="updateMatch($event)" id="climbpoint" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value=0>Level0</option>
+                        <option value=3>Level1</option>
+                        <option value=6>Only_Level2</option>
+                        <option value=12>Only_Level3</option>
+                        <option value=18>Level3_And_2</option>
+                        <option value=24>Level3_Buddy_1</option>
+                        <option value=36>Level3_Buddy_2</option>
+                        <option value=12>Level2_Buddy</option>
+                      </select>
+                    </div>
+            
+                    <div *ngIf="bs2[10].b">
+                      <span class="badge badge-info">Robot Fitness</span>
+                      <br>
+                      <label for="fit">Does the robot fit our robot?</label>
+                      <select (change)="updateMatch($event)" id="fitness" class="form-control form-control-lg">
+                        <option>Choose...</option>
+                        <option value=5>Completely fit our robot(first pick!!!) | 5 stars</option>
+                        <option value=4>Fit our robot very well | 4 stars</option>
+                        <option value=3>Fit our robot OK | 3 stars</option>
+                        <option value=2>Kinds of fit.... | 2 stars</option>
+                        <option value=1>Same type of robot as us | 1 star</option>
+                        <option value=0>Useless for us | 0 star</option>
+                      </select>
+                    </div>
+            
+                    <div *ngIf="bs2[11].b">
+                      <span class="badge badge-info">Questions to ask</span>
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Question</span>
+                      </div>
+                      <textarea (input)="updateMatch($event)" id="question" class="form-control" aria-label="With textarea"
+                        placeholder="Like Q1:....Q2:...."></textarea>
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Answer</span>
+                      </div>
+            
+                      <textarea (input)="updateMatch($event)" id="answer" class="form-control" aria-label="With textarea"
+                        placeholder="Like A1:....A2:...."></textarea>
+                    </div>
+                    <div *ngIf="bs2[12].b">
+                      <span class="badge badge-info">Write your note here</span>
+                      <textarea (input)="updateMatch($event)" id="notes" class="form-control" aria-label="With textarea"
+                        placeholder="Notes Here"></textarea>
+                    </div>
+            
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    <button class="btn btn-outline-success mr-2" placement="top" ngbPopover="Your pitform updated" popoverTitle="Nice!!">
+                      Save changes
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>

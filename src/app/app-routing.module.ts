@@ -6,10 +6,12 @@ import { AuthGuard } from './auth.guard';
 
 import { ScoutloginComponent } from './scoutlogin/scoutlogin.component';
 import { QuestionComponent } from './question/question.component';
+import { LoginComponent} from './login/login.component'
 const routes: Routes = [
-  { path: '', component: ScoutloginComponent,pathMatch: 'full'},
+  { path: '', component: LoginComponent,pathMatch: 'full'},
+  {path:'login', component: LoginComponent},
   { path: 'signup', component: SignupComponent },
-  { path: 'login', component: ScoutloginComponent },
+  { path: 'home', component: ScoutloginComponent },
   {path:'question', component:QuestionComponent},
   {path: '**', component: ScoutpageComponent}
 ];

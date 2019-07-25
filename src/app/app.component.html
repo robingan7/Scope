@@ -2,12 +2,15 @@
   
 <nav>
 <ul class="nav justify-content-end">
-  
   <li class="nav-item">
-    <a routerLink="/login" routerLinkActive="router-link-active" class="nav-link active" href="#">Login</a>
+    <a *ngIf="auth.isLoggedIn" routerLink="/home" routerLinkActive="router-link-active" class="nav-link active"
+      href="#">Home</a>
   </li>
   <li class="nav-item">
-    <a routerLink="/signup" routerLinkActive="router-link-active" class="nav-link" href="#">Sign Up</a>
+    <a *ngIf="!auth.isLoggedIn" routerLink="/login" routerLinkActive="router-link-active" class="nav-link active" href="#">Login</a>
+  </li>
+  <li class="nav-item">
+    <a *ngIf="!auth.isLoggedIn" routerLink="/signup" routerLinkActive="router-link-active" class="nav-link" href="#">Sign Up</a>
   </li>
   <li class="nav-item">
     <a routerLink="/question" routerLinkActive="router-link-active" class="nav-link active" href="#">Question</a>

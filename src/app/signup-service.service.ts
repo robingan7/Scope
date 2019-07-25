@@ -10,8 +10,8 @@ interface myData {
 })
 export class SignupServiceService {
   private loggedInStatus = false
-  //private path = "http://localhost/scope_php/"
-  private path ="https://frcscoutingapp.000webhostapp.com/"
+  private path = "http://localhost/scope_php/"
+  //private path ="https://frcscoutingapp.000webhostapp.com/"
   constructor(private http: HttpClient) { }
   setLoggedIn(value: boolean) {
     this.loggedInStatus = value

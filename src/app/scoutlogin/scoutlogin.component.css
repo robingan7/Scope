@@ -11,11 +11,9 @@ button{
     margin-left: 3px;
     margin-top: 3px;
 }
-#ad{
-    left: 60%;
-    position: absolute;
-    width: 40%;
-    top:30%;
+.ad{
+    width: 50%;
+    transform: translate(100%,-30%);
 }
 #editteam{
 /* has to be scroll, not auto */
@@ -78,6 +76,10 @@ table tr th{
     width: 100px;
     border-color: black;  
 }
+#filter-boxScout{
+    width: 100px;
+    border-color: black;  
+}
 .card-text{
     font-size: 15px;
 }
@@ -112,4 +114,24 @@ table tr th{
 #collapseOne > .card-body{
     overflow-x: scroll;
 }
-
+.ele{
+    font-size:9.5px;
+}
+.exportgroup{
+    margin-bottom:2.5px !important;
+}
+.rank-select{
+    margin-bottom:2.5px !important;
+}
+.pitGroup{
+    transform: translateY(-35px);
+}
+.pitTableInside{
+    transform: translateY(-53px);
+}
+.pitGroup2{
+    transform: translateY(0px);
+}
+.pitTableInside2{
+    transform: translateY(0px);
+}

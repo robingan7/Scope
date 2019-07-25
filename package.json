@@ -25,7 +25,10 @@
     "ag-grid-angular": "^21.0.1",
     "ag-grid-community": "^21.0.1",
     "hammerjs": "^2.0.8",
+    "ngx-cookie-service": "^2.2.0",
     "rxjs": "~6.4.0",
+    "rxjs-observable": "0.0.7",
+    "rxjs-observe": "^2.1.4",
     "tslib": "^1.9.0",
     "zone.js": "~0.9.1"
   },

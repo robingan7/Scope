@@ -9,8 +9,6 @@ export class QuestionComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-    (<HTMLDivElement>document.querySelector("#start_spinner")).style.display = "none"
-  }
+  ngOnInit() {  }
 
 }

@@ -13,10 +13,7 @@ export class SignupComponent implements OnInit {
   constructor(private Auth: SignupServiceService,
               private router: Router) { }
 
-  ngOnInit() {
-    (<HTMLDivElement>document.querySelector("#start_spinner")).style.display = "none"
-
-  }
+  ngOnInit() { }
   signupScout(event) {
     event.preventDefault()
     const target = event.target

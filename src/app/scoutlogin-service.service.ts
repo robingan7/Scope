@@ -7,6 +7,9 @@ const httpOptions = {
     "X-TBA-Auth-Key": "BDkwrhvlaCVM91rOPDIK1vRqAEM9O2l1DJ0Qj9I20QCvBNZ2p88ygB4uOj69RpHG"
   })
 };
+interface isLoggedIn {
+  status: boolean
+}
 interface myData{
   success: boolean,
   message: string,
@@ -57,10 +60,31 @@ interface api3{
 export class ScoutloginServiceService {
   apiUrl = "http://localhost/scope_php/images"
   private loggedInStatus = false
-  //private path ="http://localhost/scope_php/"
-  private path ="https://frcscoutingapp.000webhostapp.com/"
+  private path ="http://localhost/scope_php/"
+  //private path ="https://frcscoutingapp.000webhostapp.com/"
   constructor(private http: HttpClient) { }
-  
+  getPit_rank_team(team, name, role){
+    return this.http.post<api3>(this.path + 'getPit_rank_team.php', {
+      team,
+      name,
+      role
+    })
+  }
+
+  updateRankPitTeam(team,name,role,list){
+    return this.http.post<api3>(this.path + 'updateRankPitTeam.php', {
+      team,
+      name, 
+      role,
+      list
+    })
+  }
+  loadrankPit(team, pit_list){
+    return this.http.post<rankData>(this.path + 'loadrankPit.php', {
+      team,
+      pit_list
+    })
+  }
   getTotal_pit_match(name,team){
     return this.http.post<getPerferenceData>(this.path + 'getTotal_pit_match.php', {
       name,
@@ -258,6 +282,11 @@ export class ScoutloginServiceService {
       notselect
     })
   }
+  loadrankScout(team) {
+    return this.http.post<rankData>(this.path + 'loadrankScout.php', {
+      team
+    })
+  }
   loadrank(team, region, currentOption, currentOptionInner){
     return this.http.post<rankData>(this.path +'loadrank.php', {
       team,
@@ -322,7 +351,10 @@ export class ScoutloginServiceService {
       password
     })
   }
-
+  isLog(){
+    return this.http.post<isLoggedIn>(this.path + 'isLogging.php', {
+    })
+  }
   editPit(array,name,teamnumber){
     return this.http.post<editPitData>(this.path +'editPit.php', {
       array,

@@ -1,4 +1,4 @@
-<div id="scoutlogin" *ngIf="loginb">
+<!--<div id="scoutlogin" *ngIf="loginb">
 <form (submit)="loginUser($event)"> 
   <h1>Login</h1>
   <div class="{{alerttype}}" role="alert">
@@ -31,23 +31,24 @@
   <button type="submit" id="loginnnn" class="btn btn-primary">Login</button>
 </form>
 </div>
+-->
 
-<!--start of ad-->
+<!--start of ad
 
-  <div *ngIf="loginb" id="ad" class="carousel slide" data-ride="carousel">
+  <div *ngIf="loginb" class="carousel slide ad" data-ride="carousel">
     <div class="carousel-inner">
       <div class="carousel-item active" data-interval="2000">
-        <img src="http://frcscouting.ga/yoda.png" class="d-block w-100" alt="...">
+        <img src="http://frcscouting.ga/Scope_Ad.png" class="d-block w-100" alt="...">
       </div>
       <div class="carousel-item" data-interval="2000">
-        <img src="http://frcscouting.ga/yoshi.png" class="d-block w-100" alt="...">
+        <img id="yoshi" src="http://frcscouting.ga/Scope_Ad.png" class="d-block w-100" alt="...">
       </div>
       <div class="carousel-item" data-interval="2000">
-        <img src="http://frcscouting.ga/yoda.png" class="d-block w-100" alt="...">
+        <img src="http://frcscouting.ga/Scope_Ad.png" class="d-block w-100" alt="...">
       </div>
     </div>
   </div>
-<!--end of ad-->
+<!-end of ad-->
 
 <!------start of manager&scout page-->
 <div id="managerpage" *ngIf="scoutb">
@@ -142,16 +143,17 @@
                       <span class="sr-only">Loading...</span>
                     </div>
                     <div *ngFor="let objj of team_member_task_this">
-                    <button (click)="taskOut2($event)" id="{{objj.title}}" class="btn btn-info btn-sm" >
-                      {{objj.title}}
-                    </button>
+                      <button (click)="taskOut2($event)" id="{{objj.title}}" class="btn btn-info btn-sm" >
+                        {{objj.title}}
+                      </button>
 
-                    <button *ngFor="let ma of objj.content" id="a{{objj.title}}_{{ma}}" class="btn btn-primary btn-sm" data-toggle="modal" 
-                    style="display: none;" (click)="startTask($event)" data-target="#exampleModalScrollable2035">
-                      {{ma}}
-                    </button>
+                      <button *ngFor="let ma of objj.content" id="a{{objj.title}}_{{ma}}" class="btn btn-primary btn-sm" data-toggle="modal" 
+                      style="display: none;" (click)="startTask($event)" data-target="#exampleModalScrollable2035">
+                        {{ma}}
+                      </button>
 
                     </div>
+                    
                   </div>
                     
                   <div class="tab-pane fade" id="task-pit" role="tabpanel" aria-labelledby="nav-profile-tab">
@@ -191,7 +193,7 @@
                         <div class="spinner-grow text-success" role="status">
                           <span class="sr-only">Loading...</span>
                         </div>
-                        <!--<h5 *ngIf="editPitError">|<span class="badge badge-danger">Put a team number</span></h5>-->
+                        <h5 *ngIf="editPitError">|<span class="badge badge-danger">Put a team number</span></h5>
                         
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
@@ -281,7 +283,7 @@
                       <select (input)="updatePit($event)" class="custom-select mr-sm-2" id="autotype">
                         <option value="">Choose...</option>
                         <option value="Code">Code</option>
-                        <option value="No">No Autonomous</option>
+                        <option value="No_Autonomous">No_Autonomous</option>
                         <option value="Vision_System">Vision_System</option>
                         <option value="Code & Vision_System">Code & Vision_System</option>
                       </select>
@@ -496,7 +498,7 @@
 
                         <div *ngIf="bs2[1].b">
                           <span class="badge badge-info">Match Number</span>
-                          <input (input)="sendcurrentMatchNumber($event)" placeholder="Maximum to {{matchnumber_max}}" type="tel" class="form-control" id="matchnumber" aria-describedby="emailHelp" placeholder="Enter number">
+                          <input (input)="sendcurrentMatchNumber($event)" type="tel" class="form-control" id="matchnumber" aria-describedby="emailHelp" placeholder="Enter a valid match number">
                           <hr>
                         </div>
 
@@ -513,7 +515,7 @@
                         <hr>
                       </div>
                        
-                        <div *ngIf="bs2[3].b && matchLock">
+                        <div *ngIf="bs2[3].b && matchLock && image_not_avalibe">
                           <span class="badge badge-info">Image</span>
                           <input (input)="setCurrentImageTitle($event)" type="text" class="form-control" id="imagetitle" placeholder="Title">
                         
@@ -923,7 +925,7 @@
                                 <select class="custom-select mr-sm-2" id="autotype">
                                   <option value="">Choose...</option>
                                   <option value="Code">Code</option>
-                                  <option value="No">No Autonomous</option>
+                                  <option value="No_Autonomous">No_Autonomous</option>
                                   <option value="Vision_System">Vision_System</option>
                                   <option value="Code & Vision_System">Code & Vision_System</option>
                                 </select>
@@ -1684,7 +1686,7 @@
                 </div>
                 </form>
                 
-                <button class="btn btn-primary" data-toggle="modal" data-target="#setqqq">
+                <button *ngIf="managerb" class="btn btn-primary" data-toggle="modal" data-target="#setqqq">
                   Set Pit&Match Questions
                 </button>
 
@@ -1717,7 +1719,7 @@
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button (click)="setQuestion()" class="btn btn-primary">Save changes</button>
+                        <button (click)="setQuestion()" class="btn btn-primary" placement="top" ngbPopover="Your data updated" popoverTitle="Nice!!">Save changes</button>
                       </div>
                     </div>
                   </div>
@@ -1783,19 +1785,18 @@
 
                 <div *ngFor="let dateobj of history">
                 
-                  <button (click)="openHistory($event)" class="btn btn-info">
+                  <button (click)="openHistory($event)" class="btn btn-info btn-sm">
                     {{dateobj.date}} <span class="badge badge-light">{{dateobj.match.length}}</span>
                   </button>
-                  <div *ngFor="let match of dateobj.match">
-                
-                
-                    <button *ngIf="showHistory(dateobj.date)" (click)="getEditDataMatch($event)" class="btn btn-primary btn-sm" data-toggle="modal"
-                      data-target="#exampleModalScrollable20">
-                      {{match}}
-                    </button>
+
+                 
+                  <button *ngFor="let match of dateobj.match" (click)="getEditDataMatch($event)" 
+                   class="btn btn-primary btn-sm a{{dateobj.date}}_match" data-toggle="modal" 
+                    data-target="#exampleModalScrollable20" style="display: none;">
+                    {{match}}
+                  </button>
+                    
                 </div>
-                
-                  </div>
               </div>                
                   
 
@@ -1806,18 +1807,17 @@
                 
                 <div *ngFor="let dateobj of history_pit">
                 
-                  <button (click)="openHistoryPit($event)" class="btn btn-info">
+                  <button (click)="openHistoryPit($event)" class="btn btn-info btn-sm">
                     {{dateobj.date}} <span class="badge badge-light">{{dateobj.match.length}}</span>
                   </button>
-                  <div *ngFor="let match of dateobj.match">
-                    <button *ngIf="showHistoryPit(dateobj.date)" (click)="getEditDataMatchPit($event)" class="btn btn-primary btn-sm"
-                      data-toggle="modal" data-target="#exampleModalScrollable7">
+
+                 
+                  <button *ngFor="let match of dateobj.match" (click)="getEditDataMatchPit($event)" class="btn btn-primary btn-sm a{{dateobj.date}}_pit"
+                      data-toggle="modal" data-target="#exampleModalScrollable7" style="display: none;">
                       {{match}}
-                    </button>
-                
-                  </div>
-                  
-            </div>                
+                  </button>
+                   
+                </div>                
                   <!---------------all reference to this one page------------->
                   <div class="modal fade" id="exampleModalScrollable7" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle"
                     aria-hidden="true">
@@ -1837,8 +1837,7 @@
                             <span class="badge badge-info">Team Number</span>
                             <div class="input-group mb-3">
                               <input (input)="updatePitEdit($event)" value="{{editdataPit.teamnumber}}" type="tel" class="form-control" id="teamnumber" aria-describedby="emailHelp"
-                                placeholder="Enter number">
-                              
+                                placeholder="Enter number">     
                             </div>
                             <hr>
                           </div>
@@ -1871,7 +1870,13 @@
                           
                           <div *ngIf="bs[2].b">
                             <span class="badge badge-info">Sensor on robot</span>
-                            <select (change)="updatePitEdit($event)" multiple class="form-control" value="{{editdataPit.sensor}}" id="sensor">
+                            <br/>
+                            <span class="badge badge-primary">Old Data</span>
+                            <span *ngFor="let ele of editdataPit.sensor" class="badge badge-warning ele">{{ele}}</span>
+                            <br />
+                            <span class="badge badge-primary">New Data</span>
+                            <span *ngFor="let ele of editSensorNew" class="badge badge-warning ele">{{ele}}</span>
+                            <select *ngIf="resetSensor_Auto" (change)="updatePitEdit($event)" value="jj" multiple class="form-control" id="sensor">
                               <option value="">Ctrl+Click for multi-selection</option>
                               <option value="Vision Track Camera">Vision Track Camera</option>
                               <option value="NAVX">NAVX</option>
@@ -1906,7 +1911,7 @@
                             <select (input)="updatePitEdit($event)" value="{{editdataPit.autotype}}" class="custom-select mr-sm-2" id="autotype">
                               <option value="">Choose...</option>
                               <option value="Code">Code</option>
-                              <option value="No">No Autonomous</option>
+                              <option value="No_Autonomous">No_Autonomous</option>
                               <option value="Vision_System">Vision_System</option>
                               <option value="Code & Vision_System">Code & Vision_System</option>
                             </select>
@@ -1924,7 +1929,13 @@
                               <option value=2>2</option>
                             </select>
                             <label for="autocargo">Autonomous Choice</label>
-                            <select (change)="updatePitEdit($event)" value="{{editdataPit.autochoice}}" multiple class="form-control" id="autochoice">
+                            <br />
+                            <span class="badge badge-primary">Old Data</span>
+                            <span *ngFor="let ele of editdataPit.autochoice" class="badge badge-warning ele">{{ele}}</span>
+                            <br />
+                            <span class="badge badge-primary">New Data</span>
+                            <span *ngFor="let ele of editAutochoiceNew" class="badge badge-warning ele">{{ele}}</span>
+                            <select *ngIf="resetSensor_Auto" (change)="updatePitEdit($event)" multiple class="form-control" id="autochoice">
                               <option value="">Ctrl+Click for multi-selection</option>
                               <option value="1 Cargo in cargoship">1 Cargo in cargoship</option>
                               <option value="1 Hatch in cargoship">1 Hatch in cargoship</option>
@@ -2119,11 +2130,19 @@
                   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#yourdata">
                     View Data in Total
                   </button>
+
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#pitdataview">
+                    View Pit Scout Data
+                  </button>
+
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#scoutrank">
+                    Scout Rank
+                  </button>
             
                   <!-- Modal -->
-                  <div class="modal fade bd-example-modal-xl" id="yourdata" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel"
+                  <div class="modal fade" id="yourdata" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel"
                     aria-hidden="true">
-                    <div class="modal-dialog modal-xl">
+                    <div class="modal-dialog modal-dialog-scrollable" role="document">
                       <div class="modal-content">
                         <div class="modal-header">
                           <h5 class="modal-title" id="exampleModalLabel">Data From Your Scouts(Total)</h5>
@@ -2134,7 +2153,7 @@
                         <div class="modal-body">
                           <!----------------------------->
                           <a href="#" class="badge badge-success">Current ranking elements</a>
-                          <div class="input-group mb-3">
+                          <div class="input-group mb-3 rank-select">
                             <select multiple (change)="loadrank()" id="rankOpt" class="form-control form-control-sm">
                               <option *ngIf="!rankperference.totalautopoint" value="totalautopoint">Total Auto Pnts</option>
                               <option *ngIf="rankperference.totalautopoint" value="totalautopoint" selected>Total Auto Pnts</option>
@@ -2192,11 +2211,11 @@
             
                           </div>
             
-                          <div class="input-group mb-3" id="exportgroup">
+                          <div class="input-group mb-3 exportgroup">
                             <input type="text" class="form-control" id="fileName" placeholder="File Name" aria-label="Recipient's username"
                               aria-describedby="button-addon2">
                             <div class="input-group-append">
-                              <button class="btn btn-outline-success" (click)="onBtExport()" id="button-addon2">Export</button>
+                              <button class="btn btn-outline-success" (click)="onBtExport()">Export</button>
                             </div>
                           </div>
                           <button *ngIf="selectLoader" class="btn btn-primary" disabled>
@@ -2205,13 +2224,39 @@
                           </button>
                           <span *ngIf="atleastoneteam" class="badge badge-danger">At least pick one team</span>
                           <input (input)="textSearch('total')" type="text" id="filter-box" placeholder="Filter">
-                          <ag-grid-angular id="tableid" style="width: 100%; height: 300px;" class="ag-theme-balham" [rowData]="currentData"
-                            [columnDefs]="col_index" [domLayout]="autoHeight" (gridReady)="onGridReady($event)" [pagination]=true
-                            [suppressRowClickSelection]=true [groupSelectsChildren]=true [rowSelection]="rowSelection"
-                            [enableRangeSelection]=true [overlayLoadingTemplate]="overlayLoadingTemplate"
-                            [overlayNoRowsTemplate]="overlayNoRowsTemplate" [multiSortKey]="multiSortKey" cacheQuickFilter=true>
+                          <ag-grid-angular #agGrid id="tableid" style="width: 100%; height:  235px;" class="ag-theme-balham"
+                          [rowData]="currentData"
+                            [columnDefs]="col_index" [domLayout]="autoHeight" (gridReady)="onGridReady($event)" 
+                            [suppressRowClickSelection]=true [groupSelectsChildren]=true [rowSelection]="rowSelection" [pagination]=true
+                            [paginationAutoPageSize]=false [paginationPageSize]="paginationPageSize" 
+                            [enableRangeSelection]=true [overlayLoadingTemplate]="overlayLoadingTemplate" [pivotPanelShow]="pivotPanelShow"
+                            [overlayNoRowsTemplate]="overlayNoRowsTemplate" [multiSortKey]="multiSortKey" cacheQuickFilter=true
+                            >
                           </ag-grid-angular>
                           <!----------------------------->
+
+                          <div class="pitGroup">
+                            <span class="badge badge-pill badge-info">View Pit Scout Data</span>
+                            <div class="input-group mb-3">
+                              <input type="text" class="form-control" id="search_pit2" (input)="addOrDrop2($event)" placeholder="Team#" aria-label="Recipient's username"
+                               aria-describedby="button-addon2">
+                              <div class="input-group-append">
+                                <button class="btn btn-outline-primary" id="addOrDrop2" (click)="addPitSearch2($event)">Add</button>
+                              </div>
+                              <div class="input-group-append">
+                                <button class="btn btn-outline-success" (click)="onBtExportPit()">Export</button>
+                              </div>
+                            </div>
+                          </div>
+
+                          <ag-grid-angular #agGrid id="agGrid" style="width: 100%; height:  235px;" class="ag-theme-balham pitTableInside"
+                            [rowData]="pitData" [columnDefs]="pit_index" [domLayout]="autoHeight" (gridReady)="onGridReadyPit($event)"
+                            [suppressRowClickSelection]=false [groupSelectsChildren]=false [pagination]=true
+                            [paginationAutoPageSize]=false [paginationPageSize]="paginationPageSize" [enableRangeSelection]=false
+                            [overlayLoadingTemplate]="overlayLoadingTemplate" [pivotPanelShow]="pivotPanelShow"
+                            [overlayNoRowsTemplate]="overlayNoRowsTemplate" [multiSortKey]="multiSortKey" cacheQuickFilter=true>
+                          </ag-grid-angular>
+
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -2221,18 +2266,10 @@
                     </div>
                   </div>
             
-                  <!--<table mat-table [dataSource]=currentData>
-                              <ng-container matColumnDef="position">
-                                <th mat-header-cell *matHeaderCellDef> No. </th>
-                                <td mat-cell *matCellDef="let element"> {{element.position}} </td>
-                              </ng-container>
-                          </table>-->
             
-            
-            
-                  <div class="modal fade bd-example-modal-xl" id="yourdataA" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel"
+                  <div class="modal fade" id="yourdataA" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel"
                     aria-hidden="true">
-                    <div class="modal-dialog modal-xl">
+                    <div class="modal-dialog modal-dialog-scrollable" role="document">
                       <div class="modal-content">
                         <div class="modal-header">
                           <h5 class="modal-title" id="exampleModalLabel">Data From Your Scouts(Average)</h5>
@@ -2243,7 +2280,7 @@
                         <div class="modal-body">
             
                           <a href="#" class="badge badge-success">Current ranking elements</a>
-                          <div class="input-group mb-3">
+                          <div class="input-group mb-3 rank-select">
                             <select multiple (change)="loadrankA()" id="rankOptA" class="form-control form-control-sm">
                               <option *ngIf="!rankperference.totalautopoint" value="totalautopointA">Total Auto Pnts</option>
                               <option *ngIf="rankperference.totalautopoint" value="totalautopointA" selected>Total Auto Pnts</option>
@@ -2299,7 +2336,7 @@
             
                           </div>
             
-                          <div class="input-group mb-3" id="exportgroup">
+                          <div class="input-group mb-3 exportgroup">
                             <input type="text" class="form-control" id="fileNameA" placeholder="File Name" aria-label="Recipient's username"
                               aria-describedby="button-addon2">
                             <div class="input-group-append">
@@ -2313,14 +2350,123 @@
                           <span *ngIf="atleastoneteamA" class="badge badge-danger">At least pick one team</span>
             
                           <input (input)="textSearch('average')" type="text" id="filter-boxA" placeholder="Filter">
-                          <ag-grid-angular id="tableid" style="width: 100%; height: 300px;" class="ag-theme-balham" [rowData]="currentDataA"
+                          <ag-grid-angular id="tableid" style="width: 100%; height: 235px;" class="ag-theme-balham" [rowData]="currentDataA"
                             [columnDefs]="col_indexA" [domLayout]="autoHeight" (gridReady)="onGridReadyA($event)" [pagination]=true
                             [suppressRowClickSelection]=true [groupSelectsChildren]=true [rowSelection]="rowSelection"
-                            [enableRangeSelection]=true [overlayLoadingTemplate]="overlayLoadingTemplate"
-                            [overlayNoRowsTemplate]="overlayNoRowsTemplate"
+                            [enableRangeSelection]=true [overlayLoadingTemplate]="overlayLoadingTemplate" [paginationAutoPageSize]=false
+                            [overlayNoRowsTemplate]="overlayNoRowsTemplate" [paginationPageSize]="paginationPageSize"
+                            
                             [multiSortKey]="multiSortKey" cacheQuickFilter=true>
                           </ag-grid-angular>
-            
+                          
+                          <div class="pitGroup">
+                            <span class="badge badge-pill badge-info">View Pit Scout Data</span>
+                            <div class="input-group mb-3">
+                              <input type="text" class="form-control" id="search_pit" (input)="addOrDrop($event)" placeholder="Team#"
+                                aria-label="Recipient's username" aria-describedby="button-addon2">
+                              <div class="input-group-append">
+                                <button class="btn btn-outline-primary" id="addOrDrop" (click)="addPitSearch($event)">Add</button>
+                              </div>
+                              <div class="input-group-append">
+                                <button class="btn btn-outline-success" (click)="onBtExportPit()">Export</button>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <ag-grid-angular #agGrid id="agGrid" style="width: 100%; height:  235px;" class="ag-theme-balham pitTableInside"
+                            [rowData]="pitData" [columnDefs]="pit_index" [domLayout]="autoHeight" (gridReady)="onGridReadyPit($event)"
+                            [suppressRowClickSelection]=false [groupSelectsChildren]=false [pagination]=true [paginationAutoPageSize]=false
+                            [paginationPageSize]="paginationPageSize" [enableRangeSelection]=false
+                            [overlayLoadingTemplate]="overlayLoadingTemplate" [pivotPanelShow]="pivotPanelShow"
+                            [overlayNoRowsTemplate]="overlayNoRowsTemplate" [multiSortKey]="multiSortKey" cacheQuickFilter=true>
+                          </ag-grid-angular>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-primary">Save changes</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- scout rank -->
+                  <div class="modal fade" id="scoutrank" tabindex="-1" role="dialog"
+                    aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Data From Your Scouts(Total)</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <!----------------------------->
+                          <a href="#" class="badge badge-success">Current ranking elements</a>
+                          
+                  
+                          <div class="input-group mb-3 exportgroup">
+                            <input type="text" class="form-control" id="fileNameScout" placeholder="File Name"
+                              aria-label="Recipient's username" aria-describedby="button-addon2">
+                            <div class="input-group-append">
+                              <button class="btn btn-outline-success" (click)="onBtExportScout()" id="button-addon2">Export</button>
+                            </div>
+                          </div>
+                          <button *ngIf="selectLoader" class="btn btn-primary" disabled>
+                            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                            Editing your database...
+                          </button>
+                          <input (input)="textSearch('scout')" type="text" id="filter-boxScout" placeholder="Filter">
+                          <ag-grid-angular id="tableid" style="width: 100%; height: 300px;" class="ag-theme-balham"
+                            [rowData]="currentDataScout" [columnDefs]="col_indexScout" [domLayout]="autoHeight" (gridReady)="onGridReadyScout($event)"
+                            [pagination]=false
+                            [overlayLoadingTemplate]="overlayLoadingTemplate"
+                            [overlayNoRowsTemplate]="overlayNoRowsTemplate" [multiSortKey]="multiSortKey" cacheQuickFilter=true>
+                          </ag-grid-angular>
+                          <!----------------------------->
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-primary">Save changes</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="modal fade" id="pitdataview" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Data From Your Scouts(Total)</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <!----------------------------->
+                          <div class="pitGroup2">
+                            <span class="badge badge-pill badge-info">View Pit Scout Data</span>
+                            <div class="input-group mb-3">
+                              <input type="text" class="form-control" id="search_pit3" (input)="addOrDrop3($event)" placeholder="Team#"
+                                aria-label="Recipient's username" aria-describedby="button-addon2">
+                              <div class="input-group-append">
+                                <button class="btn btn-outline-primary" id="addOrDrop3" (click)="addPitSearch3($event)">Add</button>
+                              </div>
+                              <div class="input-group-append">
+                                <button class="btn btn-outline-success" (click)="onBtExportPit()">Export</button>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <ag-grid-angular #agGrid id="agGrid" style="width: 100%; height:  235px;" class="ag-theme-balham pitTableInside2"
+                            [rowData]="pitData" [columnDefs]="pit_index" [domLayout]="autoHeight" (gridReady)="onGridReadyPit($event)"
+                            [suppressRowClickSelection]=false [groupSelectsChildren]=false [pagination]=true [paginationAutoPageSize]=false
+                            [paginationPageSize]="paginationPageSize" [enableRangeSelection]=false
+                            [overlayLoadingTemplate]="overlayLoadingTemplate" [pivotPanelShow]="pivotPanelShow"
+                            [overlayNoRowsTemplate]="overlayNoRowsTemplate" [multiSortKey]="multiSortKey" cacheQuickFilter=true>
+                          </ag-grid-angular>
+                          <!----------------------------->
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -2333,7 +2479,7 @@
                 </div>
             
                 <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-                  glo
+                  Still considering if enable this feature or not
                 </div>
               </div>
             </div>
@@ -2713,7 +2859,7 @@
   </div>
 </div>
 
-<!---------------all reference to this one page------------->
+<!---------------edit match all reference to this one page------------->
 <div class="modal fade" id="exampleModalScrollable20" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle"
   aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable" role="document">
@@ -3021,7 +3167,7 @@
             <span class="input-group-text">Question</span>
           </div>
           <textarea (input)="updateMatchEdit($event)" value="{{match_question}}" id="question" class="form-control"
-            aria-label="With textarea" placeholder="Like Q1:....Q2:....">{{match_question}}</textarea>
+            aria-label="With textarea" placeholder="Like Q1:....Q2:...." disabled>{{match_question}}</textarea>
           <div class="input-group-prepend">
             <span class="input-group-text">Answer</span>
           </div>
@@ -3038,7 +3184,7 @@
       </div>
       <div class="modal-footer">
         <button (click)="setEditingToFalse()" class="btn btn-primary" data-dismiss="modal">Close</button>
-        <button class="btn btn-outline-success mr-2" placement="top" ngbPopover="Your data updated" popoverTitle="Nice!!">
+        <button class="btn btn-outline-success mr-2" (click)="updateTotalAfterEdit()" placement="top" ngbPopover="Your data updated" popoverTitle="Nice!!">
           Save changes
         </button>
       </div>
@@ -3409,7 +3555,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary" (click)="resetMatchLock()" data-dismiss="modal">Close&Save<span class="badge badge-warning">(you can edit this task in history)</span></button>
+        <button class="btn btn-primary" (click)="resetMatchLock()" data-dismiss="modal">Close & Save<span class="badge badge-warning">(you can edit this task in history)</span></button>
       </div>
     </div>
   </div>
@@ -3507,7 +3653,7 @@
         <select (input)="updatePitTask($event)" class="custom-select mr-sm-2" id="autotype">
           <option value="">Choose...</option>
           <option value="Code">Code</option>
-          <option value="No">No Autonomous</option>
+          <option value="No_Autonomous">No_Autonomous</option>
           <option value="Vision_System">Vision_System</option>
           <option value="Code & Vision_System">Code & Vision_System</option>
         </select>
@@ -3654,7 +3800,7 @@
       </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary" (click)="resetPitLock()" data-dismiss="modal">Close&Save<span class="badge badge-warning">(you
+        <button class="btn btn-primary" (click)="resetPitLock()" data-dismiss="modal">Close & Save<span class="badge badge-warning">(you
             can edit this task in history)</span></button>
       </div>
     </div>
