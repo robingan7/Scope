@@ -17,8 +17,12 @@ export class LoginComponent implements OnInit {
     private cookie: CookieService) { }
 
   ngOnInit() {
+    if (this.cookie.get("isLog") == 'true') {
+      this.router.navigate(['home'])
+    }
+    
     if(this.datatransfer.isSignout){
-      this.loginb=true
+      this.loginb = true;
       this.alerttype = "alert alert-success alert-dismissible fade show"
       this.error = "No error so far"
     }else{
@@ -56,8 +60,9 @@ export class LoginComponent implements OnInit {
           this.loginb = false;
           this.router.navigate(['home'])
         }else{
-          this.error = data.message
-          this.alerttype = "alert alert-danger alert-dismissible fade show"
+          this.error = data.message;
+          this.alerttype = "alert alert-danger alert-dismissible fade show";
+          (<HTMLButtonElement>document.querySelector("#loginnnn")).innerText = "Login";
         }
     })
   }

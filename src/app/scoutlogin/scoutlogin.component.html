@@ -1,55 +1,3 @@
-<!--<div id="scoutlogin" *ngIf="loginb">
-<form (submit)="loginUser($event)"> 
-  <h1>Login</h1>
-  <div class="{{alerttype}}" role="alert">
-    <strong>Hello!</strong> {{error}}
-    <button type="button" class="close" data-dismiss="alet" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="input-group-prepend">
-    <label class="input-group-text" for="inputGroupSelect01">I am a</label>
-  </div>
-  <select class="custom-select" id="role">
-    <option selected>Choose...</option>
-    <option value="scout">Scout</option>
-    <option value="manager">Manager</option>
-  </select>
-  <div class="form-group">
-    <label for="exampleInputEmail1">Your Name</label>
-    <input type="text" class="form-control" id="name" aria-describedby="emailHelp" placeholder="Enter name">
-  </div>
-  <div class="form-group">
-    <label for="exampleInputPassword1">Your Team#</label>
-    <input type="tel" class="form-control" id="teamnumberr" placeholder="Enter Number">
-  </div>
-  <div class="form-group">
-    <label for="exampleInputPassword1">Password</label>
-    <input type="password" class="form-control" id="password" placeholder="Password">
-  </div>
-
-  <button type="submit" id="loginnnn" class="btn btn-primary">Login</button>
-</form>
-</div>
--->
-
-<!--start of ad
-
-  <div *ngIf="loginb" class="carousel slide ad" data-ride="carousel">
-    <div class="carousel-inner">
-      <div class="carousel-item active" data-interval="2000">
-        <img src="http://frcscouting.ga/Scope_Ad.png" class="d-block w-100" alt="...">
-      </div>
-      <div class="carousel-item" data-interval="2000">
-        <img id="yoshi" src="http://frcscouting.ga/Scope_Ad.png" class="d-block w-100" alt="...">
-      </div>
-      <div class="carousel-item" data-interval="2000">
-        <img src="http://frcscouting.ga/Scope_Ad.png" class="d-block w-100" alt="...">
-      </div>
-    </div>
-  </div>
-<!-end of ad-->
-
 <!------start of manager&scout page-->
 <div id="managerpage" *ngIf="scoutb">
   
@@ -157,9 +105,9 @@
                   </div>
                     
                   <div class="tab-pane fade" id="task-pit" role="tabpanel" aria-labelledby="nav-profile-tab">
-                    <button *ngFor="let maa of team_member_task_pit[name]" (click)="startTaskPit($event)" id="taskpit_{{maa.team_number}}" class="btn btn-primary btn-sm" data-toggle="modal"
+                    <button *ngFor="let maa of team_member_task_pit[name]" (click)="startTaskPit($event)" id="taskpit_{{maa}}" class="btn btn-primary btn-sm" data-toggle="modal"
                       data-target="#exampleModalScrollable20352">
-                      {{maa.team_number}}
+                      {{maa}}
                     </button>
                   </div>
                 </div>
@@ -201,7 +149,7 @@
 
                       </div>
                       <div class="modal-body">
-                        <div *ngIf="bs[0].b">
+                        <div *ngIf="editPitScoutFormState[0].b">
                         <span class="badge badge-info">Team Number</span>
                         <div class="input-group mb-3">
                           <input (input)="sendcurrentPit($event)" type="tel" class="form-control" id="teamnumber_sender" aria-describedby="emailHelp"
@@ -220,7 +168,7 @@
 
                         <hr>
                         </div>
-                        <div *ngIf="bs[1].b && pitLock">
+                        <div *ngIf="editPitScoutFormState[1].b && pitLock">
                         <span class="badge badge-info">Weight</span>
                         <div class="input-group">
                           <input (input)="updatePit($event)" id="weight2" type="tel" class="form-control" placeholder="Weight" aria-label="Recipient's username with two button addons"
@@ -247,7 +195,7 @@
                       <hr>
                       </div>
                       
-                      <div *ngIf="bs[2].b && pitLock">
+                      <div *ngIf="editPitScoutFormState[2].b && pitLock">
                       <span class="badge badge-info">Sensor on robot</span>
                       <select (change)="updatePit($event)" multiple class="form-control" id="sensor">
                         <option value="">Ctrl+Click for multi-selection</option>
@@ -261,7 +209,7 @@
                       <hr>
                       </div>
 
-                      <div *ngIf="bs[3].b && pitLock && image_not_avalibe">
+                      <div *ngIf="editPitScoutFormState[3].b && pitLock && image_not_avalibe">
                       <span class="badge badge-info">Image</span>
                       <input (input)="setCurrentImageTitle($event)" type="text" class="form-control" id="imagetitle" placeholder="Title">
                       
@@ -278,7 +226,7 @@
                       <hr>
                       </div>
 
-                      <div *ngIf="bs[4].b && pitLock">
+                      <div *ngIf="editPitScoutFormState[4].b && pitLock">
                       <span class="badge badge-info">Autonomous Type</span>
                       <select (input)="updatePit($event)" class="custom-select mr-sm-2" id="autotype">
                         <option value="">Choose...</option>
@@ -290,7 +238,7 @@
                       <hr>
                       </div>
 
-                      <div *ngIf="bs[5].b && pitLock">
+                      <div *ngIf="editPitScoutFormState[5].b && pitLock">
                       <span class="badge badge-info">Autonomous Ability</span>
                       <br>
                       <label for="autolvl">Start Platform Level</label>
@@ -315,7 +263,7 @@
                       <hr>
                       </div>
 
-                      <div *ngIf="bs[6].b && pitLock">
+                      <div *ngIf="editPitScoutFormState[6].b && pitLock">
                       <span class="badge badge-info">Teleop Ability</span>
                       <br>
                       <label for="cargolvl">Cargo Level</label>
@@ -337,7 +285,7 @@
                       <hr>
                       </div>
 
-                      <div *ngIf="bs[7].b && pitLock">
+                      <div *ngIf="editPitScoutFormState[7].b && pitLock">
                       <span class="badge badge-info">Speed</span>
                       <br>
                       <label for="robotspeed">Robot Speed</label>
@@ -364,7 +312,7 @@
                       <hr>
                       </div>
 
-                      <div *ngIf="bs[8].b && pitLock">
+                      <div *ngIf="editPitScoutFormState[8].b && pitLock">
                       <span class="badge badge-info">End Game</span>
                       <br>
                       <label for="platform">Platform Climb</label>
@@ -383,7 +331,7 @@
                       <hr>
                       </div>
 
-                      <div *ngIf="bs[9].b && pitLock">
+                      <div *ngIf="editPitScoutFormState[9].b && pitLock">
                       <span class="badge badge-info">Strategy</span>
                       <br>
                       <label for="preference">Preference</label>
@@ -397,7 +345,7 @@
                       <hr>
                       </div>
 
-                      <div *ngIf="bs[10].b && pitLock">
+                      <div *ngIf="editPitScoutFormState[10].b && pitLock">
                       <span class="badge badge-info">Driver Experience</span>
                       <br>
                       <label for="years">Years of Driving</label>
@@ -411,7 +359,7 @@
                       <hr>
                       </div>
 
-                      <div *ngIf="bs[11].b && pitLock">
+                      <div *ngIf="editPitScoutFormState[11].b && pitLock">
                       <span class="badge badge-info">Questions to ask</span>
                       <div class="input-group-prepend">
                         <span class="input-group-text">Question</span>
@@ -424,7 +372,7 @@
                       <hr>
                       </div>
                       
-                      <div *ngIf="bs[12].b && pitLock">
+                      <div *ngIf="editPitScoutFormState[12].b && pitLock">
                       <span class="badge badge-info">Write your note here</span>
                       <textarea (input)="updatePit($event)" id="notes" class="form-control" aria-label="With textarea" placeholder="Notes Here"></textarea>
                       </div>
@@ -470,7 +418,7 @@
                       </div>
                       <div class="modal-body">
                         
-                        <div *ngIf="bs2[0].b">
+                        <div *ngIf="editMatchScoutFormState[0].b">
                         <span class="badge badge-info">Region/Event Name</span>
                         <br>
                         <span class="badge badge-info">Week</span>
@@ -496,13 +444,13 @@
                         <hr>
                         </div>
 
-                        <div *ngIf="bs2[1].b">
+                        <div *ngIf="editMatchScoutFormState[1].b">
                           <span class="badge badge-info">Match Number</span>
                           <input (input)="sendcurrentMatchNumber($event)" type="tel" class="form-control" id="matchnumber" aria-describedby="emailHelp" placeholder="Enter a valid match number">
                           <hr>
                         </div>
 
-                      <div *ngIf="bs2[2].b">
+                      <div *ngIf="editMatchScoutFormState[2].b">
                         <span class="badge badge-info">Team Number</span>
                         <input (input)="sendcurrentMatchTeam($event)" type="tel" class="form-control" id="teamnumber" aria-describedby="emailHelp" placeholder="Enter number">
                         <div class="input-group-append">
@@ -515,7 +463,7 @@
                         <hr>
                       </div>
                        
-                        <div *ngIf="bs2[3].b && matchLock && image_not_avalibe">
+                        <div *ngIf="editMatchScoutFormState[3].b && matchLock && image_not_avalibe">
                           <span class="badge badge-info">Image</span>
                           <input (input)="setCurrentImageTitle($event)" type="text" class="form-control" id="imagetitle" placeholder="Title">
                         
@@ -533,7 +481,7 @@
                           <hr>
                         </div>
 
-                        <div *ngIf="bs2[4].b && matchLock">
+                        <div *ngIf="editMatchScoutFormState[4].b && matchLock">
                         <span class="badge badge-info">Alliance</span>
                         <br>
                         <select (input)="updateMatch($event)" id="alliance" class="form-control form-control-lg">
@@ -544,7 +492,7 @@
                         <hr>
                         </div>
                         
-                        <div *ngIf="bs2[5].b && matchLock">
+                        <div *ngIf="editMatchScoutFormState[5].b && matchLock">
                         <span class="badge badge-info">Autonomous Period</span>
                         <br>
                         <label for="autolvl">Successfully Exit Platform Level</label>
@@ -571,7 +519,7 @@
                         <hr>
                         </div>
 
-                        <div id="teleS" *ngIf="bs2[6].b && matchLock">
+                        <div id="teleS" *ngIf="editMatchScoutFormState[6].b && matchLock">
                         <span class="badge badge-info">Teleop Period</span>
                         <br>
                         <br>
@@ -671,7 +619,7 @@
                       <hr>
                         </div>
 
-                        <div *ngIf="bs2[7].b && matchLock">
+                        <div *ngIf="editMatchScoutFormState[7].b && matchLock">
                       <span class="badge badge-info">Defense</span>
                       <br>
                       <span class="badge badge-primary">Add 1 when the opponent drops a game piece</span>
@@ -693,7 +641,7 @@
                       <hr>
                         </div>
 
-                        <div *ngIf="bs2[8].b && matchLock">
+                        <div *ngIf="editMatchScoutFormState[8].b && matchLock">
                       <span class="badge badge-info">Efficient</span>
                       <br>
                       <span class="badge badge-primary">Add 1 when the robot drops a hatch</span>
@@ -716,7 +664,7 @@
                       <hr>
                         </div>
 
-                        <div *ngIf="bs2[9].b && matchLock">
+                        <div *ngIf="editMatchScoutFormState[9].b && matchLock">
                       <span class="badge badge-info">End Game</span>
                       <br>
                       <label for="platformS">Platform Climb</label>
@@ -733,7 +681,7 @@
                       </select>
                         </div>
 
-                        <div *ngIf="bs2[10].b && matchLock">
+                        <div *ngIf="editMatchScoutFormState[10].b && matchLock">
                         <span class="badge badge-info">Robot Fitness</span>
                         <br>
                         <label for="fit">Does the robot fit our robot?</label>
@@ -748,7 +696,7 @@
                         </select>
                         </div>
 
-                        <div *ngIf="bs2[11].b && matchLock">
+                        <div *ngIf="editMatchScoutFormState[11].b && matchLock">
                         <span class="badge badge-info">Questions to ask</span>
                         <div class="input-group-prepend">
                           <span class="input-group-text">Question</span>
@@ -760,7 +708,7 @@
                         
                         <textarea (input)="updateMatch($event)" id="answer" class="form-control" aria-label="With textarea" placeholder="Like A1:....A2:...."></textarea>
                         </div>
-                        <div *ngIf="bs2[12].b && matchLock">
+                        <div *ngIf="editMatchScoutFormState[12].b && matchLock">
                         <span class="badge badge-info">Write your note here</span>
                         <textarea (input)="updateMatch($event)" id="notes" class="form-control" aria-label="With textarea" placeholder="Notes Here"></textarea>
                         </div>
@@ -803,8 +751,8 @@
                           <div class="card">
                             <div class="card-header" id="headingTwo">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[0].b" id="isTeam" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[0].b" id="isTeam" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editPitScoutFormState[0].b" id="isTeam" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editPitScoutFormState[0].b" id="isTeam" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#teamnumber"
                                   aria-expanded="false" aria-controls="collapseTwo">
                                   Team Number
@@ -822,8 +770,8 @@
                           <div class="card">
                             <div class="card-header" id="headingOne">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[1].b" type="checkbox" id="isWH" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[1].b" type="checkbox" id="isWH" aria-label="Checkbox for following text input"checked>
+                                <input *ngIf="!editPitScoutFormState[1].b" type="checkbox" id="isWH" aria-label="Checkbox for following text input">
+                                <input *ngIf="editPitScoutFormState[1].b" type="checkbox" id="isWH" aria-label="Checkbox for following text input"checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#wh"
                                   aria-expanded="false" aria-controls="collapseOne">
                                   Height & Weight
@@ -861,8 +809,8 @@
                           <div class="card">
                             <div class="card-header" id="headingTwo">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[2].b" id="isSensor" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[2].b" id="isSensor" type="checkbox" aria-label="Checkbox for following text input"checked>
+                                <input *ngIf="!editPitScoutFormState[2].b" id="isSensor" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editPitScoutFormState[2].b" id="isSensor" type="checkbox" aria-label="Checkbox for following text input"checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#sensor"
                                   aria-expanded="false" aria-controls="collapseTwo">
                                   Sensor
@@ -885,11 +833,11 @@
                           </div>
                           </div>
 
-                          <div class="card">
+                          <div class="card" *ngIf="image_not_avalibe">
                             <div class="card-header" id="headingTwo">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[3].b" id="isImage" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[3].b" id="isImage" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editPitScoutFormState[3].b" id="isImage" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editPitScoutFormState[3].b" id="isImage" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#image"
                                   aria-expanded="false" aria-controls="collapseTwo">
                                   Image
@@ -911,8 +859,8 @@
                           <div class="card">
                             <div class="card-header" id="headingTwo">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[4].b" id="isAT" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[4].b" id="isAT" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editPitScoutFormState[4].b" id="isAT" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editPitScoutFormState[4].b" id="isAT" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#autoType"
                                   aria-expanded="false" aria-controls="autoType">
                                   Autonomous Type
@@ -936,8 +884,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[5].b" id="isAA" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[5].b" id="isAA" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editPitScoutFormState[5].b" id="isAA" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editPitScoutFormState[5].b" id="isAA" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree"
                                   aria-expanded="false" aria-controls="collapseThree">
                                   Autonomous Ability
@@ -974,8 +922,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[6].b" id="isTA" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[6].b" id="isTA" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editPitScoutFormState[6].b" id="isTA" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editPitScoutFormState[6].b" id="isTA" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#tele"
                                   aria-expanded="false" aria-controls="collapseThree">
                                   Teleop Ability
@@ -1009,8 +957,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[7].b" id="isSpeed" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[7].b" id="isSpeed" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editPitScoutFormState[7].b" id="isSpeed" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editPitScoutFormState[7].b" id="isSpeed" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#speed"
                                   aria-expanded="false" aria-controls="collapseThree">
                                   Speed
@@ -1049,8 +997,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[8].b" id="isEndgame" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[8].b" id="isEndgame" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editPitScoutFormState[8].b" id="isEndgame" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editPitScoutFormState[8].b" id="isEndgame" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#endgame"
                                   aria-expanded="false" aria-controls="collapseThree">
                                   End Game
@@ -1081,8 +1029,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[9].b" id="isStr" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[9].b" id="isStr" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editPitScoutFormState[9].b" id="isStr" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editPitScoutFormState[9].b" id="isStr" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#stra"
                                   aria-expanded="false" aria-controls="collapseThree">
                                   Strategy
@@ -1108,8 +1056,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[10].b" id="isDri" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[10].b" id="isDri" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editPitScoutFormState[10].b" id="isDri" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editPitScoutFormState[10].b" id="isDri" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#driver"
                                   aria-expanded="false" aria-controls="collapseThree">
                                   Driver
@@ -1135,8 +1083,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[11].b" id="isQ" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[11].b" id="isQ" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editPitScoutFormState[11].b" id="isQ" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editPitScoutFormState[11].b" id="isQ" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#question"
                                   aria-expanded="false" aria-controls="collapseThree">
                                   Customized Question
@@ -1161,8 +1109,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[12].b" id="isN" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[12].b" id="isN" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editPitScoutFormState[12].b" id="isN" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editPitScoutFormState[12].b" id="isN" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#notes"
                                   aria-expanded="false" aria-controls="collapseThree">
                                   Additional Notes
@@ -1218,8 +1166,8 @@
                           <div class="card">
                             <div class="card-header" id="headingOne">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[0].b" type="checkbox" id="isEvent" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[0].b" type="checkbox" id="isEvent" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editMatchScoutFormState[0].b" type="checkbox" id="isEvent" aria-label="Checkbox for following text input">
+                                <input *ngIf="editMatchScoutFormState[0].b" type="checkbox" id="isEvent" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#region"
                                   aria-expanded="false" aria-controls="collapseOne">
                                   <p><span id="robinfont">Region/Event Name</span> (You can uncheck this if you assign your scouts matches in "Manage")</p>
@@ -1255,8 +1203,8 @@
                           <div class="card">
                             <div class="card-header" id="headingTwo">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[1].b" id="isMatch" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[1].b" id="isMatch" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editMatchScoutFormState[1].b" id="isMatch" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editMatchScoutFormState[1].b" id="isMatch" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#matchnumber"
                                   aria-expanded="false" aria-controls="collapseTwo">
                                   <p><span id="robinfont">Match Number</span>
@@ -1276,8 +1224,8 @@
                           <div class="card">
                             <div class="card-header" id="headingTwo">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[2].b" id="isTeam" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[2].b" id="isTeam" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editMatchScoutFormState[2].b" id="isTeam" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editMatchScoutFormState[2].b" id="isTeam" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#teamnumber" aria-expanded="false"
                                   aria-controls="collapseTwo">
                                   <p><span id="robinfont">Team Number</span> (You can uncheck this if you assign your scouts matches in "Manage")</p>
@@ -1292,11 +1240,11 @@
                             </div>
                           </div>
                         
-                          <div class="card">
+                          <div class="card" *ngIf="image_not_avalibe">
                             <div class="card-header" id="headingTwo">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[3].b" id="isImage" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[3].b" id="isImage" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editMatchScoutFormState[3].b" id="isImage" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editMatchScoutFormState[3].b" id="isImage" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#image" aria-expanded="false"
                                   aria-controls="collapseTwo">
                                   Image
@@ -1319,8 +1267,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[4].b" id="isA" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[4].b" id="isA" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editMatchScoutFormState[4].b" id="isA" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editMatchScoutFormState[4].b" id="isA" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#alliance"
                                   aria-expanded="false" aria-controls="collapseThree">
                                   Alliance
@@ -1345,8 +1293,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[5].b" id="isAP" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[5].b" id="isAP" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editMatchScoutFormState[5].b" id="isAP" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editMatchScoutFormState[5].b" id="isAP" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree"
                                   aria-expanded="false" aria-controls="collapseThree">
                                   Autonomous Period
@@ -1385,8 +1333,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[6].b" id="isTP" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[6].b" id="isTP" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editMatchScoutFormState[6].b" id="isTP" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editMatchScoutFormState[6].b" id="isTP" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#teleS" aria-expanded="false"
                                   aria-controls="collapseThree">
                                   Teleop Period
@@ -1498,8 +1446,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[7].b" id="isDe" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[7].b" id="isDe" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editMatchScoutFormState[7].b" id="isDe" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editMatchScoutFormState[7].b" id="isDe" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#defense" aria-expanded="false"
                                   aria-controls="collapseThree">
                                   Defense
@@ -1533,8 +1481,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[8].b" id="isEfficient" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[8].b" id="isEfficient" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editMatchScoutFormState[8].b" id="isEfficient" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editMatchScoutFormState[8].b" id="isEfficient" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#eff" aria-expanded="false"
                                   aria-controls="collapseThree">
                                   Efficiency
@@ -1569,8 +1517,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[9].b" id="isEndgame" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[9].b" id="isEndgame" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editMatchScoutFormState[9].b" id="isEndgame" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editMatchScoutFormState[9].b" id="isEndgame" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#endgame"
                                   aria-expanded="false" aria-controls="collapseThree">
                                   End Game
@@ -1602,8 +1550,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[10].b" id="isFit" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[10].b" id="isFit" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editMatchScoutFormState[10].b" id="isFit" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editMatchScoutFormState[10].b" id="isFit" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#fitness" aria-expanded="false"
                                   aria-controls="collapseThree">
                                   Robot Fitness
@@ -1631,8 +1579,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[11].b" id="isQ" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[11].b" id="isQ" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editMatchScoutFormState[11].b" id="isQ" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editMatchScoutFormState[11].b" id="isQ" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#question"
                                   aria-expanded="false" aria-controls="collapseThree">
                                   Costumized Question
@@ -1657,8 +1605,8 @@
                           <div class="card">
                             <div class="card-header" id="headingThree">
                               <h2 class="mb-0">
-                                <input *ngIf="!bs[12].b" id="isN" type="checkbox" aria-label="Checkbox for following text input">
-                                <input *ngIf="bs[12].b" id="isN" type="checkbox" aria-label="Checkbox for following text input" checked>
+                                <input *ngIf="!editMatchScoutFormState[12].b" id="isN" type="checkbox" aria-label="Checkbox for following text input">
+                                <input *ngIf="editMatchScoutFormState[12].b" id="isN" type="checkbox" aria-label="Checkbox for following text input" checked>
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#notes" aria-expanded="false"
                                   aria-controls="collapseThree">
                                   Additional Notes
@@ -1833,7 +1781,7 @@
                           </button>
                         </div>
                         <div class="modal-body">
-                          <div *ngIf="bs[0].b">
+                          <div *ngIf="editPitScoutFormState[0].b">
                             <span class="badge badge-info">Team Number</span>
                             <div class="input-group mb-3">
                               <input (input)="updatePitEdit($event)" value="{{editdataPit.teamnumber}}" type="tel" class="form-control" id="teamnumber" aria-describedby="emailHelp"
@@ -1841,7 +1789,7 @@
                             </div>
                             <hr>
                           </div>
-                          <div *ngIf="bs[1].b">
+                          <div *ngIf="editPitScoutFormState[1].b">
                             <span class="badge badge-info">Weight</span>
                             <div class="input-group">
                               <input (input)="updatePitEdit($event)" value="{{editdataPit.weight2}}" id="weight2" type="tel" class="form-control" placeholder="Weight" aria-label="Recipient's username with two button addons"
@@ -1868,7 +1816,7 @@
                             <hr>
                           </div>
                           
-                          <div *ngIf="bs[2].b">
+                          <div *ngIf="editPitScoutFormState[2].b">
                             <span class="badge badge-info">Sensor on robot</span>
                             <br/>
                             <span class="badge badge-primary">Old Data</span>
@@ -1888,7 +1836,7 @@
                             <hr>
                           </div>
                           
-                          <div *ngIf="bs[3].b && image_not_avalibe">
+                          <div *ngIf="editPitScoutFormState[3].b && image_not_avalibe">
                             <span class="badge badge-info">Image</span>
                             <input (input)="setCurrentImageTitle($event)" type="text" class="form-control" id="imagetitle" placeholder="Title">
                           
@@ -1906,7 +1854,7 @@
                             <hr>
                           </div>
                           
-                          <div *ngIf="bs[4].b">
+                          <div *ngIf="editPitScoutFormState[4].b">
                             <span class="badge badge-info">Autonomous Type</span>
                             <select (input)="updatePitEdit($event)" value="{{editdataPit.autotype}}" class="custom-select mr-sm-2" id="autotype">
                               <option value="">Choose...</option>
@@ -1918,7 +1866,7 @@
                             <hr>
                           </div>
                           
-                          <div *ngIf="bs[5].b">
+                          <div *ngIf="editPitScoutFormState[5].b">
                             <span class="badge badge-info">Autonomous Ability</span>
                             <br>
                             <label for="autolvl">Start Platform Level</label>
@@ -1949,7 +1897,7 @@
                             <hr>
                           </div>
                           
-                          <div *ngIf="bs[6].b">
+                          <div *ngIf="editPitScoutFormState[6].b">
                             <span class="badge badge-info">Teleop Ability</span>
                             <br>
                             <label for="cargolvl">Cargo Level</label>
@@ -1971,7 +1919,7 @@
                             <hr>
                           </div>
                           
-                          <div *ngIf="bs[7].b">
+                          <div *ngIf="editPitScoutFormState[7].b">
                             <span class="badge badge-info">Speed</span>
                             <br>
                             <label for="robotspeed">Robot Speed</label>
@@ -1998,7 +1946,7 @@
                             <hr>
                           </div>
                           
-                          <div *ngIf="bs[8].b">
+                          <div *ngIf="editPitScoutFormState[8].b">
                             <span class="badge badge-info">End Game</span>
                             <br>
                             <label for="platform">Platform Climb</label>
@@ -2017,7 +1965,7 @@
                             <hr>
                           </div>
                           
-                          <div *ngIf="bs[9].b">
+                          <div *ngIf="editPitScoutFormState[9].b">
                             <span class="badge badge-info">Strategy</span>
                             <br>
                             <label for="preference">Preference</label>
@@ -2031,7 +1979,7 @@
                             <hr>
                           </div>
                           
-                          <div *ngIf="bs[10].b">
+                          <div *ngIf="editPitScoutFormState[10].b">
                             <span class="badge badge-info">Driver Experience</span>
                             <br>
                             <label for="years">Years of Driving</label>
@@ -2045,7 +1993,7 @@
                             <hr>
                           </div>
                           
-                          <div *ngIf="bs[11].b">
+                          <div *ngIf="editPitScoutFormState[11].b">
                             <span class="badge badge-info">Questions to ask</span>
                             <div class="input-group-prepend">
                               <span class="input-group-text">Question</span>
@@ -2058,7 +2006,7 @@
                             <hr>
                           </div>
                           
-                          <div *ngIf="bs[12].b">
+                          <div *ngIf="editPitScoutFormState[12].b">
                             <span class="badge badge-info">Write your note here</span>
                             <textarea (input)="updatePitEdit($event)" value="{{editdataPit.notes}}" id="notes" class="form-control" aria-label="With textarea" placeholder="Notes Here"></textarea>
                           </div>
@@ -2658,7 +2606,7 @@
                     <hr />
 
                     <div *ngIf="type_assignb.match_assign" id="cards_manage">
-                      <select id="assign_member" class="custom-select" (change)="changeAddMember($event)">
+                      <select id="assign_member" class="custom-select" (change)="changeAddMember($event.target.value)">
                         <option selected>For who?</option>
                         <option *ngFor="let name of team_member_list">{{name}}</option>
                       </select>
@@ -2713,7 +2661,7 @@
                   <div *ngIf="editMemberTaskLoader" class="spinner-border text-success" role="status">
                     <span class="sr-only">Loading...</span>
                   </div>
-                  <div *ngFor="let obj of team_member_task2">
+                  <div *ngFor="let obj of team_member_task_totalNum">
                     <button id="{{obj.name}}" (click)="editModalOut($event)" class="btn btn-info btn-sm" data-toggle="modal" data-target="#editMemberModel">
                       {{obj.name}}<span id="{{obj.name}}" class="badge badge-light">{{obj.task}}</span>
                     <span id="{{obj.name}}" class="sr-only">unread messages</span>
@@ -2779,21 +2727,21 @@
         <div class="tab-pane fade show active" id="edit_member_match" role="tabpanel" aria-labelledby="home-tab">
 
         <div *ngFor="let task of currentEditMember.match; index as i">
-          <span class="badge badge-warning">Task{{i+1}} </span><span  class="badge badge-pill badge-primary">{{task.event}}</span>
-          <span id="matchedit_status_warn" class="badge badge-info"></span><span id="matchedit_{{currentEditMemberName}}_warn" class="badge badge-pill badge-danger"></span>
+          <span class="badge badge-warning" id="matchedit_{{currentEditMemberName}}{{i}}_taskNum">Task{{i+1}}</span><span  class="badge badge-pill badge-primary">{{task.event}}</span>
+          <span id="matchedit_status_{{currentEditMemberName}}{{i}}_warn" class="badge badge-info"></span><span style="display: none;" id="matchedit_{{currentEditMemberName}}{{i}}_warn" class="badge badge-pill badge-danger"></span>
           <div class="input-group mb-3">
-            <input type="tel" value="{{task.start}}" (input)="checkManageInput2($event)" id="matchedit_{{currentEditMemberName}}_start" class="form-control"
+            <input type="tel" value="{{task.start}}" (input)="checkManageInput2($event)" id="matchedit_{{currentEditMemberName}}{{i}}_start" class="form-control"
               placeholder="Q1" aria-label="Username" aria-describedby="addon-wrapping">
         
             <div class="input-group-prepend">
               <label class="input-group-text" for="inputGroupSelect01">to</label>
             </div>
         
-            <input type="tel" value="{{task.end}}" (input)="checkManageInput2($event)" id="matchedit_{{currentEditMemberName}}_end" class="form-control"
+            <input type="tel" value="{{task.end}}" (input)="checkManageInput2($event)" id="matchedit_{{currentEditMemberName}}{{i}}_end" class="form-control"
               placeholder="Q{{matchnumber_max}}" aria-label="Username" aria-describedby="addon-wrapping">
           </div>
           <div class="input-group mb-3">
-            <select id="matchedit_{{currentEditMemberName}}_pos" value="{{task.pos}}" class="custom-select" id="inputGroupSelect01">
+            <select id="matchedit_{{currentEditMemberName}}{{i}}_pos" value="{{task.pos}}" class="custom-select" id="inputGroupSelect01">
               <option selected>P</option>
               <option value="Red1">Red1</option>
               <option value="Red2">Red2</option>
@@ -2816,10 +2764,10 @@
         <div class="tab-pane fade" id="edit_member_pit" role="tabpanel" aria-labelledby="profile-tab">
         <div *ngFor="let task of currentEditMember.pit; index as i">
           <span class="badge badge-warning">Task{{i+1}} </span>
-          <span id="pitedit_status_warn" class="badge badge-info"></span><span id="pitedit_{{currentEditMemberName}}_warn"
+          <span id="pitedit_status_{{currentEditMemberName}}{{i}}_warn" class="badge badge-info"></span><span id="pitedit_{{currentEditMemberName}}{{i}}_warn"
             class="badge badge-pill badge-danger"></span>
           <div class="input-group-append">
-          <input type="tel" value="{{task.team_number}}" (input)="checkManageInputPit($event)" id="pitedit_{{currentEditMemberName}}_start"
+          <input type="tel" value="{{task}}" (input)="checkManageInputPit($event)" id="pitedit_{{currentEditMemberName}}{{i}}_start"
             class="form-control" placeholder="0000" aria-label="Username" aria-describedby="addon-wrapping">
             <button id="pitedit_{{currentEditMemberName}}_{{i}}" (click)="editTask($event,'pit')" class="btn btn-primary mr-2"
               placement="top" type="submit" ngbPopover="{{addErrorC.content}}" popoverTitle="{{addErrorC.title}}">Edit</button>
@@ -2874,7 +2822,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <div *ngIf="bs2[0].b">
+        <div *ngIf="editMatchScoutFormState[0].b">
           <span class="badge badge-info">Region/Event Name</span>
           <br>
           <span class="badge badge-info">Week</span>
@@ -2899,7 +2847,7 @@
           <hr>
         </div>
 
-        <div *ngIf="bs2[1].b">
+        <div *ngIf="editMatchScoutFormState[1].b">
           <span class="badge badge-info">Match Number</span>
           <div class="input-group">
             <input (input)="updateMatchEdit($event)" value="{{editdata.matchnumber}}" type="tel" class="form-control"
@@ -2908,7 +2856,7 @@
           <hr>
         </div>
 
-        <div *ngIf="bs2[2].b">
+        <div *ngIf="editMatchScoutFormState[2].b">
           <span class="badge badge-info">Team Number</span>
           <div class="input-group">
             <input (input)="updateMatchEdit($event)" id="teamnumber" value="{{editdata.teamnumber}}" type="tel" class="form-control"
@@ -2917,7 +2865,7 @@
           <hr>
         </div>
 
-        <div *ngIf="bs2[3].b">
+        <div *ngIf="editMatchScoutFormState[3].b && image_not_avalibe">
           <span class="badge badge-info">Image</span>
           <input (input)="updateMatchEdit($event)" type="text" class="form-control" id="imagetitle" placeholder="Title">
 
@@ -2936,7 +2884,7 @@
           <hr>
         </div>
 
-        <div *ngIf="bs2[4].b">
+        <div *ngIf="editMatchScoutFormState[4].b">
           <span class="badge badge-info">Alliance</span>
           <br>
           <select (input)="updateMatchEdit($event)" value="{{editdata.alliance}}" id="alliance" class="form-control form-control-lg">
@@ -2947,7 +2895,7 @@
           <hr>
         </div>
 
-        <div *ngIf="bs2[5].b">
+        <div *ngIf="editMatchScoutFormState[5].b">
           <span class="badge badge-info">Autonomous Period</span>
           <br>
           <label for="autolvl">Successfully Exit Platform Level</label>
@@ -2974,7 +2922,7 @@
           <hr>
         </div>
 
-        <div id="teleS" *ngIf="bs2[6].b">
+        <div id="teleS" *ngIf="editMatchScoutFormState[6].b">
           <span class="badge badge-info">Teleop Period</span>
           <br>
           <br>
@@ -3080,7 +3028,7 @@
           <hr>
         </div>
 
-        <div *ngIf="bs2[7].b">
+        <div *ngIf="editMatchScoutFormState[7].b">
           <span class="badge badge-info">Defense</span>
           <br>
           <span class="badge badge-primary">Add 1 when the opponent drops a game piece</span>
@@ -3104,7 +3052,7 @@
           <hr>
         </div>
 
-        <div *ngIf="bs2[8].b">
+        <div *ngIf="editMatchScoutFormState[8].b">
           <span class="badge badge-info">Efficient</span>
           <br>
           <span class="badge badge-primary">Add 1 when the robot drops a hatch</span>
@@ -3129,7 +3077,7 @@
           <hr>
         </div>
 
-        <div *ngIf="bs2[9].b">
+        <div *ngIf="editMatchScoutFormState[9].b">
           <span class="badge badge-info">End Game</span>
           <br>
           <label for="platformS">Platform Climb</label>
@@ -3146,7 +3094,7 @@
           </select>
         </div>
 
-        <div *ngIf="bs2[10].b">
+        <div *ngIf="editMatchScoutFormState[10].b">
           <span class="badge badge-info">Robot Fitness</span>
           <br>
           <label for="fit">Does the robot fit our robot?</label>
@@ -3161,7 +3109,7 @@
           </select>
         </div>
 
-        <div *ngIf="bs2[11].b">
+        <div *ngIf="editMatchScoutFormState[11].b">
           <span class="badge badge-info">Questions to ask</span>
           <div class="input-group-prepend">
             <span class="input-group-text">Question</span>
@@ -3175,7 +3123,7 @@
           <textarea (input)="updateMatchEdit($event)" value="{{editdata.answer}}"  id="answer" class="form-control"
             aria-label="With textarea" placeholder="Like A1:....A2:...."></textarea>
         </div>
-        <div *ngIf="bs2[12].b">
+        <div *ngIf="editMatchScoutFormState[12].b">
           <span class="badge badge-info">Write your note here</span>
           <textarea (input)="updateMatchEdit($event)" value="{{editdata.notes}}" id="notes" class="form-control"
             aria-label="With textarea" placeholder="Notes Here"></textarea>
@@ -3258,7 +3206,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <div *ngIf="bs2[0].b">
+        <div *ngIf="editMatchScoutFormState[0].b">
           <span class="badge badge-info">Region/Event Name</span>
           <br>
           <span class="badge badge-info">Week</span>
@@ -3284,14 +3232,14 @@
           <hr>
         </div>
         
-        <div *ngIf="bs2[1].b">
+        <div *ngIf="editMatchScoutFormState[1].b">
           <span class="badge badge-info">Match Number</span>
           <input value="{{currentTask.matchnumber}}" placeholder="Maximum to {{matchnumber_max}}" type="tel" class="form-control"
             id="matchnumber" aria-describedby="emailHelp" placeholder="Enter number" disabled>
           <hr>
         </div>
         
-        <div *ngIf="bs2[2].b">
+        <div *ngIf="editMatchScoutFormState[2].b">
           <span class="badge badge-info">Team Number</span>
           <input value="{{currentTask.teamnumber}}" type="tel" class="form-control" id="teamnumber" aria-describedby="emailHelp"
             placeholder="Enter number" disabled>
@@ -3304,7 +3252,7 @@
           <hr>
         </div>
         
-        <div *ngIf="bs2[3].b && matchLock">
+        <div *ngIf="editMatchScoutFormState[3].b && matchLock && image_not_avalibe">
           <span class="badge badge-info">Image</span>
           <input (input)="setCurrentImageTitle($event)" type="text" class="form-control" id="imagetitle" placeholder="Title">
         
@@ -3322,7 +3270,7 @@
           <hr>
         </div>
         
-        <div *ngIf="bs2[4].b && matchLock">
+        <div *ngIf="editMatchScoutFormState[4].b && matchLock">
           <span class="badge badge-info">Alliance</span>
           <br>
           <select (input)="updateMatch($event)" id="alliance" class="form-control form-control-lg">
@@ -3333,7 +3281,7 @@
           <hr>
         </div>
         
-        <div *ngIf="bs2[5].b && matchLock">
+        <div *ngIf="editMatchScoutFormState[5].b && matchLock">
           <span class="badge badge-info">Autonomous Period</span>
           <br>
           <label for="autolvl">Successfully Exit Platform Level</label>
@@ -3360,7 +3308,7 @@
           <hr>
         </div>
         
-        <div id="teleS" *ngIf="bs2[6].b && matchLock">
+        <div id="teleS" *ngIf="editMatchScoutFormState[6].b && matchLock">
           <span class="badge badge-info">Teleop Period</span>
           <br>
           <br>
@@ -3460,7 +3408,7 @@
           <hr>
         </div>
         
-        <div *ngIf="bs2[7].b && matchLock">
+        <div *ngIf="editMatchScoutFormState[7].b && matchLock">
           <span class="badge badge-info">Defense</span>
           <br>
           <span class="badge badge-primary">Add 1 when the opponent drops a game piece</span>
@@ -3482,7 +3430,7 @@
           <hr>
         </div>
         
-        <div *ngIf="bs2[8].b && matchLock">
+        <div *ngIf="editMatchScoutFormState[8].b && matchLock">
           <span class="badge badge-info">Efficient</span>
           <br>
           <span class="badge badge-primary">Add 1 when the robot drops a hatch</span>
@@ -3505,7 +3453,7 @@
           <hr>
         </div>
         
-        <div *ngIf="bs2[9].b && matchLock">
+        <div *ngIf="editMatchScoutFormState[9].b && matchLock">
           <span class="badge badge-info">End Game</span>
           <br>
           <label for="platformS">Platform Climb</label>
@@ -3522,7 +3470,7 @@
           </select>
         </div>
         
-        <div *ngIf="bs2[10].b && matchLock">
+        <div *ngIf="editMatchScoutFormState[10].b && matchLock">
           <span class="badge badge-info">Robot Fitness</span>
           <br>
           <label for="fit">Does the robot fit our robot?</label>
@@ -3537,7 +3485,7 @@
           </select>
         </div>
         
-        <div *ngIf="bs2[11].b && matchLock">
+        <div *ngIf="editMatchScoutFormState[11].b && matchLock">
           <span class="badge badge-info">Questions to ask</span>
           <div class="input-group-prepend">
             <span class="input-group-text">Question</span>
@@ -3549,7 +3497,7 @@
         
           <textarea (input)="updateMatch($event)" id="answer" class="form-control" aria-label="With textarea" placeholder="Like A1:....A2:...."></textarea>
         </div>
-        <div *ngIf="bs2[12].b && matchLock">
+        <div *ngIf="editMatchScoutFormState[12].b && matchLock">
           <span class="badge badge-info">Write your note here</span>
           <textarea (input)="updateMatch($event)" id="notes" class="form-control" aria-label="With textarea" placeholder="Notes Here"></textarea>
         </div>
@@ -3576,7 +3524,7 @@
         </button>
       </div>
       <div class="modal-body">
-      <div *ngIf="bs[0].b">
+      <div *ngIf="editPitScoutFormState[0].b">
         <span class="badge badge-info">Team Number</span>
         <div class="input-group mb-3">
           <input value="{{currentTaskPit.teamnumber}}" type="tel" class="form-control" id="teamnumber_sender2" aria-describedby="emailHelp"
@@ -3589,7 +3537,7 @@
       
         <hr>
       </div>
-      <div *ngIf="bs[1].b && pitLock2">
+      <div *ngIf="editPitScoutFormState[1].b && pitLock2">
         <span class="badge badge-info">Weight</span>
         <div class="input-group">
           <input (input)="updatePitTask($event)" id="weight2" type="tel" class="form-control" placeholder="Weight" aria-label="Recipient's username with two button addons"
@@ -3616,7 +3564,7 @@
         <hr>
       </div>
       
-      <div *ngIf="bs[2].b && pitLock2">
+      <div *ngIf="editPitScoutFormState[2].b && pitLock2">
         <span class="badge badge-info">Sensor on robot</span>
         <select (change)="updatePitTask($event)" multiple class="form-control" id="sensor">
           <option value="">Ctrl+Click for multi-selection</option>
@@ -3630,7 +3578,7 @@
         <hr>
       </div>
       
-      <div *ngIf="bs[3].b && pitLock2 && image_not_avalibe">
+      <div *ngIf="editPitScoutFormState[3].b && pitLock2 && image_not_avalibe">
         <span class="badge badge-info">Image</span>
         <input (input)="setCurrentImageTitle($event)" type="text" class="form-control" id="imagetitle" placeholder="Title">
       
@@ -3648,7 +3596,7 @@
         <hr>
       </div>
       
-      <div *ngIf="bs[4].b && pitLock2">
+      <div *ngIf="editPitScoutFormState[4].b && pitLock2">
         <span class="badge badge-info">Autonomous Type</span>
         <select (input)="updatePitTask($event)" class="custom-select mr-sm-2" id="autotype">
           <option value="">Choose...</option>
@@ -3660,7 +3608,7 @@
         <hr>
       </div>
       
-      <div *ngIf="bs[5].b && pitLock2">
+      <div *ngIf="editPitScoutFormState[5].b && pitLock2">
         <span class="badge badge-info">Autonomous Ability</span>
         <br>
         <label for="autolvl">Start Platform Level</label>
@@ -3685,7 +3633,7 @@
         <hr>
       </div>
       
-      <div *ngIf="bs[6].b && pitLock2">
+      <div *ngIf="editPitScoutFormState[6].b && pitLock2">
         <span class="badge badge-info">Teleop Ability</span>
         <br>
         <label for="cargolvl">Cargo Level</label>
@@ -3707,7 +3655,7 @@
         <hr>
       </div>
       
-      <div *ngIf="bs[7].b  && pitLock2">
+      <div *ngIf="editPitScoutFormState[7].b  && pitLock2">
         <span class="badge badge-info">Speed</span>
         <br>
         <label for="robotspeed">Robot Speed</label>
@@ -3734,7 +3682,7 @@
         <hr>
       </div>
       
-      <div *ngIf="bs[8].b && pitLock2">
+      <div *ngIf="editPitScoutFormState[8].b && pitLock2">
         <span class="badge badge-info">End Game</span>
         <br>
         <label for="platform">Platform Climb</label>
@@ -3753,7 +3701,7 @@
         <hr>
       </div>
       
-      <div *ngIf="bs[9].b && pitLock2">
+      <div *ngIf="editPitScoutFormState[9].b && pitLock2">
         <span class="badge badge-info">Strategy</span>
         <br>
         <label for="preference">Preference</label>
@@ -3767,7 +3715,7 @@
         <hr>
       </div>
       
-      <div *ngIf="bs[10].b && pitLock2">
+      <div *ngIf="editPitScoutFormState[10].b && pitLock2">
         <span class="badge badge-info">Driver Experience</span>
         <br>
         <label for="years">Years of Driving</label>
@@ -3781,7 +3729,7 @@
         <hr>
       </div>
       
-      <div *ngIf="bs[11].b && pitLock2">
+      <div *ngIf="editPitScoutFormState[11].b && pitLock2">
         <span class="badge badge-info">Questions to ask</span>
         <div class="input-group-prepend">
           <span class="input-group-text">Question</span>
@@ -3794,7 +3742,7 @@
         <hr>
       </div>
       
-      <div *ngIf="bs[12].b && pitLock2">
+      <div *ngIf="editPitScoutFormState[12].b && pitLock2">
         <span class="badge badge-info">Write your note here</span>
         <textarea (input)="updatePitTask($event)" id="notes" class="form-control" aria-label="With textarea" placeholder="Notes Here"></textarea>
       </div>

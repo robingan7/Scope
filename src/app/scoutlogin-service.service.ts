@@ -23,6 +23,9 @@ interface editPitData{
   m: string
 }
 
+interface editPitDataArray{
+  m: any[]
+}
 interface getPerferenceData {
   m: string
 }
@@ -58,10 +61,10 @@ interface api3{
   providedIn: 'root'
 })
 export class ScoutloginServiceService {
-  apiUrl = "http://localhost/scope_php/images"
-  private loggedInStatus = false
-  private path ="http://localhost/scope_php/"
-  //private path ="https://frcscoutingapp.000webhostapp.com/"
+  apiUrl = "http://localhost/scope_php/images";
+  private loggedInStatus = false;
+  private path ="http://localhost/scope_php/";
+  //private path = "";
   constructor(private http: HttpClient) { }
   getPit_rank_team(team, name, role){
     return this.http.post<api3>(this.path + 'getPit_rank_team.php', {
@@ -102,13 +105,12 @@ export class ScoutloginServiceService {
       num
     })
   }
-  editTaskPit(teamnumber, name, mem_name, num, task){
+  editTaskPit(teamnumber, managerName, mem_name, task){
     return this.http.post<teammemberData>(this.path + 'editTaskPit.php', {
       teamnumber,
-      name,
+      managerName,
       task,
-      mem_name,
-      num
+      mem_name
     })
   }
   setQuestion(name, teamnumber, match, pit) {
@@ -128,13 +130,12 @@ export class ScoutloginServiceService {
       manager_name
     })
   }
-  editTaskMatch(teamnumber,name, mem_name,num,task){
+  editTaskMatch(teamnumber,managerName, mem_name,task){
     return this.http.post<teammemberData>(this.path + 'editTaskMatch.php', {
       teamnumber,
-      name,
+      managerName,
       task,
-      mem_name,
-      num
+      mem_name
     })
   }
   deleteTaskPit(teamnumber, name, mem_name, num) {
@@ -363,25 +364,25 @@ export class ScoutloginServiceService {
     })
   }
 
-  editMatch(array, name, teamnumber) {
+  editMatch(array: string, name: string, teamnumber: string) {
     return this.http.post<editPitData>(this.path +'editMatch.php', {
       array,
       name,
       teamnumber
     })
   }
-  getAPI3(path){
-    return this.http.get('https://www.thebluealliance.com/api/v3/'+path, httpOptions)
+  getAPI3(path:string){
+    return this.http.get('https://www.thebluealliance.com/api/v3/' + path, httpOptions)
   }
   getPitForm(name, teamnumber){
-    return this.http.post<editPitData>(this.path +'getPitForm.php', {
+    return this.http.post<editPitDataArray>(this.path +'getPitForm.php', {
       name,
       teamnumber
     })
   }
 
   getMatchForm(name, teamnumber) {
-    return this.http.post<editPitData>(this.path +'getMatchForm.php', {
+    return this.http.post<editPitDataArray>(this.path +'getMatchForm.php', {
       name,
       teamnumber
     })

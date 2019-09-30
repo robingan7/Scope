@@ -13,8 +13,9 @@ import { CookieService } from 'ngx-cookie-service';
 export class ScoutloginComponent implements OnInit {
   
   //-----oninit---------
-  lengthh = 0
-  image_not_avalibe=false
+  intervalTime = 13000;
+  lengthh = 0;
+  image_not_avalibe = false;
   //---------team selection-------
   frameworkComponents:any;
   isFullWidthCell:any;
@@ -63,9 +64,9 @@ export class ScoutloginComponent implements OnInit {
   scoutb = true
   managerb = true*/
 
-  editingCEventCount=0
+  editingCEventCount = 0;
 
-  scoutb = !true
+  scoutb = !true;
   managerb = !true
 
 
@@ -301,7 +302,7 @@ currentTaskPit={
 
   //-----pit and match form type----
   editMatchEvent=[]
-  private bs = [
+  private editPitScoutFormState = [
     { id: "#isTeam", b: true },
     { id:"#isWH",b:true},
     { id: "#isSensor", b: true },
@@ -316,7 +317,7 @@ currentTaskPit={
     { id: "#isQ", b: true },
     { id: "#isN", b: true }]
 
-  private bs2 = [{ id: "#isEvent", b: true },
+  private editMatchScoutFormState = [{ id: "#isEvent", b: true },
     { id: "#isMatch", b: true },
     { id: "#isTeam", b: true },
     { id: "#isImage", b: true },
@@ -336,6 +337,8 @@ currentTaskPit={
     team_member_list=[this.name]  
     currentYear="2019"
     matchnumber_max=1
+
+    //error types
     addError=[
       {
         title:"Added!!",
@@ -351,26 +354,31 @@ currentTaskPit={
       },{
         title: "Error",
         content: "invalid data"
+      },
+      {
+        title: "Edited",
+        content: ":)"
       }
     ]
+
+    //current error
   addErrorC = {
     title: "Fill in",
     content: "all space"
   }
-  team_member_task:Object
-  team_member_task2=[]
+  team_member_task = {};
+  team_member_task_totalNum = [];
 
-  team_member_task_pit={}
-  team_member_task2_pit = []
+  team_member_task_pit = {};
 
-  team_member_task_this=[]
+  team_member_task_this = [];
 
   currentEditMember={
     match:[],
     pit:[]
   }
 
-  currentAddMember=[]
+  currentAddMember = []
   currentEditMemberName="Robin"
 
   currentRegionTeams=[]
@@ -388,6 +396,21 @@ currentTaskPit={
     pit_assign:false
   }
   
+  ngOnInit() {
+    if (this.Auth.isLoggedIn) {
+      this.datatransfer.currentMessage.subscribe(data => {
+        this.getLoginInfo(data)
+      })
+    } else {
+      if (this.cookie.get("isLog") == 'true') {
+        this.getLoginInfoByCookie()
+      } else {
+        this.scoutb = false;
+        this.router.navigate(['login'])
+      }
+    }
+  }
+
   constructor(private Auth: ScoutloginServiceService,
               private router: Router,
               private datatransfer: DatatransferService,
@@ -400,24 +423,25 @@ currentTaskPit={
     this.fullWidthCellRenderer = "fullWidthCellRenderer";
                 //this.loadrank()
                 
-                setInterval(()=>{
+            this.setIntervalWithoutDelay(()=>{
                   if (this.scoutb) {
                   //------set Event run--------
                   if (this.scoutb && this.editingCEventCount == 0) {
-                    this.getcurrentRegionMain()
-                    this.editingCEventCount = -1
+                    this.getcurrentRegionMain();
+                    this.editingCEventCount = -1;
                   }
 
-                  if (this.getCurrentRegionCycleCounter>1){
-                  if (this.currentRegionMain != "an event") {
-                    this.currrentEventButtonModes[0].info[2] = this.currentRegionMain
-                    this.currrentEventButtonCurrentMode = this.currrentEventButtonModes[0]
-                    this.loadCurrentEvent=false
+                  if (this.getCurrentRegionCycleCounter >= 1){
+                    if (this.currentRegionMain != "an event") {
+                      this.currrentEventButtonModes[0].info[2] = this.currentRegionMain;
+                      this.currrentEventButtonCurrentMode = this.currrentEventButtonModes[0];
+                      this.loadCurrentEvent = false;
+                    }else{
+                      this.currrentEventButtonCurrentMode = this.currrentEventButtonModes[1];
+                      this.loadCurrentEvent = false;
+                    }
                   }else{
-                    this.currrentEventButtonCurrentMode = this.currrentEventButtonModes[1]
-                    this.loadCurrentEvent=false
-                  }}else{
-                    this.getCurrentRegionCycleCounter++
+                    this.getCurrentRegionCycleCounter++;
                   }
                   //---------end of set event-----
                   if(this.scoutb){
@@ -501,10 +525,10 @@ currentTaskPit={
                         })
                       })
                       if(this.managerb){
-                        this.getTeamMember()
+                        this.getTeamMember();
                       }else{
                         this.team_member_list=[]
-                        this.getTeamMemberTask()
+                        this.getTeamMemberTask();
                       }
                       this.getMatchNumber()
                       this.getQuestion()
@@ -516,21 +540,7 @@ currentTaskPit={
                     //----only run once-----111111111
 
 
-                    const split = data.m.split('/')
-                    var count = 0;
-                    for (var i = 0; i < this.bs.length; i++) {
-                      for (var i2 = 0; i2 < split.length; i2++) {
-                        if (this.bs[i].id == split[i2]) {
-                          count++;
-                        }
-                      }
-                      if (count > 0) {
-                        this.bs[i].b = false
-                      } else {
-                        this.bs[i].b = true
-                      }
-                      count=0
-                    }
+                    this.callBackPitForm(data.m);
                   })
                   
                     if (this.currentRegionMain !="no event"){
@@ -557,23 +567,7 @@ currentTaskPit={
                   }
                 }
               }
-                  this.Auth.getMatchForm(this.name, this.teamnumber).subscribe(data => {
-                    const split = data.m.split('/')
-                    var count = 0;
-                    for (var i = 0; i < this.bs2.length; i++) {
-                      for (var i2 = 0; i2 < split.length; i2++) {
-                        if (this.bs2[i].id == split[i2]) {
-                          count++;
-                        }
-                      }
-                      if (count > 0) {
-                        this.bs2[i].b = false
-                      } else {
-                        this.bs2[i].b = true
-                      }
-                      count = 0
-                    }
-                  })
+                    this.updateMatchForm();
 
                   if(!this.editingThethree && !this.editingTeamnumber){
                     if(!this.managerb){
@@ -683,25 +677,25 @@ currentTaskPit={
 
                 }
               }
-                },7000)
+            }, this.intervalTime)
               
-              }
+          }
 
-  ngOnInit() {
-    if(this.Auth.isLoggedIn){
-     this.datatransfer.currentMessage.subscribe(data => {
-          this.getLoginInfo(data)
-      })
-    }else{
-      if (this.cookie.get("isLog") == 'true'){
-        this.getLoginInfoByCookie()
-      }else{
-        this.scoutb = false;
-        this.router.navigate(['login'])
-      }
-    }
-   }
+  
 
+  //---set Interval no delay ------
+  setIntervalWithoutDelay(loopFunc, interval) {
+    setTimeout(() => {
+      loopFunc();
+    }, 1000);
+    setTimeout(() => {
+      loopFunc();
+    }, 2000);
+    
+    return setInterval(loopFunc, interval);
+  }
+
+   
   //--------pit form view-----------
   getPit_rank_team(){
     this.Auth.getPit_rank_team(this.teamnumber, this.name, this.role).subscribe(data => {
@@ -727,7 +721,6 @@ currentTaskPit={
     e.preventDefault()
     var addOrDr = e.target.innerText
     var value = (<HTMLButtonElement>document.querySelector("#search_pit")).value
-    console.log(value)
 
     if (addOrDr == "Add") {
       this.pit_search_team.push(value)
@@ -893,11 +886,14 @@ currentTaskPit={
       })
     }
   }
-  changeAddMember(e){
-    e.preventDefault()
-    var namenn=e.target.value
-    this.currentAddMember=this.team_member_task[namenn]
+
+  /**
+   * update the task list of current editing user used in checkboundary
+   */
+  changeAddMember(name:string){
+    this.currentAddMember = this.team_member_task[name];
   }
+
   startTask(e){
     this.taskMatchLoader=true
     e.preventDefault()
@@ -955,158 +951,184 @@ currentTaskPit={
       this.currentRegionTeams=tem
     })
   }
-  editModalOut(e){
-    e.preventDefault()
-    var thisName=e.target.id
-    this.currentEditMember.match = this.team_member_task[thisName]
-    this.currentEditMember.pit= this.team_member_task_pit[thisName]
-    this.currentEditMemberName=thisName
+
+  /**
+   * open edit tab for one member in manage section
+   */
+  editModalOut(e:any){
+    e.preventDefault();
+    let thisName = e.target.id;
+    this.currentEditMember.match = this.team_member_task[thisName];
+    this.currentEditMember.pit = this.team_member_task_pit[thisName];
+    this.currentEditMemberName = thisName;
+    this.changeAddMember(thisName);
   }
+
+  /**
+   * get team member task for manage page
+   */
   getTeamMemberTask(){
-    this.yourtask=true
-    this.editMemberTaskLoader = true
-    this.Auth.getTeamMemberTask(this.teamnumber,this.name).subscribe(data=>{
-      this.team_member_task=data.m
+    this.yourtask = true;
+    this.editMemberTaskLoader = true;
+
+    this.Auth.getTeamMemberTask(this.teamnumber, this.name).subscribe(data=>{
+      this.team_member_task = data.m;
       
-      this.Auth.getTeamMemberTaskPit(this.teamnumber, this.name).subscribe(data2 => {
-        this.team_member_task_pit = data2.m
-        var tem_list = []
-        for (var ele in this.team_member_list) {
-          tem_list.push(
-            {
-              name: this.team_member_list[ele],
-              task: this.team_member_task[this.team_member_list[ele]].length + this.team_member_task_pit[this.team_member_list[ele]].length
-            })
-        }
-        this.team_member_task2 = tem_list
-        this.team_member_task2.forEach(element => {
-          if(element.name==this.name){
-            this.match_scouted = element.task
-          }
-        })
-        this.team_member_task_this = []
-
-        this.Auth.getAPI3("events/" + this.currentYear).subscribe(data4 => {
-          for (var ele in data4) {
-            if (data4[ele].short_name == this.currentRegionMain) {
-              this.currentRegionMainId = data4[ele].key
-
-              break
-            }
-          }
-          this.Auth.getAPI3("event/" + this.currentRegionMainId + "/matches").subscribe(data3 => {
-            this.currentTemMatchList=data3
-            this.team_member_task[this.name].forEach(element => {
-              var addlist = []
-              for (var i = element.start; i <= element.end; i++) {
-                var teamnnnn
-                var alliance = element.pos.substring(0, element.pos.length - 1).toLowerCase()
-                var alliance_num = Number(element.pos.substring(element.pos.length - 1, element.pos.length))-1
-
-
-                for (var ele2 in this.currentTemMatchList) {
-                  if (this.currentTemMatchList[ele2].comp_level == "qm") {
-                    if (Number(this.currentTemMatchList[ele2].match_number) == i) {
-                      
-                      teamnnnn = this.currentTemMatchList[ele2].alliances[alliance].team_keys[alliance_num]
-                      if(teamnnnn!=undefined){
-                        addlist.push(i + "_" + teamnnnn.substring(3, teamnnnn.length))
-                      }
-                    }
-                  }
-                }
-              }
-              this.team_member_task_this.push({
-                title: "Q" + element.start + "-" + element.end,
-                content: addlist
-              })
-            });
-            this.yourtask = false
-            this.editMemberTaskLoader=false
-            this.currentAddMember = this.team_member_task[this.name_addTask]
-          })
-       
-        });
-
-      })
-    })
-    
+      this.getPitTask();
+    });
   }
-  getTeamMemberTask_inDeleteMethod(str) {
-    this.editMemberTaskLoader = true
-    this.yourtask = true
+
+  getTeamMemberTask_inDeleteMethod(str:string) {
+    this.editMemberTaskLoader = true;
+    this.yourtask = true;
 
     this.Auth.getTeamMemberTask(this.teamnumber, this.name).subscribe(data => {
-      this.team_member_task = data.m
-      
-     
-      this.Auth.getTeamMemberTaskPit(this.teamnumber, this.name).subscribe(data2 => {
-        this.team_member_task_pit = data2.m
-        var tem_list = []
-        for (var ele in this.team_member_list) {
-          tem_list.push(
-            {
-              name: this.team_member_list[ele],
-              task: this.team_member_task[this.team_member_list[ele]].length + this.team_member_task_pit[this.team_member_list[ele]].length
-            })
+      this.team_member_task = data.m;
+
+      this.getPitTask_inDelete(str);
+    });
+  }
+
+  /**
+   * get Pit task using getTeamMemberTaskPit_php
+   */
+  getPitTask(){
+    this.Auth.getTeamMemberTaskPit(this.teamnumber, this.name).subscribe(data2 => {
+      this.team_member_task_pit = data2.m;
+      let tem_list = [];
+
+      //get total of tasks of each scout has
+      for (let ele in this.team_member_list) {
+        tem_list.push(
+          {
+            name: this.team_member_list[ele],
+            task: this.team_member_task[this.team_member_list[ele]].length + this.team_member_task_pit[this.team_member_list[ele]].length
+          })
+      }
+
+      this.team_member_task_totalNum = tem_list;
+      this.team_member_task_totalNum.forEach(element => {
+        if (element.name == this.name) {
+          this.match_scouted = element.task
         }
-        this.team_member_task2 = tem_list
-        this.team_member_task2.forEach(element => {
-          if (element.name == this.name) {
-            this.match_scouted = element.task
+      });
+      this.team_member_task_this = [];
+
+      //getCurrentRegional
+      this.Auth.getAPI3("events/" + this.currentYear).subscribe(data4 => {
+        for (let ele in data4) {
+          if (data4[ele].short_name == this.currentRegionMain) {
+            this.currentRegionMainId = data4[ele].key;
+            break;
           }
-        })
-        this.currentEditMember.match = this.team_member_task[str]
-        this.currentEditMember.pit = this.team_member_task_pit[str]
+        }
+        this.Auth.getAPI3("event/" + this.currentRegionMainId + "/matches").subscribe(data3 => {
+          this.currentTemMatchList = data3
+          this.team_member_task[this.name].forEach(element => {
+            let addlist = [];
 
-        this.team_member_task_this = []
-
-        this.Auth.getAPI3("events/" + this.currentYear).subscribe(data4 => {
-          for (var ele in data4) {
-            if (data4[ele].short_name == this.currentRegionMain) {
-              this.currentRegionMainId = data4[ele].key
-
-              break
-            }
-          }
-          this.Auth.getAPI3("event/" + this.currentRegionMainId + "/matches").subscribe(data3 => {
-            this.currentTemMatchList = data3
-
-            this.team_member_task[this.name].forEach(element => {
-              var addlist = []
-              for (var i = element.start; i <= element.end; i++) {
-                var teamnnnn
-                var alliance = element.pos.substring(0, element.pos.length - 1).toLowerCase()
-                var alliance_num = Number(element.pos.substring(element.pos.length - 1, element.pos.length))
+            for (var i = element.start; i <= element.end; i++) {
+              let teamnnnn = null;
+              let alliance = element.pos.substring(0, element.pos.length - 1).toLowerCase();
+              let alliance_num = Number(element.pos.substring(element.pos.length - 1, element.pos.length)) - 1
 
 
-                for (var ele2 in this.currentTemMatchList) {
-                  if (this.currentTemMatchList[ele2].comp_level == "qm") {
-                    if (Number(this.currentTemMatchList[ele2].match_number) == i) {
-                      teamnnnn = this.currentTemMatchList[ele2].alliances[alliance].team_keys[alliance_num]
-                      if(teamnnnn!=undefined){
-                        addlist.push(i + "-" + teamnnnn.substring(3, teamnnnn.length))
-                      }
+              for (let ele2 in this.currentTemMatchList) {
+                if (this.currentTemMatchList[ele2].comp_level == "qm") {
+                  if (Number(this.currentTemMatchList[ele2].match_number) == i) {
+
+                    teamnnnn = this.currentTemMatchList[ele2].alliances[alliance].team_keys[alliance_num]
+                    if (teamnnnn != undefined) {
+                      addlist.push(i + "_" + teamnnnn.substring(3, teamnnnn.length))
                     }
                   }
                 }
               }
-              this.team_member_task_this.push({
-                title: "Q" + element.start + "_" + element.end,
-                content: addlist
-              })
-            });
-            this.editMemberTaskLoader = false
-            this.yourtask = false
-            this.currentAddMember = this.team_member_task[this.name_addTask]
-          })
+            }
+            this.team_member_task_this.push({
+              title: "Q" + element.start + "-" + element.end,
+              content: addlist
+            })
+          });
+          this.yourtask = false
+          this.editMemberTaskLoader = false
+          this.currentAddMember = this.team_member_task[this.name_addTask]
+        })
 
+      });
 
-        });
-      })
     })
   }
 
+  /**
+   * get Pit task using getTeamMemberTaskPit_php
+   */
+  getPitTask_inDelete(str:string) {
+    this.Auth.getTeamMemberTaskPit(this.teamnumber, this.name).subscribe(data2 => {
+      this.team_member_task_pit = data2.m
+      var tem_list = []
+      for (var ele in this.team_member_list) {
+        tem_list.push(
+          {
+            name: this.team_member_list[ele],
+            task: this.team_member_task[this.team_member_list[ele]].length + this.team_member_task_pit[this.team_member_list[ele]].length
+          })
+      }
+      this.team_member_task_totalNum = tem_list
+      this.team_member_task_totalNum.forEach(element => {
+        if (element.name == this.name) {
+          this.match_scouted = element.task
+        }
+      })
+      this.currentEditMember.match = this.team_member_task[str]
+      this.currentEditMember.pit = this.team_member_task_pit[str]
+
+      this.team_member_task_this = []
+
+      this.Auth.getAPI3("events/" + this.currentYear).subscribe(data4 => {
+        for (var ele in data4) {
+          if (data4[ele].short_name == this.currentRegionMain) {
+            this.currentRegionMainId = data4[ele].key
+
+            break
+          }
+        }
+        this.Auth.getAPI3("event/" + this.currentRegionMainId + "/matches").subscribe(data3 => {
+          this.currentTemMatchList = data3
+
+          this.team_member_task[this.name].forEach(element => {
+            var addlist = []
+            for (var i = element.start; i <= element.end; i++) {
+              var teamnnnn
+              var alliance = element.pos.substring(0, element.pos.length - 1).toLowerCase()
+              var alliance_num = Number(element.pos.substring(element.pos.length - 1, element.pos.length))
+
+
+              for (var ele2 in this.currentTemMatchList) {
+                if (this.currentTemMatchList[ele2].comp_level == "qm") {
+                  if (Number(this.currentTemMatchList[ele2].match_number) == i) {
+                    teamnnnn = this.currentTemMatchList[ele2].alliances[alliance].team_keys[alliance_num]
+                    if (teamnnnn != undefined) {
+                      addlist.push(i + "-" + teamnnnn.substring(3, teamnnnn.length))
+                    }
+                  }
+                }
+              }
+            }
+            this.team_member_task_this.push({
+              title: "Q" + element.start + "_" + element.end,
+              content: addlist
+            })
+          });
+          this.editMemberTaskLoader = false
+          this.yourtask = false
+          this.currentAddMember = this.team_member_task[this.name_addTask]
+        })
+
+
+      });
+    });
+  }
   
   taskOut(e){
     e.preventDefault()
@@ -1145,46 +1167,65 @@ currentTaskPit={
     });
     
   }
-  addTask(type){
+
+  /**
+   * add task use in manage tab
+   * @param type add task use in manage tab
+   */
+  addTask(type:any){
     if(type=="match"){
-     this.name_addTask = (<HTMLSelectElement>document.querySelector("#assign_member")).value
-      document.querySelector("#status_warn").className = "badge badge-pill badge-primary"
-    var new_v="status"
-      var end_val = Number((<HTMLInputElement>document.querySelector("#" + new_v + "_end")).value)
-      var start_val = Number((<HTMLInputElement>document.querySelector("#" + new_v + "_start")).value)
-      var pos = (<HTMLInputElement>document.querySelector("#" + new_v + "_pos")).value
-    var task = this.currentRegionMainId + "/" + start_val + "/" + end_val + "/" + pos
+      this.name_addTask = (<HTMLSelectElement>document.querySelector("#assign_member")).value;
+      document.querySelector("#status_warn").className = "badge badge-pill badge-primary";
+
+      let new_v = "status"
+      let end_val = Number((<HTMLInputElement>document.querySelector("#" + new_v + "_end")).value);
+      let start_val = Number((<HTMLInputElement>document.querySelector("#" + new_v + "_start")).value);
+      let pos = (<HTMLInputElement>document.querySelector("#" + new_v + "_pos")).value;
+
       if (end_val == 0 || start_val == 0 || pos == "P" || this.name_addTask =="For who?") {
-      this.addErrorC = this.addError[1]
-    } else if (this.currentRegionMainId == 0) {
-      this.addErrorC = this.addError[2]
+        this.addErrorC = this.addError[1];
+      } else if (this.currentRegionMainId == 0) {
+        this.addErrorC = this.addError[2];
+      }else if (document.querySelector("#status_warn").className == "badge badge-pill badge-danger"){
+        this.addErrorC = this.addError[3];
+      } else {
+        this.addErrorC = this.addError[0];
+        let task = { event: this.currentRegionMainId, start: start_val, end: end_val, pos: pos };
+        this.team_member_task[this.name_addTask].push(task);
+        this.team_member_task[this.name_addTask].sort(function (a: any, b: any) { return a.start - b.start });
+
+        this.Auth.addTask(this.teamnumber, this.role, this.name_addTask, JSON.stringify(this.team_member_task[this.name_addTask]), this.name).subscribe(data => {
+          this.getTeamMemberTask();
+        });
     }
-      else if (document.querySelector("#status_warn").className == "badge badge-pill badge-danger"){
-        this.addErrorC = this.addError[3]
-      }
-    else {
-      this.addErrorC = this.addError[0]
-      this.Auth.addTask(this.teamnumber, this.role, this.name_addTask, task, this.name).subscribe(data => {
-        this.getTeamMemberTask()
-      })
-    }
-  }else if(type=="pit"){
-       this.name_addTask = (<HTMLSelectElement>document.querySelector("#assign_member_pit")).value
-      var task2 = []
-      document.querySelector("#status_warn_pit").className = "badge badge-pill badge-primary"
+
+  }else if(type == "pit") {
+      this.name_addTask = (<HTMLSelectElement>document.querySelector("#assign_member_pit")).value;
+      let task2 = [];
+      document.querySelector("#status_warn_pit").className = "badge badge-pill badge-primary";
+
       if (this.name_addTask == "For who?" || this.asssign_pits.length == 0) {
-        this.addErrorC = this.addError[1]
+        this.addErrorC = this.addError[1];
       } else if (document.querySelector("#status_warn_pit").className == "badge badge-pill badge-danger") {
-        this.addErrorC = this.addError[3]
+        this.addErrorC = this.addError[3];
       }else {
-        this.addErrorC = this.addError[0]
-        task2=this.asssign_pits
-        this.Auth.addTaskPit(this.teamnumber, this.role, this.name_addTask, task2, this.name).subscribe(data => {
-        this.getTeamMemberTask()
+        this.addErrorC = this.addError[0];
+        task2 = this.asssign_pits;
+
+        for(let ele of task2) {
+          if (!this.team_member_task_pit[this.name_addTask].includes(ele)){
+            this.team_member_task_pit[this.name_addTask].push(ele);
+          }
+        }
+        this.team_member_task_pit[this.name_addTask].sort(function (a: any, b: any) { return Number(a) - Number(b)});
+
+        this.Auth.addTaskPit(this.teamnumber, this.role, this.name_addTask, JSON.stringify(this.team_member_task_pit[this.name_addTask]), this.name).subscribe(data => {
+          this.getTeamMemberTask();
         })
       }
+    }
   }
-  }
+
   enableAssignPit(e){
     e.preventDefault()
     var clsname=e.target.className
@@ -1196,120 +1237,141 @@ currentTaskPit={
       this.asssign_pits.splice(this.asssign_pits.indexOf(e.target.innerText))
     }
   }
-  deleteTaskMatch(e){
-    e.preventDefault()
-    var name=e.target.id.split('_')[1]
-    this.name_addTask = name
-    var num = e.target.id.split('_')[2]
 
-    this.Auth.deleteTaskMatch(this.teamnumber,this.name,name,num).subscribe(data=>{
-      this.getTeamMemberTask_inDeleteMethod(name)
-      this.currentEditMemberName = name
-    })
-  }
-  deleteTaskPit(e) {
-    e.preventDefault()
-    var name = e.target.id.split('_')[1]
-    this.name_addTask = name
-    var num = e.target.id.split('_')[2]
+  /**
+   * delete match task in manager tab
+   * @param e event
+   */
+  deleteTaskMatch(e:any){
+    e.preventDefault();
+    let name = e.target.id.split('_')[1];
+    this.name_addTask = name;
+    let num = Number(e.target.id.split('_')[2]);
+    this.team_member_task[name].splice(num, 1);
 
-    this.Auth.deleteTaskPit(this.teamnumber, this.name, name, num).subscribe(data => {
-      this.getTeamMemberTask_inDeleteMethod(name)
-      this.currentEditMemberName = name
-    })
+    this.Auth.editTaskMatch(this.teamnumber, this.name, name, JSON.stringify(this.team_member_task[this.name_addTask])).subscribe(data => {
+      this.getTeamMemberTask_inDeleteMethod(name);
+      this.currentEditMemberName = name;
+    });
   }
-  editTask(e,type){
-    e.preventDefault()
-    var name = e.target.id.split('_')[1]
-    this.name_addTask=name
-    var num = e.target.id.split('_')[2]
+
+  /**
+   * delete pit task in manager tab
+   * @param e event
+   */
+  deleteTaskPit(e: any) {
+    e.preventDefault();
+    let name = e.target.id.split('_')[1];
+    this.name_addTask = name;
+    let num = Number(e.target.id.split('_')[2]);
+    this.team_member_task_pit[name].splice(num, 1);
+
+    this.Auth.editTaskPit(this.teamnumber, this.name, name, JSON.stringify(this.team_member_task_pit[this.name_addTask])).subscribe(data => {
+      this.getTeamMemberTask_inDeleteMethod(name);
+      this.currentEditMemberName = name;
+    });
+  }
+
+  /**
+   * edit task in manager tab
+   * @param e event
+   * @param type task type
+   */
+  editTask(e:any, type:string){
+    e.preventDefault();
+    let name = e.target.id.split('_')[1];
+    this.name_addTask = name;
+    let num = e.target.id.split('_')[2];
+
     if (type == "match") {
-      var end_val = Number((<HTMLInputElement>document.querySelector("#matchedit_" + name + "_end")).value)
-      var start_val = Number((<HTMLInputElement>document.querySelector("#matchedit_" + name + "_start")).value)
-      var pos = (<HTMLInputElement>document.querySelector("#matchedit_" + name + "_pos")).value
-      var task = this.currentRegionMainId + "/" + start_val + "/" + end_val + "/" + pos
-      if (end_val == 0 || start_val == 0 || pos == "P") {
-        this.addErrorC = this.addError[1]
-      } else if (this.currentRegionMainId==0){
-        this.addErrorC = this.addError[2]
-      } else if ((<HTMLInputElement>document.querySelector("#matchedit_status_warn")).className =="badge badge-pill badge-danger"){
-        this.addErrorC = this.addError[3]
-      }
-       else {
-        this.addErrorC = this.addError[0]
-        this.Auth.editTaskMatch(this.teamnumber, this.name, name, num , task).subscribe(data => {
-          this.getTeamMemberTask()
-        })
+      let end_val = Number((<HTMLInputElement>document.querySelector("#matchedit_" + name + num +"_end")).value);
+      let start_val = Number((<HTMLInputElement>document.querySelector("#matchedit_" + name + num+  "_start")).value);
+      let posi = (<HTMLInputElement>document.querySelector("#matchedit_" + name + num + "_pos")).value;
+
+      if (end_val == 0 || start_val == 0 || posi == "P") {
+        this.addErrorC = this.addError[1];
+      } else if (this.currentRegionMainId == 0){
+        this.addErrorC = this.addError[2];
+      } else if ((<HTMLInputElement>document.querySelector("#matchedit_" + name + num +"_warn")).style.display != "none"){
+        this.addErrorC = this.addError[3];
+      } else {
+        let task = { event: this.currentRegionMainId, start: start_val, end: end_val, pos: posi };
+        this.team_member_task[this.name_addTask][num] = task;
+        this.team_member_task[this.name_addTask].sort(function (a: any, b: any) { return a.start - b.start });
+
+        this.Auth.editTaskMatch(this.teamnumber, this.name, name, JSON.stringify(this.team_member_task[this.name_addTask])).subscribe(data => {
+          this.addErrorC = this.addError[4];
+          this.getTeamMemberTask();
+        });
       }
     } else if (type == "pit") {
-      var task2 = Number((<HTMLInputElement>document.querySelector("#pitedit_" + name + "_start")).value)
 
-       if ((<HTMLInputElement>document.querySelector("#pitedit_status_warn")).className == "badge badge-pill badge-danger") {
-        this.addErrorC = this.addError[3]
+      if ((<HTMLInputElement>document.querySelector("#pitedit_status_"+ name + num +"_warn")).className == "badge badge-pill badge-danger") {
+        this.addErrorC = this.addError[3];
       }else{
-         this.Auth.editTaskPit(this.teamnumber, this.name, name, num, task2).subscribe(data => {
-           this.addErrorC = this.addError[0]
-           this.getTeamMemberTask()
-         })
-      }
-    }
-  }
-  checkManageInput2(e){
-    e.preventDefault()
-    var tem_id = e.target.id
-    var val = Number(e.target.value)
-    var name = e.target.id.split('_')[1]
-    var end_val = Number((<HTMLInputElement>document.querySelector("#matchedit_" + name + "_end")).value)
-    var start_val = Number((<HTMLInputElement>document.querySelector("#matchedit_" + name + "_start")).value)
-    if (tem_id.split("_")[2] == "start") {
-      if (end_val <= val) {
-        (<HTMLInputElement>document.querySelector("#matchedit_" + name + "_warn")).innerText = "Right is smaller than left"
-        document.querySelector("#matchedit_status_warn").className = "badge badge-pill badge-danger"
-      } else if (val > this.matchnumber_max) {
-        (<HTMLInputElement>document.querySelector("#matchedit_" + name + "_warn")).innerText = "Left can't be greater than " + this.matchnumber_max
-        document.querySelector("#matchedit_status_warn").className = "badge badge-pill badge-danger"
-      } else if ((<HTMLInputElement>document.querySelector("#matchedit_" + name + "_start")).value == "") {
-        (<HTMLInputElement>document.querySelector("#matchedit_" + name + "_warn")).innerText = "It can't be empty"
-        document.querySelector("#status_warn").className = "badge badge-pill badge-danger"
-      }
-      else {
-        (<HTMLInputElement>document.querySelector("#matchedit_" + name + "_warn")).innerText = ""
-        document.querySelector("#matchedit_status_warn").className = "badge badge-pill badge-successful"
-        //this.Auth.editTaskMatch(this.teamnumber,this.name,name,num)
-      }
-    } else if (tem_id.split("_")[2] == "end") {
-      if (start_val >= val) {
-        (<HTMLInputElement>document.querySelector("#matchedit_" + name + "_warn")).innerText = "Right is smaller than left"
-        document.querySelector("#matchedit_status_warn").className = "badge badge-pill badge-danger"
-      } else if (val > this.matchnumber_max) {
-        (<HTMLInputElement>document.querySelector("#matchedit_" + name + "_warn")).innerText = "Right can't be greater than " + this.matchnumber_max
-        document.querySelector("#matchedit_status_warn").className = "badge badge-pill badge-danger"
-      } else if ((<HTMLInputElement>document.querySelector("#matchedit_" + name + "_end")).value == "" || (<HTMLInputElement>document.querySelector("#matchedit_" + name + "_start")).value == "") {
-        (<HTMLInputElement>document.querySelector("#matchedit_" + name + "_warn")).innerText = "It can't be empty"
-        document.querySelector("#status_warn").className = "badge badge-pill badge-danger"
-      }else {
-        (<HTMLInputElement>document.querySelector("#matchedit_" + name + "_warn")).innerText = ""
-        document.querySelector("#matchedit_status_warn").className = "badge badge-pill badge-successful"
-      }
-    }
-  }
-  checkBoundary(arr,st,en){
-    var judge=true
+        let task2 = Number((<HTMLInputElement>document.querySelector("#pitedit_" + name + num + "_start")).value);
 
-    for(var ele in arr){
-      if (!(arr[ele].start > en || arr[ele].end < st)){
-        judge=false
+        this.team_member_task_pit[this.name_addTask][num] = task2;
+        this.team_member_task_pit[this.name_addTask].sort(function (a: any, b: any) { return Number(a) - Number(b) });
+
+        this.Auth.editTaskPit(this.teamnumber, this.name, name, JSON.stringify(this.team_member_task_pit[this.name_addTask])).subscribe(data => {
+           this.addErrorC = this.addError[4];
+           this.getTeamMemberTask();
+         });
       }
     }
-    return judge
   }
-  checkManageInput(e){
+  
+  /**
+   * check boundary for add and edit tasks
+   * @param arr 
+   * @param st 
+   * @param en 
+   */
+  checkBoundary(arr:any[],st:Number,en:Number, ex = -2){
+    if(ex == -2){
+      for (let ele in arr) {
+        if (!(arr[ele].start > en || arr[ele].end < st)) {
+          return false;
+        }
+      }
+      return true;
+    } else {
+      for (let ele in arr) {
+        if (!(arr[ele].start > en || arr[ele].end < st ) && Number(ele) != ex){
+          return false;
+        }
+      }
+      return true;
+    }
+  }
+
+  /**
+   * check boundary pit for edit tasks
+   * @param arr 
+   * @param st 
+   * @param en 
+   */
+  checkBoundaryPit(arr: any[], val:string, ex:Number) {
+    for (let ele in arr) {
+      if (arr.includes(val) && Number(ele) != ex) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * check input in add match task
+   * @param e 
+   */
+  checkManageInput(e:any){
     e.preventDefault()
-    var tem_id=e.target.id
-    var name = tem_id.split("_")[0]
-    var val = Number(e.target.value)
-    var end_val = Number((<HTMLInputElement>document.querySelector("#" + name + "_end")).value)
-    var start_val = Number((<HTMLInputElement>document.querySelector("#" + name + "_start")).value)
+    let tem_id=e.target.id
+    let name = tem_id.split("_")[0]
+    let val = Number(e.target.value)
+    let end_val = Number((<HTMLInputElement>document.querySelector("#" + name + "_end")).value)
+    let start_val = Number((<HTMLInputElement>document.querySelector("#" + name + "_start")).value)
     if (tem_id.split("_")[1]=="start"){
       if (end_val<=val){
         (<HTMLInputElement>document.querySelector("#"+name + "_warn")).innerText="Right is smaller than left"
@@ -1347,25 +1409,93 @@ currentTaskPit={
       }
     }
   }
-  checkManageInputPit(e) {
-    e.preventDefault()
-    var val = e.target.value
 
-    var tem_id = e.target.id
-    var name = tem_id.split("_")[1]
+  /**
+   * check input in edit or delete match task
+   * @param e
+   */
+  checkManageInput2(e:any) {
+    e.preventDefault();
+    let tem_id = e.target.id;
+    let val = Number(e.target.value);
+    let name = e.target.id.split('_')[1];
+    let end_val = Number((<HTMLInputElement>document.querySelector("#matchedit_" + name + "_end")).value);
+    let start_val = Number((<HTMLInputElement>document.querySelector("#matchedit_" + name + "_start")).value);
+    let taskNumStr = (<HTMLInputElement>document.querySelector("#matchedit_" + name + "_taskNum")).innerText;
+    let taskNum = Number(taskNumStr.substr(taskNumStr.length - 1)) - 1;
+
+    let warmId = "#matchedit_status_" + name + "_warn";
+    let statusId = "#matchedit_" + name + "_warn";
+
+    if (tem_id.split("_")[2] == "start") {
+      if (end_val <= val) {
+        (<HTMLInputElement>document.querySelector("#matchedit_" + name + "_warn")).innerText = "Right is smaller than left";
+        document.querySelector(warmId).className = "badge badge-pill badge-danger";
+      } else if (val > this.matchnumber_max) {
+        (<HTMLInputElement>document.querySelector("#matchedit_" + name + "_warn")).innerText = "Left can't be greater than " + this.matchnumber_max;
+        document.querySelector(warmId).className = "badge badge-pill badge-danger";
+      } else if (!this.checkBoundary(this.currentAddMember, start_val, end_val, taskNum)) {
+        (<HTMLInputElement>document.querySelector("#matchedit_" + name + "_warn")).innerText = "Overlap with current tasks";
+        document.querySelector(statusId).className = "badge badge-pill badge-danger";
+      }else if ((<HTMLInputElement>document.querySelector("#matchedit_" + name + "_start")).value == "") {
+        (<HTMLInputElement>document.querySelector("#matchedit_" + name + "_warn")).innerText = "It can't be empty";
+        document.querySelector(statusId).className = "badge badge-pill badge-danger";
+      } else {
+        (<HTMLInputElement>document.querySelector("#matchedit_" + name + "_warn")).innerText = "";
+        document.querySelector(warmId).className = "badge badge-pill badge-successful";
+        //this.Auth.editTaskMatch(this.teamnumber,this.name,name,num)
+      }
+    } else if (tem_id.split("_")[2] == "end") {
+      if (start_val >= val) {
+        (<HTMLInputElement>document.querySelector("#matchedit_" + name + "_warn")).innerText = "Right is smaller than left";
+        document.querySelector(warmId).className = "badge badge-pill badge-danger";
+      } else if (val > this.matchnumber_max) {
+        (<HTMLInputElement>document.querySelector("#matchedit_" + name + "_warn")).innerText = "Right can't be greater than " + this.matchnumber_max;
+        document.querySelector(warmId).className = "badge badge-pill badge-danger";
+      } else if (!this.checkBoundary(this.currentAddMember, start_val, end_val, taskNum)) {
+        (<HTMLInputElement>document.querySelector("#matchedit_" + name + "_warn")).innerText = "Overlap with current tasks";
+        document.querySelector(statusId).className = "badge badge-pill badge-danger"
+      } else if ((<HTMLInputElement>document.querySelector("#matchedit_" + name + "_end")).value == "" || (<HTMLInputElement>document.querySelector("#matchedit_" + name + "_start")).value == "") {
+        (<HTMLInputElement>document.querySelector("#matchedit_" + name + "_warn")).innerText = "It can't be empty";
+        document.querySelector(statusId).className = "badge badge-pill badge-danger";
+      } else {
+        (<HTMLInputElement>document.querySelector("#matchedit_" + name + "_warn")).innerText = "";
+        document.querySelector(warmId).className = "badge badge-pill badge-successful";
+      }
+    }
+  }
+
+  /**
+   * check if the number is valid in edit pit task
+   * @param e the event
+   */
+  checkManageInputPit(e:any) {
+    e.preventDefault();
+    let val = e.target.value;
+
+    let tem_id = e.target.id;
+    let name = tem_id.split("_")[1];
+    let rawName = name.substring(0, name.length - 1);
+    let num = Number(name.substring(name.length - 1));
+
+    let warnId = "#pitedit_" + name + "_warn";
+    let statusId = "#pitedit_status_" + name +"_warn";
 
     if(val.length>4){
-      (<HTMLInputElement>document.querySelector("#pitedit_" + name + "_warn")).innerText = "Number is too large"
-      document.querySelector("#pitedit_status_warn").className = "badge badge-pill badge-danger"
+      (<HTMLInputElement>document.querySelector(warnId)).innerText = "Number is too large";
+      document.querySelector(statusId).className = "badge badge-pill badge-danger";
     }else if(val.substring(0,1)=="0"){
-      (<HTMLInputElement>document.querySelector("#pitedit_" + name + "_warn")).innerText = "It can't start with '0'"
-      document.querySelector("#pitedit_status_warn").className = "badge badge-pill badge-danger"
+      (<HTMLInputElement>document.querySelector(warnId)).innerText = "It can't start with '0'";
+      document.querySelector(statusId).className = "badge badge-pill badge-danger";
     } else if (val == "") {
-      (<HTMLInputElement>document.querySelector("#pitedit_" + name + "_warn")).innerText = "It can't be empty"
-      document.querySelector("#pitedit_status_warn").className = "badge badge-pill badge-danger"
+      (<HTMLInputElement>document.querySelector(warnId)).innerText = "It can't be empty";
+      document.querySelector(statusId).className = "badge badge-pill badge-danger";
+    } else if (!this.checkBoundaryPit(this.team_member_task_pit[rawName], val, num)) {
+      (<HTMLInputElement>document.querySelector(warnId)).innerText = "Team already added";
+      document.querySelector(statusId).className = "badge badge-pill badge-danger";
     }else{
-      (<HTMLInputElement>document.querySelector("#pitedit_" + name + "_warn")).innerText = ""
-      document.querySelector("#pitedit_status_warn").className = "badge badge-pill badge-primary"
+      (<HTMLInputElement>document.querySelector(warnId)).innerText = "";
+      document.querySelector(statusId).className = "badge badge-pill badge-primary";
     }
 
   }
@@ -1659,20 +1789,22 @@ arraysEqual(arr1, arr2) {
     }
   }
 
+  /**
+   * get current main region in the inside of loop
+   */
   getcurrentRegionMain() {
     this.Auth.getcurrentRegionMain(this.teamnumber, this.name).subscribe(data => {
       this.currentRegionMain=data.m
       this.Auth.getAPI3("events/" + this.currentYear).subscribe(data2 => {
-        for(var ele in data2){
-          if (data2[ele].short_name ==this.currentRegionMain){
-            this.currentRegionMainId = data2[ele].key
-            this.getCurrentRegionTeams()
-            break
+        for(let ele in data2){
+          if (data2[ele].short_name == this.currentRegionMain){
+            this.currentRegionMainId = data2[ele].key;
+            this.getCurrentRegionTeams();
+            break;
           }
         }
-        
-      })
-    })
+      });
+    });
   }
  contains(arr, element) {
   for (let i = 0; i < arr.length; i++) {
@@ -2367,7 +2499,7 @@ arraysEqual(arr1, arr2) {
         this.historyload = true
       }
       if (this.currentHdate_pit != data.currentId) {
-        this.historybs_pit = data.bs
+        this.historybs_pit = data.bs;
       }
       if (this.currentHdate_pit != data.currentId || this.currentHmatch_pit != data.col_name) {
         this.history_pit = []
@@ -2487,8 +2619,8 @@ arraysEqual(arr1, arr2) {
 
   resetMatchForm(){
     this.updateTotalVal()
-    for (var i = 0; i < this.bs2.length; i++) {
-      this.bs2[i].b=false;
+    for (var i = 0; i < this.editMatchScoutFormState.length; i++) {
+      this.editMatchScoutFormState[i].b=false;
     }
     this.currentMatchTeam = "none"
     this.currentRegion = "none"
@@ -2504,8 +2636,8 @@ arraysEqual(arr1, arr2) {
   //----update pit form-----
 
   resetPitForm() {
-    for (var i = 0; i < this.bs.length; i++) {
-      this.bs[i].b = false;
+    for (var i = 0; i < this.editPitScoutFormState.length; i++) {
+      this.editPitScoutFormState[i].b = false;
     }
     this.matchspinnerb = true
     this.pitspinner = true
@@ -2615,45 +2747,7 @@ arraysEqual(arr1, arr2) {
     })
   }
   }
-  updatePitForm(){
-    this.Auth.getPitForm(this.name, this.teamnumber).subscribe(data => {
-      const split = data.m.split('/')
-      for (var i = 0; i < this.bs.length; i++) {
-        for (var i2 = 0; i2 < split.length; i2++) {
-          if (this.bs[i].id == split[i2]) {
-            this.bs[i].b = false
-          }
-        }
-      }
-    })  
-  }
-  editPit(event){
-    if(this.managerb){
-      event.preventDefault()
-      const ids = ['#isTeam','#isWH','#isSensor', '#isImage', '#isAT', '#isAA', '#isTA'
-      ,'#isSpeed', '#isEndgame', '#isStr', '#isDri', '#isQ', '#isN']
-      const target = event.target
-      const falseElement = ids.filter(id => target.querySelector(id).checked==false)
-      this.Auth.editPit(falseElement,this.name,this.teamnumber).subscribe(data=>{
-      const split = data.m.split('/')
-      var count=0;
-      for (var i = 0; i < this.bs.length; i++) {
-        for (var i2 = 0; i2 < split.length; i2++) {
-          if (this.bs[i].id == split[i2]) {
-            count++;
-          }
-        }
-          if(count>0){
-            this.bs[i].b = false
-          }else{
-            this.bs[i].b = true
-          }
-          count=0
-        }
-      
-      })
-    }
-  }
+  
 
     //-----update match form------
   updateTotalVal(){
@@ -2743,31 +2837,85 @@ arraysEqual(arr1, arr2) {
     })
   }
 
-
-  editMatch(event) {
+  /**
+   * edit match scout form
+   * @param event the btn user click to edit match scout form
+   */
+  editMatch(event:any) {
     if(this.managerb){
-      event.preventDefault()
-      const ids = ['#isEvent', '#isMatch', '#isTeam', '#isImage', '#isA', '#isAP', '#isTP'
-        , '#isDe', '#isEfficient', ,'#isFit','#isEndgame', '#isQ', '#isN']
+      event.preventDefault();
+      const ids = ['#isEvent', '#isMatch', '#isTeam', '#isA', '#isAP', '#isTP'
+        , '#isDe', '#isEfficient', '#isFit', '#isEndgame', '#isQ', '#isN'];//delete '#isImage',
+
       const target = event.target
       const falseElement = ids.filter(id => target.querySelector(id).checked == false)
-      this.Auth.editMatch(falseElement, this.name, this.teamnumber).subscribe(data => {
-        const split = data.m.split('/')
-        var count = 0;
-        for (var i = 0; i < this.bs2.length; i++) {
-          for (var i2 = 0; i2 < split.length; i2++) {
-            if (this.bs2[i].id == split[i2]) {
-              count++;
-            }
-          }
-          if (count > 0) {
-            this.bs2[i].b = false
-          } else {
-            this.bs2[i].b = true
-          }
-          count = 0
-        }
-      })
+      this.Auth.editMatch(JSON.stringify(falseElement), this.name, this.teamnumber).subscribe(data => {
+        this.callBackMatchForm(JSON.parse(data.m));
+      });
+    }
+  }
+
+  /**
+   * get match form baed on perference of the user team
+   */
+  updateMatchForm() {
+    this.Auth.getMatchForm(this.name, this.teamnumber).subscribe(data => {
+      this.callBackMatchForm(data.m);
+    });
+  }
+
+  /**
+   * 
+   * @param inputArr input array with callback
+   */
+  callBackMatchForm(inputArr: any[]){
+    for (let i = 0; i < this.editMatchScoutFormState.length; i++) {
+      if (inputArr.includes(this.editMatchScoutFormState[i].id)) {
+        this.editMatchScoutFormState[i].b = false;
+      } else {
+        this.editMatchScoutFormState[i].b = true;
+      }
+    }
+  }
+
+  /**
+   *
+   * @param inputArr input array with callback
+   */
+  callBackPitForm(inputArr: any) {
+    for (var i = 0; i < this.editPitScoutFormState.length; i++) {
+      if (inputArr.includes(this.editPitScoutFormState[i].id)) {
+        this.editPitScoutFormState[i].b = false;
+      } else {
+        this.editPitScoutFormState[i].b = true;
+      }
+    }
+  }
+
+  /**
+   * update pit form
+   */
+  updatePitForm() {
+    this.Auth.getPitForm(this.name, this.teamnumber).subscribe(data => {
+      this.callBackPitForm(data.m);
+    });
+  }
+
+  /**
+   * edit pit scout form
+   * @param event the btn user click to pit match scout form
+   */
+  editPit(event: any) {
+    if (this.managerb) {
+      event.preventDefault()
+      const ids = ['#isTeam', '#isWH', '#isSensor', '#isAT', '#isAA', '#isTA'
+        , '#isSpeed', '#isEndgame', '#isStr', '#isDri', '#isQ', '#isN'];//delete '#isImage',
+
+      const target = event.target
+      const falseElement = ids.filter(id => target.querySelector(id).checked == false)
+      this.Auth.editPit(JSON.stringify(falseElement), this.name, this.teamnumber).subscribe(data => {
+        this.callBackPitForm(JSON.parse(data.m));
+      });
     }
   }
   //------image update------
