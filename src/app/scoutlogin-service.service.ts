@@ -63,8 +63,8 @@ interface api3{
 export class ScoutloginServiceService {
   apiUrl = "http://localhost/scope_php/images";
   private loggedInStatus = false;
-  private path ="http://localhost/scope_php/";
-  //private path = "";
+  //private path ="http://localhost/scope_php/";
+  private path = "/php/";
   constructor(private http: HttpClient) { }
   getPit_rank_team(team, name, role){
     return this.http.post<api3>(this.path + 'getPit_rank_team.php', {

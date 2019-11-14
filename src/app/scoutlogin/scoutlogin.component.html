@@ -91,7 +91,7 @@
                       <span class="sr-only">Loading...</span>
                     </div>
                     <div *ngFor="let objj of team_member_task_this">
-                      <button (click)="taskOut2($event)" id="{{objj.title}}" class="btn btn-info btn-sm" >
+                      <button (click)="taskOut($event)" id="{{objj.title}}" class="btn btn-info btn-sm" >
                         {{objj.title}}
                       </button>
 
@@ -1784,7 +1784,7 @@
                           <div *ngIf="editPitScoutFormState[0].b">
                             <span class="badge badge-info">Team Number</span>
                             <div class="input-group mb-3">
-                              <input (input)="updatePitEdit($event)" value="{{editdataPit.teamnumber}}" type="tel" class="form-control" id="teamnumber" aria-describedby="emailHelp"
+                              <input (input)="updatePitEdit($event)" value="{{dataTypes2019.teamnumber.editPit}}" type="tel" class="form-control" id="teamnumber" aria-describedby="emailHelp"
                                 placeholder="Enter number">     
                             </div>
                             <hr>
@@ -1792,9 +1792,9 @@
                           <div *ngIf="editPitScoutFormState[1].b">
                             <span class="badge badge-info">Weight</span>
                             <div class="input-group">
-                              <input (input)="updatePitEdit($event)" value="{{editdataPit.weight2}}" id="weight2" type="tel" class="form-control" placeholder="Weight" aria-label="Recipient's username with two button addons"
+                              <input (input)="updatePitEdit($event)" value="{{dataTypes2019.weight2.editPit}}" id="weight2" type="tel" class="form-control" placeholder="Weight" aria-label="Recipient's username with two button addons"
                                 aria-describedby="button-addon4">
-                              <select (change)="updatePit($event)" value="{{editdataPit.weightunit}}" class="custom-select mr-sm-2" id="weightunit">
+                              <select (change)="updatePit($event)" value="{{dataTypes2019.weightunit.editPit}}" class="custom-select mr-sm-2" id="weightunit">
                                 <option selected>Unit</option>
                                 <option value="lb">lb</option>
                                 <option value="kg">kg</option>
@@ -1804,9 +1804,9 @@
                           
                             <span class="badge badge-info">Height</span>
                             <div class="input-group">
-                              <input (input)="updatePitEdit($event)" value="{{editdataPit.height2}}" id="height2" type="tel" class="form-control" placeholder="Height" aria-label="Recipient's username with two button addons"
+                              <input (input)="updatePitEdit($event)" value="{{dataTypes2019.height2.editPit}}" id="height2" type="tel" class="form-control" placeholder="Height" aria-label="Recipient's username with two button addons"
                                 aria-describedby="button-addon4">
-                              <select (change)="updatePitEdit($event)" value="{{editdataPit.heightunit}}" class="custom-select mr-sm-2" id="heightunit">
+                              <select (change)="updatePitEdit($event)" value="{{dataTypes2019.heightunit.editPit}}" class="custom-select mr-sm-2" id="heightunit">
                                 <option selected>Unit</option>
                                 <option value="m">m</option>
                                 <option value="inch">inch</option>
@@ -1820,7 +1820,7 @@
                             <span class="badge badge-info">Sensor on robot</span>
                             <br/>
                             <span class="badge badge-primary">Old Data</span>
-                            <span *ngFor="let ele of editdataPit.sensor" class="badge badge-warning ele">{{ele}}</span>
+                            <span *ngFor="let ele of dataTypes2019.sensor.editPit" class="badge badge-warning ele">{{ele}}</span>
                             <br />
                             <span class="badge badge-primary">New Data</span>
                             <span *ngFor="let ele of editSensorNew" class="badge badge-warning ele">{{ele}}</span>
@@ -1856,7 +1856,7 @@
                           
                           <div *ngIf="editPitScoutFormState[4].b">
                             <span class="badge badge-info">Autonomous Type</span>
-                            <select (input)="updatePitEdit($event)" value="{{editdataPit.autotype}}" class="custom-select mr-sm-2" id="autotype">
+                            <select (input)="updatePitEdit($event)" value="{{dataTypes2019.autotype.editPit}}" class="custom-select mr-sm-2" id="autotype">
                               <option value="">Choose...</option>
                               <option value="Code">Code</option>
                               <option value="No_Autonomous">No_Autonomous</option>
@@ -1870,7 +1870,7 @@
                             <span class="badge badge-info">Autonomous Ability</span>
                             <br>
                             <label for="autolvl">Start Platform Level</label>
-                            <select (change)="updatePitEdit($event)" value="{{editdataPit.autolvl}}" id="autolvl" class="form-control form-control-lg">
+                            <select (change)="updatePitEdit($event)" value="{{dataTypes2019.autolvl.editPit}}" id="autolvl" class="form-control form-control-lg">
                               <option>Choose...</option>
                               <option value=0>0</option>
                               <option value=1>1</option>
@@ -1879,7 +1879,7 @@
                             <label for="autocargo">Autonomous Choice</label>
                             <br />
                             <span class="badge badge-primary">Old Data</span>
-                            <span *ngFor="let ele of editdataPit.autochoice" class="badge badge-warning ele">{{ele}}</span>
+                            <span *ngFor="let ele of dataTypes2019.autochoice.editPit" class="badge badge-warning ele">{{ele}}</span>
                             <br />
                             <span class="badge badge-primary">New Data</span>
                             <span *ngFor="let ele of editAutochoiceNew" class="badge badge-warning ele">{{ele}}</span>
@@ -1901,7 +1901,7 @@
                             <span class="badge badge-info">Teleop Ability</span>
                             <br>
                             <label for="cargolvl">Cargo Level</label>
-                            <select (change)="updatePitEdit($event)" value="{{editdataPit.cargolevel}}" id="cargolevel" class="form-control form-control-lg">
+                            <select (change)="updatePitEdit($event)" value="{{dataTypes2019.cargolevel.editPit}}" id="cargolevel" class="form-control form-control-lg">
                               <option>Choose...</option>
                               <option value=0>0</option>
                               <option value=1>1</option>
@@ -1909,7 +1909,7 @@
                               <option value=3>3</option>
                             </select>
                             <label for="hatchlvl">Hatch Level</label>
-                            <select (change)="updatePitEdit($event)" value="{{editdataPit.hatchlevel}}" id="hatchlevel" class="form-control form-control-lg">
+                            <select (change)="updatePitEdit($event)" value="{{dataTypes2019.hatchlevel.editPit}}" id="hatchlevel" class="form-control form-control-lg">
                               <option>Choose...</option>
                               <option value=0>0</option>
                               <option value=1>1</option>
@@ -1923,21 +1923,21 @@
                             <span class="badge badge-info">Speed</span>
                             <br>
                             <label for="robotspeed">Robot Speed</label>
-                            <select (change)="updatePitEdit($event)" value="{{editdataPit.speed}}" id="speed" class="form-control form-control-lg">
+                            <select (change)="updatePitEdit($event)" value="{{dataTypes2019.speed.editPit}}" id="speed" class="form-control form-control-lg">
                               <option>Choose...</option>
                               <option value="Slow">Slow</option>
                               <option value="Medium">Medium</option>
                               <option value="Fast">Fast</option>
                             </select>
                             <label for="hatchpickup">Hatch Pickup Speed</label>
-                            <select (change)="updatePitEdit($event)" value="{{editdataPit.hatchpickupspeed}}" id="hatchpickupspeed" class="form-control form-control-lg">
+                            <select (change)="updatePitEdit($event)" value="{{dataTypes2019.hatchpickupspeed.editPit}}" id="hatchpickupspeed" class="form-control form-control-lg">
                               <option>Choose...</option>
                               <option value="Slow">Slow</option>
                               <option value="Medium">Medium</option>
                               <option value="Fast">Fast</option>
                             </select>
                             <label for="cargopickup">Cargo Pickup Speed</label>
-                            <select (change)="updatePitEdit($event)" value="{{editdataPit.cargopickupspeed}}" id="cargopickupspeed" class="form-control form-control-lg">
+                            <select (change)="updatePitEdit($event)" value="{{dataTypes2019.cargopickupspeed.editPit}}" id="cargopickupspeed" class="form-control form-control-lg">
                               <option>Choose...</option>
                               <option value="Slow">Slow</option>
                               <option value="Medium">Medium</option>
@@ -1950,7 +1950,7 @@
                             <span class="badge badge-info">End Game</span>
                             <br>
                             <label for="platform">Platform Climb</label>
-                            <select (change)="updatePitEdit($event)" value="{{editdataPit.climbability}}" id="climbability" class="form-control form-control-lg">
+                            <select (change)="updatePitEdit($event)" value="{{dataTypes2019.climbability.editPit}}" id="climbability" class="form-control form-control-lg">
                               <option>Choose...</option>
                               <option value="Level1">Level0</option>
                               <option value="Level1">Level1</option>
@@ -1969,7 +1969,7 @@
                             <span class="badge badge-info">Strategy</span>
                             <br>
                             <label for="preference">Preference</label>
-                            <select (change)="updatePitEdit($event)" value="{{editdataPit.stra}}" id="stra" class="form-control form-control-lg">
+                            <select (change)="updatePitEdit($event)" value="{{dataTypes2019.stra.editPit}}" id="stra" class="form-control form-control-lg">
                               <option>Choose...</option>
                               <option value="Defense">Defense</option>
                               <option value="CargoShip">CargoShip</option>
@@ -1983,7 +1983,7 @@
                             <span class="badge badge-info">Driver Experience</span>
                             <br>
                             <label for="years">Years of Driving</label>
-                            <select (change)="updatePitEdit($event)" value="{{editdataPit.driver}}" id="driver" class="form-control form-control-lg">
+                            <select (change)="updatePitEdit($event)" value="{{dataTypes2019.driver.editPit}}" id="driver" class="form-control form-control-lg">
                               <option>Choose...</option>
                               <option value="First Year">First Year</option>
                               <option value="Second Year">Second Year</option>
@@ -2002,13 +2002,13 @@
                             <div class="input-group-prepend">
                               <span class="input-group-text">Answer</span>
                             </div>
-                            <textarea (input)="updatePitEdit($event)" value="{{editdataPit.answer}}"  id="answer" class="form-control" aria-label="With textarea" placeholder="Like A1:....A2:...."></textarea>
+                            <textarea (input)="updatePitEdit($event)" value="{{dataTypes2019.answer.editPit}}"  id="answer" class="form-control" aria-label="With textarea" placeholder="Like A1:....A2:...."></textarea>
                             <hr>
                           </div>
                           
                           <div *ngIf="editPitScoutFormState[12].b">
                             <span class="badge badge-info">Write your note here</span>
-                            <textarea (input)="updatePitEdit($event)" value="{{editdataPit.notes}}" id="notes" class="form-control" aria-label="With textarea" placeholder="Notes Here"></textarea>
+                            <textarea (input)="updatePitEdit($event)" value="{{dataTypes2019.notes.editPit}}" id="notes" class="form-control" aria-label="With textarea" placeholder="Notes Here"></textarea>
                           </div>
                         
                         </div>
@@ -2103,56 +2103,56 @@
                           <a href="#" class="badge badge-success">Current ranking elements</a>
                           <div class="input-group mb-3 rank-select">
                             <select multiple (change)="loadrank()" id="rankOpt" class="form-control form-control-sm">
-                              <option *ngIf="!rankperference.totalautopoint" value="totalautopoint">Total Auto Pnts</option>
-                              <option *ngIf="rankperference.totalautopoint" value="totalautopoint" selected>Total Auto Pnts</option>
+                              <option *ngIf="!dataTypes2019.totalautopoint.rankperference" value="totalautopoint">Total Auto Pnts</option>
+                              <option *ngIf="dataTypes2019.totalautopoint.rankperference" value="totalautopoint" selected>Total Auto Pnts</option>
             
-                              <option *ngIf="!rankperference.autohatch" value="autohatch">Hatch in Auto</option>
-                              <option *ngIf="rankperference.autohatch" value="autohatch" selected>Hatch in Auto</option>
+                              <option *ngIf="!dataTypes2019.autohatch.rankperference" value="autohatch">Hatch in Auto</option>
+                              <option *ngIf="dataTypes2019.autohatch.rankperference" value="autohatch" selected>Hatch in Auto</option>
             
-                              <option *ngIf="!rankperference.autocargo" value="autocargo">Cargo in Auto</option>
-                              <option *ngIf="rankperference.autocargo" value="autocargo" selected>Cargo in Auto</option>
+                              <option *ngIf="!dataTypes2019.autocargo.rankperference" value="autocargo">Cargo in Auto</option>
+                              <option *ngIf="dataTypes2019.autocargo.rankperference" value="autocargo" selected>Cargo in Auto</option>
             
-                              <option *ngIf="!rankperference.totalcargo" value="totalcargo">Total Cargo</option>
-                              <option *ngIf="rankperference.totalcargo" value="totalcargo" selected>Total Cargo</option>
+                              <option *ngIf="!dataTypes2019.totalcargo.rankperference" value="totalcargo">Total Cargo</option>
+                              <option *ngIf="dataTypes2019.totalcargo.rankperference" value="totalcargo" selected>Total Cargo</option>
             
-                              <option *ngIf="!rankperference.totalhatch" value="totalhatch">Total Hatch</option>
-                              <option *ngIf="rankperference.totalhatch" value="totalhatch" selected>Total Hatch</option>
+                              <option *ngIf="!dataTypes2019.totalhatch.rankperference" value="totalhatch">Total Hatch</option>
+                              <option *ngIf="dataTypes2019.totalhatch.rankperference" value="totalhatch" selected>Total Hatch</option>
             
-                              <option *ngIf="!rankperference.cargolvl1" value="cargolvl1">Cargo Level1</option>
-                              <option *ngIf="rankperference.cargolvl1" value="cargolvl1" selected>Cargo Level1</option>
+                              <option *ngIf="!dataTypes2019.cargolvl1.rankperference" value="cargolvl1">Cargo Level1</option>
+                              <option *ngIf="dataTypes2019.cargolvl1.rankperference" value="cargolvl1" selected>Cargo Level1</option>
             
-                              <option *ngIf="!rankperference.cargolvl2" value="cargolvl2">Cargo Level2</option>
-                              <option *ngIf="rankperference.cargolvl2" value="cargolvl2" selected>Cargo Level2</option>
+                              <option *ngIf="!dataTypes2019.cargolvl2.rankperference" value="cargolvl2">Cargo Level2</option>
+                              <option *ngIf="dataTypes2019.cargolvl2.rankperference" value="cargolvl2" selected>Cargo Level2</option>
             
-                              <option *ngIf="!rankperference.cargolvl3" value="cargolvl3">Cargo Level3</option>
-                              <option *ngIf="rankperference.cargolvl3" value="cargolvl3" selected>Cargo Level3</option>
+                              <option *ngIf="!dataTypes2019.cargolvl3.rankperference" value="cargolvl3">Cargo Level3</option>
+                              <option *ngIf="dataTypes2019.cargolvl3.rankperference" value="cargolvl3" selected>Cargo Level3</option>
             
-                              <option *ngIf="!rankperference.hatchlvl1" value="hatchlvl1">Hatch Level1</option>
-                              <option *ngIf="rankperference.hatchlvl1" value="hatchlvl1" selected>Hatch Level1</option>
+                              <option *ngIf="!dataTypes2019.hatchlvl1.rankperference" value="hatchlvl1">Hatch Level1</option>
+                              <option *ngIf="dataTypes2019.hatchlvl1.rankperference" value="hatchlvl1" selected>Hatch Level1</option>
             
-                              <option *ngIf="!rankperference.hatchlvl2" value="hatchlvl2">Hatch Level2</option>
-                              <option *ngIf="rankperference.hatchlvl2" value="hatchlvl2" selected>Hatch Level2</option>
+                              <option *ngIf="!dataTypes2019.hatchlvl2.rankperference" value="hatchlvl2">Hatch Level2</option>
+                              <option *ngIf="dataTypes2019.hatchlvl2.rankperference" value="hatchlvl2" selected>Hatch Level2</option>
             
-                              <option *ngIf="!rankperference.hatchlvl3" value="hatchlvl3">Hatch Level3</option>
-                              <option *ngIf="rankperference.hatchlvl3" value="hatchlvl3" selected>Hatch Level3</option>
+                              <option *ngIf="!dataTypes2019.hatchlvl3.rankperference" value="hatchlvl3">Hatch Level3</option>
+                              <option *ngIf="dataTypes2019.hatchlvl3.rankperference" value="hatchlvl3" selected>Hatch Level3</option>
             
-                              <option *ngIf="!rankperference.cargoship" value="cargoship">Cargo Cargoship</option>
-                              <option *ngIf="rankperference.cargoship" value="cargoship" selected>Cargo Cargoship</option>
+                              <option *ngIf="!dataTypes2019.cargoship.rankperference" value="cargoship">Cargo Cargoship</option>
+                              <option *ngIf="dataTypes2019.cargoship.rankperference" value="cargoship" selected>Cargo Cargoship</option>
             
-                              <option *ngIf="!rankperference.hatchship" value="hatchship">Hatch Cargoship</option>
-                              <option *ngIf="rankperference.hatchship" value="hatchship" selected>Hatch Cargoship</option>
+                              <option *ngIf="!dataTypes2019.hatchship.rankperference" value="hatchship">Hatch Cargoship</option>
+                              <option *ngIf="dataTypes2019.hatchship.rankperference" value="hatchship" selected>Hatch Cargoship</option>
             
-                              <option *ngIf="!rankperference.defenseblock" value="defenseblock">Block Other Robot</option>
-                              <option *ngIf="rankperference.defenseblock" value="defenseblock" selected>Block Other Robot</option>
+                              <option *ngIf="!dataTypes2019.defenseblock.rankperference" value="defenseblock">Block Other Robot</option>
+                              <option *ngIf="dataTypes2019.defenseblock.rankperference" value="defenseblock" selected>Block Other Robot</option>
             
-                              <option *ngIf="!rankperference.defensedrop" value="defensedrop">Drop Game Piece Opponent</option>
-                              <option *ngIf="rankperference.defensedrop" value="defensedrop" selected>Drop Game Piece Opponent</option>
+                              <option *ngIf="!dataTypes2019.defensedrop.rankperference" value="defensedrop">Drop Game Piece Opponent</option>
+                              <option *ngIf="dataTypes2019.defensedrop.rankperference" value="defensedrop" selected>Drop Game Piece Opponent</option>
             
-                              <option *ngIf="!rankperference.hatchdrop" value="hatchdrop">Dropped Hatch</option>
-                              <option *ngIf="rankperference.hatchdrop" value="hatchdrop" selected>Dropped Hatch</option>
+                              <option *ngIf="!dataTypes2019.hatchdrop.rankperference" value="hatchdrop">Dropped Hatch</option>
+                              <option *ngIf="dataTypes2019.hatchdrop.rankperference" value="hatchdrop" selected>Dropped Hatch</option>
             
-                              <option *ngIf="rankperference.cargodrop" value="cargodrop" selected>Dropped Cargo</option>
-                              <option *ngIf="!rankperference.cargodrop" value="cargodrop">Dropped Cargo</option>
+                              <option *ngIf="dataTypes2019.cargodrop.rankperference" value="cargodrop" selected>Dropped Cargo</option>
+                              <option *ngIf="!dataTypes2019.cargodrop.rankperference" value="cargodrop">Dropped Cargo</option>
             
             
                             </select>
@@ -2230,56 +2230,56 @@
                           <a href="#" class="badge badge-success">Current ranking elements</a>
                           <div class="input-group mb-3 rank-select">
                             <select multiple (change)="loadrankA()" id="rankOptA" class="form-control form-control-sm">
-                              <option *ngIf="!rankperference.totalautopoint" value="totalautopointA">Total Auto Pnts</option>
-                              <option *ngIf="rankperference.totalautopoint" value="totalautopointA" selected>Total Auto Pnts</option>
+                              <option *ngIf="!dataTypes2019.totalautopoint.rankperference" value="totalautopointA">Total Auto Pnts</option>
+                              <option *ngIf="dataTypes2019.totalautopoint.rankperference" value="totalautopointA" selected>Total Auto Pnts</option>
             
-                              <option *ngIf="!rankperference.autohatch" value="autohatchA">Hatch in Auto</option>
-                              <option *ngIf="rankperference.autohatch" value="autohatchA" selected>Hatch in Auto</option>
+                              <option *ngIf="!dataTypes2019.autohatch.rankperference" value="autohatchA">Hatch in Auto</option>
+                              <option *ngIf="dataTypes2019.autohatch.rankperference" value="autohatchA" selected>Hatch in Auto</option>
             
-                              <option *ngIf="!rankperference.autocargo" value="autocargoA">Cargo in Auto</option>
-                              <option *ngIf="rankperference.autocargo" value="autocargoA" selected>Cargo in Auto</option>
+                              <option *ngIf="!dataTypes2019.autocargo.rankperference" value="autocargoA">Cargo in Auto</option>
+                              <option *ngIf="dataTypes2019.autocargo.rankperference" value="autocargoA" selected>Cargo in Auto</option>
             
-                              <option *ngIf="!rankperference.totalcargo" value="totalcargoA">Total Cargo</option>
-                              <option *ngIf="rankperference.totalcargo" value="totalcargoA" selected>Total Cargo</option>
+                              <option *ngIf="!dataTypes2019.totalcargo.rankperference" value="totalcargoA">Total Cargo</option>
+                              <option *ngIf="dataTypes2019.totalcargo.rankperference" value="totalcargoA" selected>Total Cargo</option>
             
-                              <option *ngIf="!rankperference.totalhatch" value="totalhatchA">Total Hatch</option>
-                              <option *ngIf="rankperference.totalhatch" value="totalhatchA" selected>Total Hatch</option>
+                              <option *ngIf="!dataTypes2019.totalhatch.rankperference" value="totalhatchA">Total Hatch</option>
+                              <option *ngIf="dataTypes2019.totalhatch.rankperference" value="totalhatchA" selected>Total Hatch</option>
             
-                              <option *ngIf="!rankperference.cargolvl1" value="cargolvl1A">Cargo Level1</option>
-                              <option *ngIf="rankperference.cargolvl1" value="cargolvl1A" selected>Cargo Level1</option>
+                              <option *ngIf="!dataTypes2019.cargolvl1.rankperference" value="cargolvl1A">Cargo Level1</option>
+                              <option *ngIf="dataTypes2019.cargolvl1.rankperference" value="cargolvl1A" selected>Cargo Level1</option>
             
-                              <option *ngIf="!rankperference.cargolvl2" value="cargolvl2A">Cargo Level2</option>
-                              <option *ngIf="rankperference.cargolvl2" value="cargolvl2A" selected>Cargo Level2</option>
+                              <option *ngIf="!dataTypes2019.cargolvl2.rankperference" value="cargolvl2A">Cargo Level2</option>
+                              <option *ngIf="dataTypes2019.cargolvl2.rankperference" value="cargolvl2A" selected>Cargo Level2</option>
             
-                              <option *ngIf="!rankperference.cargolvl3" value="cargolvl3A">Cargo Level3</option>
-                              <option *ngIf="rankperference.cargolvl3" value="cargolvl3A" selected>Cargo Level3</option>
+                              <option *ngIf="!dataTypes2019.cargolvl3.rankperference" value="cargolvl3A">Cargo Level3</option>
+                              <option *ngIf="dataTypes2019.cargolvl3.rankperference" value="cargolvl3A" selected>Cargo Level3</option>
             
-                              <option *ngIf="!rankperference.hatchlvl1" value="hatchlvl1A">Hatch Level1</option>
-                              <option *ngIf="rankperference.hatchlvl1" value="hatchlvl1A" selected>Hatch Level1</option>
+                              <option *ngIf="!dataTypes2019.hatchlvl1.rankperference" value="hatchlvl1A">Hatch Level1</option>
+                              <option *ngIf="dataTypes2019.hatchlvl1.rankperference" value="hatchlvl1A" selected>Hatch Level1</option>
             
-                              <option *ngIf="!rankperference.hatchlvl2" value="hatchlvl2A">Hatch Level2</option>
-                              <option *ngIf="rankperference.hatchlvl2" value="hatchlvl2A" selected>Hatch Level2</option>
+                              <option *ngIf="!dataTypes2019.hatchlvl2.rankperference" value="hatchlvl2A">Hatch Level2</option>
+                              <option *ngIf="dataTypes2019.hatchlvl2.rankperference" value="hatchlvl2A" selected>Hatch Level2</option>
             
-                              <option *ngIf="!rankperference.hatchlvl3" value="hatchlvl3A">Hatch Level3</option>
-                              <option *ngIf="rankperference.hatchlvl3" value="hatchlvl3A" selected>Hatch Level3</option>
+                              <option *ngIf="!dataTypes2019.hatchlvl3.rankperference" value="hatchlvl3A">Hatch Level3</option>
+                              <option *ngIf="dataTypes2019.hatchlvl3.rankperference" value="hatchlvl3A" selected>Hatch Level3</option>
             
-                              <option *ngIf="!rankperference.cargoship" value="cargoshipA">Cargo Cargoship</option>
-                              <option *ngIf="rankperference.cargoship" value="cargoshipA" selected>Cargo Cargoship</option>
+                              <option *ngIf="!dataTypes2019.cargoship.rankperference" value="cargoshipA">Cargo Cargoship</option>
+                              <option *ngIf="dataTypes2019.cargoship.rankperference" value="cargoshipA" selected>Cargo Cargoship</option>
             
-                              <option *ngIf="!rankperference.hatchship" value="hatchshipA">Hatch Cargoship</option>
-                              <option *ngIf="rankperference.hatchship" value="hatchshipA" selected>Hatch Cargoship</option>
+                              <option *ngIf="!dataTypes2019.hatchship.rankperference" value="hatchshipA">Hatch Cargoship</option>
+                              <option *ngIf="dataTypes2019.hatchship.rankperference" value="hatchshipA" selected>Hatch Cargoship</option>
             
-                              <option *ngIf="!rankperference.defenseblock" value="defenseblockA">Block Other Robot</option>
-                              <option *ngIf="rankperference.defenseblock" value="defenseblockA" selected>Block Other Robot</option>
+                              <option *ngIf="!dataTypes2019.defenseblock.rankperference" value="defenseblockA">Block Other Robot</option>
+                              <option *ngIf="dataTypes2019.defenseblock.rankperference" value="defenseblockA" selected>Block Other Robot</option>
             
-                              <option *ngIf="!rankperference.defensedrop" value="defensedropA">Drop Game Piece Opponent</option>
-                              <option *ngIf="rankperference.defensedrop" value="defensedropA" selected>Drop Game Piece Opponent</option>
+                              <option *ngIf="!dataTypes2019.defensedrop.rankperference" value="defensedropA">Drop Game Piece Opponent</option>
+                              <option *ngIf="dataTypes2019.defensedrop.rankperference" value="defensedropA" selected>Drop Game Piece Opponent</option>
             
-                              <option *ngIf="!rankperference.hatchdrop" value="hatchdropA">Dropped Hatch</option>
-                              <option *ngIf="rankperference.hatchdrop" value="hatchdropA" selected>Dropped Hatch</option>
+                              <option *ngIf="!dataTypes2019.hatchdrop.rankperference" value="hatchdropA">Dropped Hatch</option>
+                              <option *ngIf="dataTypes2019.hatchdrop.rankperference" value="hatchdropA" selected>Dropped Hatch</option>
             
-                              <option *ngIf="rankperference.cargodrop" value="cargodropA" selected>Dropped Cargo</option>
-                              <option *ngIf="!rankperference.cargodrop" value="cargodropA">Dropped Cargo</option>
+                              <option *ngIf="dataTypes2019.cargodrop.rankperference" value="cargodropA" selected>Dropped Cargo</option>
+                              <option *ngIf="!dataTypes2019.cargodrop.rankperference" value="cargodropA">Dropped Cargo</option>
                             </select>
             
                           </div>
@@ -2479,7 +2479,7 @@
                         Editing your database...
                       </button>
                       <a href="#" class="badge badge-success">Current ranking elements</a>
-                      <select class="form-control form-control-sm" id="selectTeamElement" value="{{selctedPerference}}" (change)="updateAndGetSelectTeamElement()">
+                      <select class="form-control form-control-sm" id="selectTeamElement" value="{{selctedPerference}}" (change)="updateAndGetSelectTeamElement(false)">
                         <option value="">Choose.....</option>
             
                         <option *ngIf="!selctedPerference[General_Ability]" value="General_Ability">General Ability</option>
@@ -2839,7 +2839,7 @@
           <div class="input-group">
 
             <select (change)="updateMatchEdit($event)" class="custom-select mr-sm-2" id="region">
-              <option value="{{editdata.region}}">{{editdata.region}}</option>
+              <option value="{{dataTypes2019.region}}">{{dataTypes2019.region.editMatch}}</option>
 
               <option *ngFor="let event of editMatchEvent" value="event.short">{{event.long}}</option>
             </select>
@@ -2850,7 +2850,7 @@
         <div *ngIf="editMatchScoutFormState[1].b">
           <span class="badge badge-info">Match Number</span>
           <div class="input-group">
-            <input (input)="updateMatchEdit($event)" value="{{editdata.matchnumber}}" type="tel" class="form-control"
+            <input (input)="updateMatchEdit($event)" value="{{dataTypes2019.matchnumber.editMatch}}" type="tel" class="form-control"
               id="matchnumber" aria-describedby="emailHelp" placeholder="Enter number">
           </div>
           <hr>
@@ -2859,7 +2859,7 @@
         <div *ngIf="editMatchScoutFormState[2].b">
           <span class="badge badge-info">Team Number</span>
           <div class="input-group">
-            <input (input)="updateMatchEdit($event)" id="teamnumber" value="{{editdata.teamnumber}}" type="tel" class="form-control"
+            <input (input)="updateMatchEdit($event)" id="teamnumber" value="{{dataTypes2019.teamnumber.editMatch}}" type="tel" class="form-control"
               placeholder="Enter number">
           </div>
           <hr>
@@ -2887,7 +2887,7 @@
         <div *ngIf="editMatchScoutFormState[4].b">
           <span class="badge badge-info">Alliance</span>
           <br>
-          <select (input)="updateMatchEdit($event)" value="{{editdata.alliance}}" id="alliance" class="form-control form-control-lg">
+          <select (input)="updateMatchEdit($event)" value="{{dataTypes2019.alliance.editMatch}}" id="alliance" class="form-control form-control-lg">
             <option>Choose...</option>
             <option value="blue">blue</option>
             <option value="red">red</option>
@@ -2900,21 +2900,21 @@
           <br>
           <label for="autolvl">Successfully Exit Platform Level</label>
           <select (change)="updateMatchEdit($event)" id="exitplatform" class="form-control form-control-lg">
-            <option value="{{editdata.exitplatform}}">{{editdata.exitplatform}}</option>
+            <option value="{{dataTypes2019.exitplatform.editMatch}}">{{dataTypes2019.exitplatform.editMatch}}</option>
             <option value=0>0</option>
             <option value=3>1</option>
             <option value=6>2</option>
           </select>
           <label for="autocargo">Auto Cargo</label>
           <select (change)="updateMatchEdit($event)" id="autocargo" class="form-control form-control-lg">
-            <option value="{{editdata.autocargo}}">{{editdata.autocargo}}</option>
+            <option value="{{dataTypes2019.autocargo.editMatch}}">{{dataTypes2019.autocargo.editMatch}}</option>
             <option value=1>1</option>
             <option value=2>2</option>
             <option value=3>3</option>
           </select>
           <label for="autohatch">Auto Hatch</label>
           <select (change)="updateMatchEdit($event)" id="autohatch" class="form-control form-control-lg">
-            <option value="{{editdata.autohatch}}">{{editdata.autohatch}}</option>
+            <option value="{{dataTypes2019.autohatch.editMatch}}">{{dataTypes2019.autohatch.editMatch}}</option>
             <option value=1>1</option>
             <option value=2>2</option>
             <option value=3>3</option>
@@ -2933,14 +2933,14 @@
               <span id="rlvlspan" class="badge badge-warning">Rocket Lvl3</span>
             </div>
             <div class="input-group">
-              <input id="addhatchlvl3Edit" type="text" value="{{editdata.hatchlvl3}}" class="form-control" placeholder="Hatch"
+              <input id="addhatchlvl3Edit" type="text" value="{{dataTypes2019.hatchlvl3.editMatch}}" class="form-control" placeholder="Hatch"
                 aria-label="Recipient's username with two button addons" aria-describedby="button-addon4" readonly>
               <div class="input-group-append" id="button-addon4">
                 <button (click)="addhatchlvl3Edit(true)" class="btn btn-outline-warning" type="button">+</button>
                 <button (click)="addhatchlvl3Edit(false)" class="btn btn-outline-warning" type="button">-</button>
               </div>
 
-              <input id="addcargolvl3Edit" type="text" value="{{editdata.cargolvl3}}" class="form-control" placeholder="Cargo"
+              <input id="addcargolvl3Edit" type="text" value="{{dataTypes2019.cargolvl3.editMatch}}" class="form-control" placeholder="Cargo"
                 aria-label="Recipient's username with two button addons" aria-describedby="button-addon4" readonly>
               <div class="input-group-append" id="button-addon4">
                 <button (click)="addcargolvl3Edit(true)" class="btn btn-outline-warning" type="button">+</button>
@@ -2955,7 +2955,7 @@
                 <span id="rlvlspan" class="badge badge-warning">Rocket Lvl2</span>
               </div>
               <div class="input-group">
-                <input id="addhatchlvl2Edit" type="text" value="{{editdata.hatchlvl2}}" class="form-control"
+                <input id="addhatchlvl2Edit" type="text" value="{{dataTypes2019.hatchlvl2.editMatch}}" class="form-control"
                   placeholder="Hatch" aria-label="Recipient's username with two button addons" aria-describedby="button-addon4"
                   readonly>
                 <div class="input-group-append" id="button-addon4">
@@ -2963,7 +2963,7 @@
                   <button (click)="addhatchlvl2Edit(false)" class="btn btn-outline-warning" type="button">-</button>
                 </div>
 
-                <input id="addcargolvl2Edit" type="text" value="{{editdata.cargolvl2}}" class="form-control"
+                <input id="addcargolvl2Edit" type="text" value="{{dataTypes2019.cargolvl2.editMatch}}" class="form-control"
                   placeholder="Cargo" aria-label="Recipient's username with two button addons" aria-describedby="button-addon4"
                   readonly>
                 <div class="input-group-append" id="button-addon4">
@@ -2980,7 +2980,7 @@
                 <span id="rlvlspan" class="badge badge-warning">Rocket Lvl1</span>
               </div>
               <div class="input-group">
-                <input id="addhatchlvl1Edit" type="text" value="{{editdata.hatchlvl1}}" class="form-control"
+                <input id="addhatchlvl1Edit" type="text" value="{{dataTypes2019.hatchlvl1.editMatch}}" class="form-control"
                   placeholder="Hatch" aria-label="Recipient's username with two button addons" aria-describedby="button-addon4"
                   readonly>
                 <div class="input-group-append" id="button-addon4">
@@ -2988,7 +2988,7 @@
                   <button (click)="addhatchlvl1Edit(false)" class="btn btn-outline-warning" type="button">-</button>
                 </div>
 
-                <input id="addcargolvl1Edit" type="text" value="{{editdata.cargolvl1}}" class="form-control"
+                <input id="addcargolvl1Edit" type="text" value="{{dataTypes2019.cargolvl1.editMatch}}" class="form-control"
                   placeholder="Cargo" aria-label="Recipient's username with two button addons" aria-describedby="button-addon4"
                   readonly>
                 <div class="input-group-append" id="button-addon4">
@@ -3006,7 +3006,7 @@
               </div>
 
               <div class="input-group">
-                <input id="addhatchshipEdit" type="text" value="{{editdata.hatchship}}" class="form-control"
+                <input id="addhatchshipEdit" type="text" value="{{dataTypes2019.hatchship.editMatch}}" class="form-control"
                   placeholder="Hatch" aria-label="Recipient's username with two button addons" aria-describedby="button-addon4"
                   readonly>
                 <div class="input-group-append" id="button-addon4">
@@ -3014,7 +3014,7 @@
                   <button (click)="addhatchshipEdit(false)" class="btn btn-outline-warning" type="button">-</button>
                 </div>
 
-                <input id="addcargoshipEdit" type="text" value="{{editdata.cargoship}}" class="form-control"
+                <input id="addcargoshipEdit" type="text" value="{{dataTypes2019.cargoship.editMatch}}" class="form-control"
                   placeholder="Cargo" aria-label="Recipient's username with two button addons" aria-describedby="button-addon4"
                   readonly>
                 <div class="input-group-append" id="button-addon4">
@@ -3033,7 +3033,7 @@
           <br>
           <span class="badge badge-primary">Add 1 when the opponent drops a game piece</span>
           <div class="input-group">
-            <input id="addeditdroppieceEdit" type="tel" class="form-control" value={{editdata.defensedrop}}
+            <input id="addeditdroppieceEdit" type="tel" class="form-control" value={{dataTypes2019.defensedrop.editMatch}}
               aria-describedby="button-addon4" readonly>
             <div class="input-group-append" id="button-addon4">
               <button (click)="addeditdroppieceEdit(true)" class="btn btn-outline-secondary" type="button">+</button>
@@ -3042,7 +3042,7 @@
           </div>
           <span class="badge badge-primary">Add 1 when robot blocks or pushes the opponent</span>
           <div class="input-group">
-            <input id="addeditblockEdit" type="tel" class="form-control" value={{editdata.defenseblock}}
+            <input id="addeditblockEdit" type="tel" class="form-control" value={{dataTypes2019.defenseblock.editMatch}}
               aria-describedby="button-addon4" readonly>
             <div class="input-group-append" id="button-addon4">
               <button (click)="addeditblockEdit(true)" class="btn btn-outline-secondary" type="button">+</button>
@@ -3057,7 +3057,7 @@
           <br>
           <span class="badge badge-primary">Add 1 when the robot drops a hatch</span>
           <div class="input-group">
-            <input id="addeditdrophatchEdit" type="tel" class="form-control" value={{editdata.hatchdrop}}
+            <input id="addeditdrophatchEdit" type="tel" class="form-control" value={{dataTypes2019.hatchdrop.editMatch}}
               aria-describedby="button-addon4" readonly>
             <div class="input-group-append" id="button-addon4">
               <button (click)="addeditdrophatchEdit(true);" class="btn btn-outline-secondary" type="button">+</button>
@@ -3066,7 +3066,7 @@
           </div>
           <span class="badge badge-primary">Add 1 when the robot drops a cargo</span>
           <div class="input-group">
-            <input id="addeditdropcargoEdit" type="tel" class="form-control" value={{editdata.cargodrop}}
+            <input id="addeditdropcargoEdit" type="tel" class="form-control" value={{dataTypes2019.cargodrop.editMatch}}
               aria-describedby="button-addon4" readonly>
             <div class="input-group-append" id="button-addon4">
               <button (click)="addeditdropcargoEdit(true);" class="btn btn-outline-secondary" type="button">+</button>
@@ -3081,7 +3081,7 @@
           <span class="badge badge-info">End Game</span>
           <br>
           <label for="platformS">Platform Climb</label>
-          <select (change)="updateMatchEdit($event)" value="{{editdata.climbpoint}}" id="climbpoint" class="form-control form-control-lg">
+          <select (change)="updateMatchEdit($event)" value="{{dataTypes2019.climbpoint.editMatch}}" id="climbpoint" class="form-control form-control-lg">
             <option>Choose...</option>
             <option value=0>Level0</option>
             <option value=3>Level1</option>
@@ -3098,7 +3098,7 @@
           <span class="badge badge-info">Robot Fitness</span>
           <br>
           <label for="fit">Does the robot fit our robot?</label>
-          <select (change)="updateMatchEdit($event)" value="{{editdata.fitness}}" id="fitness" class="form-control form-control-lg">
+          <select (change)="updateMatchEdit($event)" value="{{dataTypes2019.fitness.editMatch}}" id="fitness" class="form-control form-control-lg">
             <option>Choose...</option>
             <option value=5>Completely fit our robot(first pick!!!) | 5 stars</option>
             <option value=4>Fit our robot very well | 4 stars</option>
@@ -3120,12 +3120,12 @@
             <span class="input-group-text">Answer</span>
           </div>
 
-          <textarea (input)="updateMatchEdit($event)" value="{{editdata.answer}}"  id="answer" class="form-control"
+          <textarea (input)="updateMatchEdit($event)" value="{{dataTypes2019.answer.editMatch}}"  id="answer" class="form-control"
             aria-label="With textarea" placeholder="Like A1:....A2:...."></textarea>
         </div>
         <div *ngIf="editMatchScoutFormState[12].b">
           <span class="badge badge-info">Write your note here</span>
-          <textarea (input)="updateMatchEdit($event)" value="{{editdata.notes}}" id="notes" class="form-control"
+          <textarea (input)="updateMatchEdit($event)" value="{{dataTypes2019.notes.editMatch}}" id="notes" class="form-control"
             aria-label="With textarea" placeholder="Notes Here"></textarea>
         </div>
 
